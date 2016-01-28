@@ -1,6 +1,6 @@
 {
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01-preview/deploymentTemplate.json",
-  "contentVersion": "1.0.0.0",
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.1",
   "parameters": {
     "adminUserName": {
       "type": "string",
@@ -48,12 +48,15 @@
         "eastus",
         "northeurope", 
         "westeurope",
+        "eastasia",
         "southeastasia",
-        "centralus", 
+        "southcentralus",
+        "centralus",
         "eastus2",
-        "japaneast", 
+        "japaneast",
         "japanwest",
-        "australiaeast"
+        "australiaeast",
+        "australiasoutheast"
       ],
       "metadata": {
         "description": "Location where resources will be provisioned (must support premium storage)"
