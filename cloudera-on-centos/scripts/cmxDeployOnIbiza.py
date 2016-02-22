@@ -77,7 +77,7 @@ def init_cluster():
 
     # Update Cloudera Manager configuration
     cm = api.get_cloudera_manager()
-    cm.update_config({"REMOTE_PARCEL_REPO_URLS": "http://archive.cloudera.com/cdh5/parcels/5.4.9/,"
+    cm.update_config({"REMOTE_PARCEL_REPO_URLS": "http://archive.cloudera.com/cdh5/parcels/5.4.9/",
                       "PHONE_HOME": False, "PARCEL_DISTRIBUTE_RATE_LIMIT_KBS_PER_SECOND": "1024000"})
 
     print "> Initialise Cluster"
