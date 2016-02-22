@@ -67,8 +67,9 @@ rpm --import http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/RPM-GPG-KEY-cl
 wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> /tmp/initialize-cloudera-server.log
 #replace base URL to point to older version of CM
 #for example to use 5.4.9, baseurl=https://archive.cloudera.com/cm5/redhat/6/x86_64/cm/5.4.9/
-sed -i -- "s|baseurl=https://archive.cloudera.com/cm5/redhat/6/x86_64/cm/5/|baseurl=https://archive.cloudera.com/cm5/redhat/6/x86_64/cm/5.4.9/|" cloudera-manager.repo
+sudo sed -i -- "s|baseurl=https://archive.cloudera.com/cm5/redhat/6/x86_64/cm/5/|baseurl=https://archive.cloudera.com/cm5/redhat/6/x86_64/cm/5.4.9/|" /etc/yum.repos.d/cloudera-manager.repo
 
+log "replace baseurl to another version"
 # this often fails so adding retry logic
 n=0
 until [ $n -ge 5 ]
