@@ -436,6 +436,23 @@ host    all         all         127.0.0.1/32          md5  \ ' $DATA_DIR/pg_hba.
 sudo /sbin/chkconfig postgresql on
 sudo service postgresql restart
 
+i=0
+until [ $i -ge 5 ]
+do
+  i=$[$i+1]
+  sudo -u postgres psql -l
+  n=$?
+  if [ $n -eq 0 ]; then
+    break;
+  fi
+  sleep 5s
+  echo $n
+done
+if [ $i -ge 5 ]; then
+  echo "DB failed to start, exit with status 1"
+  exit 1
+fi
+
 create_scm_db $SCM_PWD
 create_mgmt_role_db ACTIVITYMONITOR amon
 create_mgmt_role_db REPORTSMANAGER rman
