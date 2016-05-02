@@ -89,9 +89,9 @@
     },
     "virtualNetworkRGName": {
       "type": "string",
-      "defaultValue": "[resourceGroup().Name]",
+      "defaultValue": "",
       "metadata": {
-        "description": "Resource Group Name for Vnet. For new VNet, use the same resource group for the cluster. O stherwise, type in existing resource group name"
+        "description": "Resource Group Name for Vnet. For new VNet leave it empty, otherwise type in existing resource group name"
       }
     },
     "subnetName": {
