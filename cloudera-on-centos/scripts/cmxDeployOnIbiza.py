@@ -1877,7 +1877,6 @@ def main():
     global diskcount
     diskcount= getDataDiskCount()
     log("data_disk_count"+`diskcount`)
-    cmx.do_post=False
     if(cmx.do_post):
         postEulaInfo(cmx.fname, cmx.lname, cmx.email, cmx.company,
                      cmx.jobrole, cmx.jobfunction, cmx.phone)
