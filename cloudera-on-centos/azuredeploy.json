@@ -286,7 +286,7 @@
       "virtualNetworkSubnetName": "[parameters('subnetName')]"
     },
     "newVNetId":"[resourceId(concat('Microsoft.Network','/','virtualNetworks'),parameters('virtualNetworkName'))]",
-    "existingVNetId":"[resourceId(parameters('virtualNetworkRGName'),concat('Microsoft.Network','/','virtualNetworks'),parameters('virtualNetworkName')]",
+    "existingVNetId":"[resourceId(parameters('virtualNetworkRGName'),concat('Microsoft.Network','/','virtualNetworks'),parameters('virtualNetworkName'))]",
     "VNetId": "[variables(concat(parameters('vnetNewOrExisting'),'VNetId'))]"
   },
   "resources": [
