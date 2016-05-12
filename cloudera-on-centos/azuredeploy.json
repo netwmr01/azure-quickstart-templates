@@ -412,8 +412,8 @@
           }
         }
       }
-    },
-    {
+    }
+    /*{
       "name": "setup-cloudera",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('templateAPIVersion')]",
@@ -484,6 +484,6 @@
           }
         }
       }
-    }
+    }*/
   ]
 }
