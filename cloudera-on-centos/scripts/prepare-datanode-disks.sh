@@ -102,9 +102,3 @@ END
 sudo bash -c "source ./inputs2.sh; prepare_unmounted_volumes"
 exit 0  # and this is useful
 
-
-COUNTER=0
-
-      if [[ ${COUNTER} == 0 ]]; then
-        echo "I AM ZERO"
-      fi

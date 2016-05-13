@@ -143,15 +143,3 @@ END
 
 sudo bash -c "source ./inputs2.sh; prepare_unmounted_volumes"
 exit 0  # and this is useful
-
-ALL_PARTITIONS=$(awk 'FNR > 2 {print $NF}' /proc/partitions)
-  COUNTER=0
-  for part in $ALL_PARTITIONS; do
-    # If this partition does not end with a number (likely a partition of a
-    # mounted volume), is not equivalent to the alphabetic portion of another
-    # partition with digits at the end (likely a volume that has already been
-    # mounted), and is not contained in $MOUNTED_VOLUMES
-    if [[ ! ${part} =~ [0-9]$ && ! ${ALL_PARTITIONS} =~ $part[0-9] && $MOUNTED_VOLUMES != *$part* ]];then
-      echo ${part}
-    fi
-  done
