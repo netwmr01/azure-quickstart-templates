@@ -82,16 +82,16 @@ sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
 echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Mount and format the attached disks base on node type
-#if [ "$NODETYPE" == "masternode" ]
-#then
-#  bash ./prepare-masternode-disks.sh
-#elif [ "$NODETYPE" == "datanode" ]
-#then
-#  bash ./prepare-datanode-disks.sh
-#else
-#  echo "#unknown type, default to datanode"
-#  bash ./prepare-datanode-disks.sh
-#fi
+if [ "$NODETYPE" == "masternode" ]
+then
+  bash ./prepare-masternode-disks.sh
+elif [ "$NODETYPE" == "datanode" ]
+then
+  bash ./prepare-datanode-disks.sh
+else
+  echo "#unknown type, default to datanode"
+  bash ./prepare-datanode-disks.sh
+fi
 
 echo "Done preparing disks.  Now ls -la looks like this:"
 ls -la /

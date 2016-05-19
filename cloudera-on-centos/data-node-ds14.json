@@ -281,7 +281,7 @@
           "dataDisks": [
             {
               "name": "datadisk0",
-              "diskSizeGB": "512",
+              "diskSizeGB": "1023",
               "lun": 0,
               "vhd": {
                 "Uri": "[concat('http://', copyIndex(), variables('storageAccountName'), '.blob.core.windows.net/vhds0/', variables('vmName'), '-datadisk0.vhd')]"
@@ -290,7 +290,7 @@
             },
             {
               "name": "datadisk1",
-              "diskSizeGB": "1023",
+              "diskSizeGB": "512",
               "lun": 1,
               "vhd": {
                 "Uri": "[concat('http://', copyIndex(), variables('storageAccountName'), '.blob.core.windows.net/vhds1/', variables('vmName'), '-datadisk1.vhd')]"
@@ -299,7 +299,7 @@
             },
             {
               "name": "datadisk2",
-              "diskSizeGB": "1023",
+              "diskSizeGB": "512",
               "lun": 2,
               "vhd": {
                 "Uri": "[concat('http://', copyIndex(), variables('storageAccountName'), '.blob.core.windows.net/vhds2/', variables('vmName'), '-datadisk2.vhd')]"
@@ -308,7 +308,7 @@
             },
             {
               "name": "datadisk3",
-              "diskSizeGB": "1023",
+              "diskSizeGB": "512",
               "lun": 3,
               "vhd": {
                 "Uri": "[concat('http://', copyIndex(), variables('storageAccountName'), '.blob.core.windows.net/vhds3/', variables('vmName'), '-datadisk3.vhd')]"
@@ -317,7 +317,7 @@
             },
             {
               "name": "datadisk4",
-              "diskSizeGB": "1023",
+              "diskSizeGB": "512",
               "lun": 4,
               "vhd": {
                 "Uri": "[concat('http://', copyIndex(), variables('storageAccountName'), '.blob.core.windows.net/vhds4/', variables('vmName'), '-datadisk4.vhd')]"
@@ -326,7 +326,7 @@
             },
             {
               "name": "datadisk5",
-              "diskSizeGB": "1023",
+              "diskSizeGB": "512",
               "lun": 5,
               "vhd": {
                 "Uri": "[concat('http://', copyIndex(), variables('storageAccountName'), '.blob.core.windows.net/vhds5/', variables('vmName'), '-datadisk5.vhd')]"
@@ -335,7 +335,7 @@
             },
             {
               "name": "datadisk6",
-              "diskSizeGB": "1023",
+              "diskSizeGB": "512",
               "lun": 6,
               "vhd": {
                 "Uri": "[concat('http://', copyIndex(), variables('storageAccountName'), '.blob.core.windows.net/vhds6/', variables('vmName'), '-datadisk6.vhd')]"
@@ -344,7 +344,7 @@
             },
             {
               "name": "datadisk7",
-              "diskSizeGB": "1023",
+              "diskSizeGB": "512",
               "lun": 7,
               "vhd": {
                 "Uri": "[concat('http://', copyIndex(), variables('storageAccountName'), '.blob.core.windows.net/vhds7/', variables('vmName'), '-datadisk7.vhd')]"
@@ -353,7 +353,7 @@
             },
             {
               "name": "datadisk8",
-              "diskSizeGB": "1023",
+              "diskSizeGB": "512",
               "lun": 8,
               "vhd": {
                 "Uri": "[concat('http://', copyIndex(), variables('storageAccountName'), '.blob.core.windows.net/vhds8/', variables('vmName'), '-datadisk8.vhd')]"
@@ -362,7 +362,7 @@
             },
             {
               "name": "datadisk9",
-              "diskSizeGB": "1023",
+              "diskSizeGB": "512",
               "lun": 9,
               "vhd": {
                 "Uri": "[concat('http://', copyIndex(), variables('storageAccountName'), '.blob.core.windows.net/vhds9/', variables('vmName'), '-datadisk9.vhd')]"
@@ -371,7 +371,7 @@
             },
             {
               "name": "datadisk10",
-              "diskSizeGB": "1023",
+              "diskSizeGB": "512",
               "lun": 10,
               "vhd": {
                 "Uri": "[concat('http://', copyIndex(), variables('storageAccountName'), '.blob.core.windows.net/vhds10/', variables('vmName'), '-datadisk10.vhd')]"

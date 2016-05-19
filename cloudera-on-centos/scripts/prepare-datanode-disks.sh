@@ -74,6 +74,7 @@ set_log_device()
   else
     logDevice=${minDevice}
   fi
+  echo "using logDevice ${logDevice}"
 }
 
 prepare_unmounted_volumes()
@@ -93,14 +94,15 @@ prepare_unmounted_volumes()
     # If this partition does not end with a number (likely a partition of a
     # mounted volume), is not equivalent to the alphabetic portion of another
     # partition with digits at the end (likely a volume that has already been
-    # mounted), and is not contained in $MOUNTED_VOLUMES
+    # mounted), and is not contained in $MOUNTED_VOLUMES, and it is not $logDevice
     if [[ ! ${part} =~ [0-9]$ && ! ${ALL_PARTITIONS} =~ $part[0-9] && $MOUNTED_VOLUMES != *$part* ]];then
       echo ${part}
       if [[ "/dev/$part" = ${logDevice} ]]; then
         mountDriveForLogCloudera "/dev/$part"
       else prepare_disk "/data$COUNTER" "/dev/$part"
+           COUNTER=$(($COUNTER+1))
       fi
-      COUNTER=$(($COUNTER+1))
+
     fi
   done
   wait # for all the background prepare_disk function calls to complete
@@ -159,6 +161,6 @@ prepare_disk()
 
 END
 
-
-
+sudo bash -c "source ./inputs2.sh; prepare_unmounted_volumes"
+exit 0  # and this is useful
 
