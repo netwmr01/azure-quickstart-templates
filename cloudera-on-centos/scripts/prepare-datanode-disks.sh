@@ -15,10 +15,22 @@ mountDriveForLogCloudera()
   ln -s /log/cloudera /opt/cloudera
 }
 
-prepare_unmounted_volumes()
+
+# Mount the block with difference size as log device
+# if minSize = maxSize, just pick minDevice
+# if maxSize > secondMax, aka, logdevice is the largest amoung them, mount maxDevice
+# else just use minDevice
+set_log_device()
 {
+  maxSize=0
+  maxCount=0
+  minSize=0
+  minDevice=""
+  maxDevice=""
+  logDevice=""
   # Each line contains an entry like /dev/<device name>
-  # MOUNTED_VOLUMES=$(df -h | grep -o -E "^/dev/[^[:space:]]*")
+  MOUNTED_VOLUMES=$(df -h | grep -o -E "^/dev/[^[:space:]]*")
+
   # Each line contains an entry like <device name> (no /dev/ prefix)
   # (This awk script prints the last field of every line with line number
   # greater than 2.)
@@ -32,6 +44,59 @@ prepare_unmounted_volumes()
     if [[ ! ${part} =~ [0-9]$ && ! ${ALL_PARTITIONS} =~ $part[0-9] && $MOUNTED_VOLUMES != *$part* ]];then
       echo ${part}
       if [[ ${COUNTER} == 0 ]]; then
+        maxSize=`blockdev --getsize64 "/dev/$part"`
+        secMaxSize=${maxSize}
+        minSize=`blockdev --getsize64 "/dev/$part"`
+        minDevice="/dev/$part"
+        maxDevice="/dev/$part"
+      else
+        # Update max if applicable
+        current=`blockdev --getsize64 "/dev/$part"`
+        if [[ ${current} -ge ${maxSize} ]]; then
+          secMaxSize=${maxSize}
+          maxSize=${current}
+          maxDevice="/dev/$part"
+        fi
+
+        # Update min if applicable
+        if [[ ${current} -lt ${minSize} ]]; then
+          minSize=${current}
+          minDevice="/dev/$part"
+        fi
+      fi
+      COUNTER=$(($COUNTER+1))
+    fi
+  done
+  if [[ ${minDevice} = ${maxDevice} ]]; then
+    logDevice=${minDevice}
+  elif [[ ${maxSize} -gt ${secMaxSize} ]]; then
+    logDevice=${maxDevice}
+  else
+    logDevice=${minDevice}
+  fi
+}
+
+prepare_unmounted_volumes()
+{
+  # Figure out which is log device base on size
+  set_log_device
+
+  # Each line contains an entry like /dev/<device name>
+  MOUNTED_VOLUMES=$(df -h | grep -o -E "^/dev/[^[:space:]]*")
+
+  # Each line contains an entry like <device name> (no /dev/ prefix)
+  # (This awk script prints the last field of every line with line number
+  # greater than 2.)
+  ALL_PARTITIONS=$(awk 'FNR > 2 {print $NF}' /proc/partitions)
+  COUNTER=0
+  for part in $ALL_PARTITIONS; do
+    # If this partition does not end with a number (likely a partition of a
+    # mounted volume), is not equivalent to the alphabetic portion of another
+    # partition with digits at the end (likely a volume that has already been
+    # mounted), and is not contained in $MOUNTED_VOLUMES
+    if [[ ! ${part} =~ [0-9]$ && ! ${ALL_PARTITIONS} =~ $part[0-9] && $MOUNTED_VOLUMES != *$part* ]];then
+      echo ${part}
+      if [[ "/dev/$part" = ${logDevice} ]]; then
         mountDriveForLogCloudera "/dev/$part"
       else prepare_disk "/data$COUNTER" "/dev/$part"
       fi
@@ -94,6 +159,6 @@ prepare_disk()
 
 END
 
-sudo bash -c "source ./inputs2.sh; prepare_unmounted_volumes"
-exit 0  # and this is useful
+
+
 
