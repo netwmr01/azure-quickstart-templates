@@ -64,7 +64,17 @@ set +e
 log "Set cloudera-manager.repo to CM v5"
 yum clean all >> /tmp/initialize-cloudera-server.log
 rpm --import http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera >> /tmp/initialize-cloudera-server.log
-wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> /tmp/initialize-cloudera-server.log
+
+RELEASE=`awk -Frelease '{ print $2 }' /etc/redhat-release | awk -F. '{print $1}'`
+if [ $RELEASE -eq "6" ]; then
+  wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> /tmp/initialize-cloudera-server.log
+elif [ $RELEASE -eq "7" ]; then
+  wget http://archive.cloudera.com/cm5/redhat/7/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> /tmp/initialize-cloudera-server.log
+else
+  log "OS version not supported."
+  exit 1
+fi
+
 # this often fails so adding retry logic
 n=0
 until [ $n -ge 5 ]
