@@ -305,7 +305,7 @@
       "plan": {
         "name": "cloudera-centos-6",
         "publisher": "cloudera",
-        "product": "cloudera-centos-6"
+        "product": "cloudera-centos-6-preview"
       },
       "location": "[parameters('location')]",
       "copy": {
@@ -335,7 +335,7 @@
           "imageReference":
           {
             "publisher": "cloudera",
-            "offer": "cloudera-centos-6",
+            "offer": "cloudera-centos-6-preview",
             "sku": "CLOUDERA-CENTOS-6",
             "version": "latest"
           },
