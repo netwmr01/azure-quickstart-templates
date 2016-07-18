@@ -10,9 +10,6 @@
     },
     "masterNodeASName": {
       "type": "string"
-    },
-    "dataNodeASName": {
-      "type": "string"
     }
   },
   "variables": {},
@@ -21,13 +18,6 @@
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[parameters('masterNodeASName')]",
-      "location": "[resourceGroup().location]",
-      "properties": { }
-    },
-    {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
-      "type": "Microsoft.Compute/availabilitySets",
-      "name": "[parameters('dataNodeASName')]",
       "location": "[resourceGroup().location]",
       "properties": { }
     },
