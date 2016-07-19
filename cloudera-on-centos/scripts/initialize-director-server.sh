@@ -14,6 +14,8 @@ log() {
   echo "$(date): [${execname}] $@" >> /tmp/initialize-cloudera-server.log
 }
 
+ADMINUSER=$1
+
 log "initializing Director Server..."
 
 # Disable the need for a tty when running sudo and allow passwordless sudo for the admin user
