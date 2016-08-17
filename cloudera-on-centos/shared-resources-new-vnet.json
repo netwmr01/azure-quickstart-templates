@@ -8,7 +8,7 @@
     "networkSpec": {
       "type": "object"
     },
-    "masterNodeASName": {
+    "asName": {
       "type": "string"
     }
   },
