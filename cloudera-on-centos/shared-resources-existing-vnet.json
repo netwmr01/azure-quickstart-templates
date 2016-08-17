@@ -8,7 +8,7 @@
     "networkSpec": {
       "type": "object"
     },
-    "masterNodeASName": {
+    "asName": {
       "type": "string"
     }
   },
@@ -17,7 +17,7 @@
     {
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Compute/availabilitySets",
-      "name": "[parameters('masterNodeASName')]",
+      "name": "[parameters('asName')]",
       "location": "[resourceGroup().location]",
       "properties": { }
     }

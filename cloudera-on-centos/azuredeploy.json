@@ -15,14 +15,14 @@
         "description": "Admin password for the VMs (A mix of upper and lower-case characters, digits and symbols)"
       }
     },
-    "directorUsername": {
+    "dirUsername": {
       "type": "string",
       "defaultValue": "diradmin",
       "metadata": {
         "description": "User name for the Cloudera Director Server"
       }
     },
-    "cmPassword": {
+    "dirPassword": {
       "type": "securestring",
       "metadata": {
         "description": "password for the Cloudera Director (A mix of upper and lower-case characters, digits and symbols)"
@@ -273,9 +273,6 @@
           },
           "storageAccount": {
             "value": "[variables('storageAccount')]"
-          },
-          "vmCount": {
-            "value": "[variables('clusterSpec').masterNodeCount]"
           },
           "vmSpec": {
             "value": "[variables('vmSpec')]"
