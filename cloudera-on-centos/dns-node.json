@@ -32,7 +32,7 @@
     "vmName": "[concat(parameters('dnsNamePrefix'), '-dir')]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
-    "storageAccountName": "[concat('nn', parameters('storageAccount').prefix)]",
+    "storageAccountName": "[concat(parameters('storageAccount').prefix, 'dns')]",
     "securityGroupName": "[concat(parameters('dnsNamePrefix'), '-dir-sg')]"
   },
   "resources": [
@@ -76,13 +76,9 @@
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "name": "[concat(variables('storageAccountName'), copyIndex())]",
+      "name": "[variables('storageAccountName')]",
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "location": "[resourceGroup().location]",
-      "copy": {
-        "name": "storageAccountLoop",
-        "count": "[parameters('vmCount')]"
-      },
       "properties": {
         "accountType": "[parameters('storageAccount').type]"
       }
@@ -90,16 +86,12 @@
     {
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('nicName'), copyIndex())]",
+      "name": "[variables('nicName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'), copyIndex())]",
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('securityGroupName'))]"
       ],
-      "copy": {
-        "name": "masterNodeNicLoop",
-        "count": "[parameters('vmCount')]"
-      },
       "properties": {
         "ipConfigurations": [
           {
@@ -109,9 +101,6 @@
               "privateIPAddress": "[parameters('networkSpec').dnsIP]",
               "subnet": {
                 "id": "[concat(parameters('vnetID'), '/subnets/', parameters('networkSpec').virtualNetworkSubnetName)]"
-              },
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('publicIPAddressName'), copyIndex()))]"
               }
             }
           }
@@ -124,30 +113,26 @@
     {
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('vmName'), copyIndex())]",
+      "name": "[variables('vmName')]",
       "plan": {
         "name": "cloudera-centos-6",
         "publisher": "cloudera",
         "product": "cloudera-centos-6"
       },
       "location": "[resourceGroup().location]",
-      "copy": {
-        "name": "masterNodeNicLoop",
-        "count": "[parameters('vmCount')]"
-      },
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
-        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'), copyIndex())]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
       ],
       "properties": {
         "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('vmSpec').masterNodeASName)]"
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('vmSpec').asName)]"
         },
         "hardwareProfile": {
           "vmSize": "[parameters('vmSpec').vmSize]"
         },
         "osProfile": {
-          "computerName": "[reference(concat(variables('publicIPAddressName'), copyIndex())).dnsSettings.fqdn]",
+          "computerName": "[reference(concat(variables('publicIPAddressName'))).dnsSettings.fqdn]",
           "adminUsername": "[parameters('vmSpec').adminUserName]",
           "adminPassword": "[parameters('vmSpec').adminPassword]",
           "linuxConfiguration": {
@@ -164,7 +149,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat('http://', variables('storageAccountName'), copyIndex(), '.blob.core.windows.net/vhds/', variables('vmName'), copyIndex(), '.vhd')]"
+              "uri": "[concat('http://', variables('storageAccountName'), '.blob.core.windows.net/vhds/', variables('vmName'), '.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
