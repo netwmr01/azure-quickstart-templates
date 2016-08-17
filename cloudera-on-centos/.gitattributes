@@ -1,1 +1,3 @@
 *.sh -crlf
+*.idea
+*.iml
