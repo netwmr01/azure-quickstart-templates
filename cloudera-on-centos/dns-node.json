@@ -25,13 +25,10 @@
     },
     "networkSpec": {
       "type": "object"
-    },
-    "clusterSpec": {
-      "type": "object"
     }
   },
   "variables": {
-    "masterIP":"[parameters('networkSpec').masterIP]",
+    "IP":"[parameters('networkSpec').dnsServerIPAddress]",
     "vmName": "[concat(parameters('dnsNamePrefix'), '-dir')]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
@@ -92,22 +89,6 @@
     },
     {
       "apiVersion": "[parameters('resourceAPIVersion')]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[concat(variables('publicIPAddressName'), copyIndex())]",
-      "location": "[resourceGroup().location]",
-      "copy": {
-        "name": "publicIPLoop",
-        "count": "[parameters('vmCount')]"
-      },
-      "properties": {
-        "publicIPAllocationMethod": "Dynamic",
-        "dnsSettings": {
-          "domainNameLabel": "[concat(parameters('dnsNamePrefix'), '-dns', copyIndex())]"
-        }
-      }
-    },
-    {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat(variables('nicName'), copyIndex())]",
       "location": "[resourceGroup().location]",
@@ -125,7 +106,7 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[concat(parameters('networkSpec').ipOctet01, add(parameters('networkSpec').ipOctet2, div(copyIndex(parameters('networkSpec').ipOctet3), 256)), '.', mod(copyIndex(parameters('networkSpec').ipOctet3), 256))]",
+              "privateIPAddress": "[parameters('networkSpec').dnsIP]",
               "subnet": {
                 "id": "[concat(parameters('vnetID'), '/subnets/', parameters('networkSpec').virtualNetworkSubnetName)]"
               },
@@ -229,9 +210,9 @@
         "settings": {
           "fileUris": [
             "[concat(parameters('scriptsUri'), '/scripts/prepare-director-disks.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/initialize-director-server.sh')]"
+            "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
           ],
-          "commandToExecute": "[concat('sh initialize-director-server.sh \"', parameters('vmSpec').adminUserName, '\" ')]"
+          "commandToExecute": "[concat('sh initialize-dns-server.sh \"', parameters('vmSpec').adminUserName, '\" ')]"
         }
       }
     }

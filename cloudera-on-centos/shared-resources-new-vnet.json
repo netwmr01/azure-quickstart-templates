@@ -27,6 +27,9 @@
       "name": "[parameters('networkSpec').virtualNetworkName]",
       "location": "[resourceGroup().location]",
       "properties": {
+        "dhcpOptions": {
+          "dnsServers": "[parameters('networSpec').dnsIP]"
+        },
         "addressSpace": {
           "addressPrefixes": [
             "[parameters('networkSpec').addressPrefix]"
