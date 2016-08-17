@@ -78,7 +78,7 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[parameters('networkSpec').dnsIP]",
+              "privateIPAddress": "[parameters('networkSpec').dnsServerIPAddress]",
               "subnet": {
                 "id": "[concat(parameters('vnetID'), '/subnets/', parameters('networkSpec').virtualNetworkSubnetName)]"
               }
