@@ -97,7 +97,7 @@
     },
     "dnsServerIPAddress": {
       "type": "string",
-      "defaultValue": "10.3.0.4",
+      "defaultValue": "10.3.0.5",
       "metadata": {
         "description": "IP address for the dns server"
       }

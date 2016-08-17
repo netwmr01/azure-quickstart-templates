@@ -25,11 +25,10 @@
     }
   },
   "variables": {
-    "vmName": "[concat(parameters('dnsNamePrefix'), '-dir')]",
+    "vmName": "[concat(parameters('dnsNamePrefix'), '-dns')]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
-    "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
     "storageAccountName": "[concat(parameters('storageAccount').prefix, 'dns')]",
-    "securityGroupName": "[concat(parameters('dnsNamePrefix'), '-dir-sg')]"
+    "securityGroupName": "[concat(parameters('dnsNamePrefix'), '-dns-sg')]"
   },
   "resources": [
     {
@@ -52,20 +51,6 @@
               "priority": 100,
               "direction": "Inbound"
             }
-          },
-          {
-            "name": "Director.Web.UI",
-            "properties": {
-              "description": "Allows Director.Web.UI traffic",
-              "protocol": "Tcp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "7189",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 110,
-              "direction": "Inbound"
-            }
           }
         ]
       }
@@ -85,7 +70,6 @@
       "name": "[variables('nicName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('securityGroupName'))]"
       ],
       "properties": {
@@ -128,7 +112,7 @@
           "vmSize": "[parameters('vmSpec').vmSize]"
         },
         "osProfile": {
-          "computerName": "[reference(concat(variables('publicIPAddressName'))).dnsSettings.fqdn]",
+          "computerName": "tempcompute",
           "adminUsername": "[parameters('vmSpec').adminUserName]",
           "adminPassword": "[parameters('vmSpec').adminPassword]",
           "linuxConfiguration": {
