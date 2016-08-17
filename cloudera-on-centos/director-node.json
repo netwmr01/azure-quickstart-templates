@@ -18,12 +18,9 @@
       "type": "object"
     },
     "vmSpec": {
-      "type": "secureobject"
+      "type": "secureObject"
     },
     "networkSpec": {
-      "type": "object"
-    },
-    "clusterSpec": {
       "type": "object"
     }
   },
