@@ -25,7 +25,6 @@
     }
   },
   "variables": {
-    "IP":"[parameters('networkSpec').dnsServerIPAddress]",
     "vmName": "[concat(parameters('dnsNamePrefix'), '-dir')]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
@@ -157,7 +156,7 @@
               "diskSizeGB": "512",
               "lun": 0,
               "vhd": {
-                "Uri": "[concat('http://', variables('storageAccountName'), copyIndex(), '.blob.core.windows.net/vhds0/', variables('vmName'), '-datadisk0.vhd')]"
+                "Uri": "[concat('http://', variables('storageAccountName'), '.blob.core.windows.net/vhds0/', variables('vmName'), '-datadisk0.vhd')]"
               },
               "createOption": "Empty"
             }
@@ -166,7 +165,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName'), copyIndex()))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName')))]"
             }
           ]
         }
@@ -174,15 +173,11 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'), copyIndex(), '/prepareDisks')]",
+      "name": "[concat(variables('vmName'), '/prepareDisks')]",
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "location": "[resourceGroup().location]",
-      "copy": {
-        "name": "nameNodeNicLoop",
-        "count": "[parameters('vmCount')]"
-      },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), copyIndex())]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
       ],
       "properties": {
         "publisher": "Microsoft.OSTCExtensions",

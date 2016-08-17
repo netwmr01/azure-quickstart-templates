@@ -25,7 +25,6 @@
     }
   },
   "variables": {
-    "masterIP":"[parameters('networkSpec').masterIP]",
     "vmName": "[concat(parameters('dnsNamePrefix'), '-dir')]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
