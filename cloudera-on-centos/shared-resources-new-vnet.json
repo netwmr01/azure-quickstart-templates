@@ -28,7 +28,9 @@
       "location": "[resourceGroup().location]",
       "properties": {
         "dhcpOptions": {
-          "dnsServers": "[parameters('networkSpec').dnsServerIPAddress]"
+          "dnsServers": [
+            "10.3.0.5"
+          ]
         },
         "addressSpace": {
           "addressPrefixes": [
