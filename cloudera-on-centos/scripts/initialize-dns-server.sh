@@ -28,7 +28,7 @@
 #
 
 log() {
-  echo "$(date): [${execname}] $@" >> /tmp/initialize-cloudera-server.log
+  echo "$(date): [${execname}] $@" >> /tmp/initialize-dns-server.log
 }
 
 ADMINUSER=$1
@@ -38,7 +38,7 @@ log "initializing DNS Server..."
 
 # Disable the need for a tty when running sudo and allow passwordless sudo for the admin user
 sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
-echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+log "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 
 
@@ -48,9 +48,9 @@ echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 #
 nameserver_ip="168.63.129.16" # used for all regions
 
-echo "This script will turn a fresh host into a BIND server and walk you through changing Azure DNS "
-echo "settings. If you have previously run this script on this host, or another host within the same "
-echo "virtual network: stop running this script and run the reset script before continuing."
+log "This script will turn a fresh host into a BIND server and walk you through changing Azure DNS "
+log "settings. If you have previously run this script on this host, or another host within the same "
+log "virtual network: stop running this script and run the reset script before continuing."
 
 #
 # Quick sanity checks
@@ -58,14 +58,14 @@ echo "virtual network: stop running this script and run the reset script before 
 hostname -f
 if [ $? != 0 ]
 then
-    echo "Unable to run the command 'hostname -f'; run the reset script and try again."
+    log "Unable to run the command 'hostname -f'; run the reset script and try again."
     exit 1
 fi
 
 hostname -i
 if [ $? != 0 ]
 then
-    echo "Unable to run the command 'hostname -i'; run the reset script and try again."
+    log "Unable to run the command 'hostname -i'; run the reset script and try again."
     exit 1
 fi
 
@@ -76,13 +76,13 @@ sudo yum -y install bind bind-utils
 yum list installed bind
 if [ $? != 0 ]
 then
-    echo "Unable to install package 'bind', manual troubleshoot required."
+    log "Unable to install package 'bind', manual troubleshoot required."
     exit 1
 fi
 yum list installed bind-utils
 if [ $? != 0 ]
 then
-    echo "Unable to install package 'bind-utils', manual troubleshoot required."
+    log "Unable to install package 'bind-utils', manual troubleshoot required."
     exit 1
 fi
 
@@ -110,15 +110,15 @@ hostnumber=$(hostname -i | cut -d . -f 4)
 hostmaster="hostmaster"
 
 
-echo "[DEBUG: Variables used]"
-echo "subnet: $subnet"
-echo "internal_ip: $internal_ip"
-echo "internal_fqdn_suffix: $INTERNAL_FQDN_SUFFIX"
-echo "ptr_record_prefix: $ptr_record_prefix"
-echo "hostname: $hostname"
-echo "hostmaster: $hostmaster"
-echo "hostnumber: $hostnumber"
-echo "[END DEBUG: Variables used]"
+log "[DEBUG: Variables used]"
+log "subnet: $subnet"
+log "internal_ip: $internal_ip"
+log "internal_fqdn_suffix: $INTERNAL_FQDN_SUFFIX"
+log "ptr_record_prefix: $ptr_record_prefix"
+log "hostname: $hostname"
+log "hostmaster: $hostmaster"
+log "hostnumber: $hostnumber"
+log "[END DEBUG: Variables used]"
 
 
 #
@@ -272,57 +272,14 @@ sudo chmod 755 /etc/dhcp/dhclient-exit-hooks
 #
 # Now it's time to update Azure DNS settings in portal
 #
-echo ""
-echo "Go to -- portal.azure.com -- and change Azure DNS to point to the private IP of this host: ${internal_ip}"
+log ""
+log "Go to -- portal.azure.com -- and change Azure DNS to point to the private IP of this host: ${internal_ip}"
 
 #
 # Loop until DNS nameserver updates have propagated to /etc/resolv.conf
 # NB: search server updates don't take place until dhclient-exit-hooks have executed
 #
-until sudo grep "nameserver ${internal_ip}" /etc/resolv.conf
-do
-    sudo service network restart
-    echo "Waiting for Azure DNS nameserver updates to propagate, this usually takes less than 2 minutes..."
-    sleep 10
-done
 
 
-#
-# Check that everything is working
-#
-echo "Running sanity checks:"
-
-hostname -f
-if [ $? != 0 ]
-then
-    echo "Unable to run the command 'hostname -f' (check 1 of 4)"
-    echo "Run the reset script and then try this script again."
-    exit 1
-fi
-
-hostname -i
-if [ $? != 0 ]
-then
-    echo "Unable to run the command 'hostname -i' (check 2 of 4)"
-    echo "Run the reset script and then try this script again."
-    exit 1
-fi
-
-host "$(hostname -f)"
-if [ $? != 0 ]
-then
-    echo "Unable to run the command 'host \`hostname -f\`' (check 3 of 4)"
-    echo "Run the reset script and then try this script again."
-    exit 1
-fi
-
-host "$(hostname -i)"
-if [ $? != 0 ]
-then
-    echo "Unable to run the command 'host \`hostname -i\`' (check 4 of 4)"
-    echo "Run the reset script and then try this script again."
-    exit 1
-fi
-
-echo "Everything is working!"
+log "Everything is working!"
 exit 0
