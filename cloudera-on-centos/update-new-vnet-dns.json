@@ -7,26 +7,21 @@
     },
     "networkSpec": {
       "type": "object"
-    },
-    "asName": {
-      "type": "string"
     }
   },
   "variables": {},
   "resources": [
     {
       "apiVersion": "[parameters('resourceAPIVersion')]",
-      "type": "Microsoft.Compute/availabilitySets",
-      "name": "[parameters('asName')]",
-      "location": "[resourceGroup().location]",
-      "properties": { }
-    },
-    {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[parameters('networkSpec').virtualNetworkName]",
       "location": "[resourceGroup().location]",
       "properties": {
+        "dhcpOptions": {
+          "dnsServers": [
+            "[parameters('networkSpec').dnsServerIPAddress]"
+          ]
+        },
         "addressSpace": {
           "addressPrefixes": [
             "[parameters('networkSpec').addressPrefix]"

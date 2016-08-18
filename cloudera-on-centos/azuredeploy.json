@@ -35,6 +35,12 @@
         "description": "Unique DNS name where the VMs will be exposed"
       }
     },
+    "dnsNameSuffix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique DNS suffix where the VMs will be exposed"
+        }
+    },
     "storageAccountType": {
       "type": "string",
       "defaultValue": "Standard_LRS",
@@ -320,6 +326,30 @@
           }
         }
       }
+    },
+    {
+      "name": "update-new-vnet-dns.json",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('templateAPIVersion')]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/dns-node"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('scriptsUri'), 'update-new-vnet-dns.json')]",
+          "contentVersion": "1.0.0.1"
+        },
+        "parameters": {
+          "resourceAPIVersion":{
+            "value":"[variables('resourceAPIVersion')]"
+          },
+          "networkSpec": {
+            "value": "[variables('networkSpec')]"
+          }
+        }
+      }
+
     }
   ]
 }
