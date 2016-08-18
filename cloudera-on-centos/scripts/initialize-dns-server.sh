@@ -38,7 +38,7 @@ log "initializing DNS Server..."
 
 # Disable the need for a tty when running sudo and allow passwordless sudo for the admin user
 sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
-log "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 
 

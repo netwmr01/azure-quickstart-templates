@@ -203,6 +203,7 @@
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/director_server_dns/cloudera-on-centos",
     "share-resourcesUri": "[concat(variables('scriptsUri'), '/shared-resources-', parameters('vnetNewOrExisting'), '-vnet.json')]",
+    "vnetUri": "[concat(variables('scriptsUri'), '/update-', parameters('vnetNewOrExisting'), '-vnet-dns.json')]",
     "storageAccount": {
       "prefix": "[concat(uniquestring(resourceGroup().id),'storage')]",
       "type": "[parameters('storageAccountType')]"
@@ -331,7 +332,7 @@
       }
     },
     {
-      "name": "update-new-vnet-dns.json",
+      "name": "update-vnet-dns",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('templateAPIVersion')]",
       "dependsOn": [
@@ -340,7 +341,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('scriptsUri'), '/update-new-vnet-dns.json')]",
+          "uri": "[variables('vnetUri')]",
           "contentVersion": "1.0.0.1"
         },
         "parameters": {
