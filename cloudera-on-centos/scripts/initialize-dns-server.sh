@@ -32,6 +32,7 @@ log() {
 }
 
 ADMINUSER=$1
+INTERNAL_FQDN_SUFFIX=$2
 
 log "initializing DNS Server..."
 
@@ -39,14 +40,7 @@ log "initializing DNS Server..."
 sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
 echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-exit 0
-#
-# Setup
-#
-if ! [ "$(id -u)" = 0 ]
-  then echo "Please run as root."
-  exit 1
-fi
+
 
 
 #
@@ -59,8 +53,6 @@ echo "-- STOP --"
 echo "This script will turn a fresh host into a BIND server and walk you through changing Azure DNS "
 echo "settings. If you have previously run this script on this host, or another host within the same "
 echo "virtual network: stop running this script and run the reset script before continuing."
-printf "Press [Enter] to continue."
-read -r
 
 #
 # Quick sanity checks
@@ -97,18 +89,15 @@ then
 fi
 
 # make the directories that bind will use
-mkdir /etc/named/zones
+sudo mkdir /etc/named/zones
 # make the files that bind will use
-touch /etc/named/named.conf.local
-touch /etc/named/zones/db.internal
-touch /etc/named/zones/db.reverse
+sudo touch /etc/named/named.conf.local
+sudo touch /etc/named/zones/db.internal
+sudo touch /etc/named/zones/db.reverse
 
 #
 # Set all of the variables
 #
-echo ""
-printf "Enter the internal host FQDN suffix you wish to use for your cluster network (e.g. cdh-cluster.internal): "
-read -r internal_fqdn_suffix
 
 hostname=$(hostname -s)
 
@@ -126,7 +115,7 @@ hostmaster="hostmaster"
 echo "[DEBUG: Variables used]"
 echo "subnet: $subnet"
 echo "internal_ip: $internal_ip"
-echo "internal_fqdn_suffix: $internal_fqdn_suffix"
+echo "internal_fqdn_suffix: $INTERNAL_FQDN_SUFFIX"
 echo "ptr_record_prefix: $ptr_record_prefix"
 echo "hostname: $hostname"
 echo "hostmaster: $hostmaster"
@@ -175,7 +164,7 @@ include "/etc/named/named.conf.local";
 EOF
 
 cat > /etc/named/named.conf.local <<EOF
-zone "${internal_fqdn_suffix}" IN {
+zone "${INTERNAL_FQDN_SUFFIX}" IN {
     type master;
     file "/etc/named/zones/db.internal";
     allow-update { ${subnet}; };
@@ -190,31 +179,31 @@ EOF
 cat > /etc/named/zones/db.internal <<EOF
 \$ORIGIN .
 \$TTL 600  ; 10 minutes
-${internal_fqdn_suffix}  IN SOA  ${hostname}.${internal_fqdn_suffix}. ${hostmaster}.${internal_fqdn_suffix}. (
+${INTERNAL_FQDN_SUFFIX}  IN SOA  ${hostname}.${INTERNAL_FQDN_SUFFIX}. ${hostmaster}.${INTERNAL_FQDN_SUFFIX}. (
         10         ; serial
         600        ; refresh (10 minutes)
         60         ; retry (1 minute)
         604800     ; expire (1 week)
         600        ; minimum (10 minutes)
         )
-        NS  ${hostname}.${internal_fqdn_suffix}.
-\$ORIGIN ${internal_fqdn_suffix}.
+        NS  ${hostname}.${INTERNAL_FQDN_SUFFIX}.
+\$ORIGIN ${INTERNAL_FQDN_SUFFIX}.
 ${hostname}    A  ${internal_ip}
 EOF
 
 cat > /etc/named/zones/db.reverse <<EOF
 \$ORIGIN .
 \$TTL 600  ; 10 minutes
-${ptr_record_prefix}.in-addr.arpa  IN SOA  ${hostname}.${internal_fqdn_suffix}. ${hostmaster}.${internal_fqdn_suffix}. (
+${ptr_record_prefix}.in-addr.arpa  IN SOA  ${hostname}.${INTERNAL_FQDN_SUFFIX}. ${hostmaster}.${INTERNAL_FQDN_SUFFIX}. (
         10         ; serial
         600        ; refresh (10 minutes)
         60         ; retry (1 minute)
         604800     ; expire (1 week)
         600        ; minimum (10 minutes)
         )
-        NS  ${hostname}.${internal_fqdn_suffix}.
+        NS  ${hostname}.${INTERNAL_FQDN_SUFFIX}.
 \$ORIGIN ${ptr_record_prefix}.in-addr.arpa.
-${hostnumber}      PTR  ${hostname}.${internal_fqdn_suffix}.
+${hostnumber}      PTR  ${hostname}.${INTERNAL_FQDN_SUFFIX}.
 EOF
 
 
@@ -227,7 +216,7 @@ if [ $? != 0 ] # if named-checkconf fails
 then
     exit 1
 fi
-named-checkzone "${internal_fqdn_suffix}" /etc/named/zones/db.internal
+named-checkzone "${INTERNAL_FQDN_SUFFIX}" /etc/named/zones/db.internal
 if [ $? != 0 ] # if named-checkzone fails
 then
     exit 1
@@ -268,7 +257,7 @@ EOF
 # needs to be evaluated when written to the file, the two others (with "EOF" surrounded by quotes)
 # should not have variable substitution occur when creating the file.
 cat >> /etc/dhcp/dhclient-exit-hooks <<EOF
-    domain=${internal_fqdn_suffix}
+    domain=${INTERNAL_FQDN_SUFFIX}
 EOF
 cat >> /etc/dhcp/dhclient-exit-hooks <<"EOF"
     resolvconfupdate=$(mktemp -t resolvconfupdate.XXXXXXXXXX)

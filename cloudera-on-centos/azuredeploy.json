@@ -312,6 +312,9 @@
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
           },
+          "dnsNameSuffix": {
+            "value": "[parameters('dnsNameSuffix')]"
+          },
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"
           },

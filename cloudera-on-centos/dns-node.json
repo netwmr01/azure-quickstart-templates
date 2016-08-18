@@ -11,6 +11,9 @@
     "dnsNamePrefix": {
       "type": "string"
     },
+    "dnsNameSuffix": {
+      "type": "string"
+    },
     "scriptsUri": {
       "type": "string"
     },
@@ -173,7 +176,7 @@
             "[concat(parameters('scriptsUri'), '/scripts/prepare-director-disks.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
           ],
-          "commandToExecute": "[concat('sh initialize-dns-server.sh \"', parameters('vmSpec').adminUserName, '\" ')]"
+          "commandToExecute": "[concat('sh initialize-dns-server.sh \"', parameters('vmSpec').adminUserName, '\" \"', parameters('dnsNameSuffix'), '\" ')]"
         }
       }
     }
