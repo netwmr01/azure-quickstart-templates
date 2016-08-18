@@ -48,8 +48,6 @@ echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 #
 nameserver_ip="168.63.129.16" # used for all regions
 
-
-echo "-- STOP --"
 echo "This script will turn a fresh host into a BIND server and walk you through changing Azure DNS "
 echo "settings. If you have previously run this script on this host, or another host within the same "
 echo "virtual network: stop running this script and run the reset script before continuing."
@@ -127,7 +125,7 @@ echo "[END DEBUG: Variables used]"
 # Create the BIND files
 #
 
-cat > /etc/named.conf <<EOF
+sudo cat > /etc/named.conf <<EOF
 acl trusted {
     ${subnet};
 };
@@ -163,7 +161,7 @@ include "/etc/named.root.key";
 include "/etc/named/named.conf.local";
 EOF
 
-cat > /etc/named/named.conf.local <<EOF
+sudo cat > /etc/named/named.conf.local <<EOF
 zone "${INTERNAL_FQDN_SUFFIX}" IN {
     type master;
     file "/etc/named/zones/db.internal";
@@ -176,7 +174,7 @@ zone "${ptr_record_prefix}.in-addr.arpa" IN {
  };
 EOF
 
-cat > /etc/named/zones/db.internal <<EOF
+sudo cat > /etc/named/zones/db.internal <<EOF
 \$ORIGIN .
 \$TTL 600  ; 10 minutes
 ${INTERNAL_FQDN_SUFFIX}  IN SOA  ${hostname}.${INTERNAL_FQDN_SUFFIX}. ${hostmaster}.${INTERNAL_FQDN_SUFFIX}. (
@@ -191,7 +189,7 @@ ${INTERNAL_FQDN_SUFFIX}  IN SOA  ${hostname}.${INTERNAL_FQDN_SUFFIX}. ${hostmast
 ${hostname}    A  ${internal_ip}
 EOF
 
-cat > /etc/named/zones/db.reverse <<EOF
+sudo cat > /etc/named/zones/db.reverse <<EOF
 \$ORIGIN .
 \$TTL 600  ; 10 minutes
 ${ptr_record_prefix}.in-addr.arpa  IN SOA  ${hostname}.${INTERNAL_FQDN_SUFFIX}. ${hostmaster}.${INTERNAL_FQDN_SUFFIX}. (
@@ -210,25 +208,25 @@ EOF
 #
 # Final touches on BIND related items
 #
-chown -R named:named /etc/named*
-named-checkconf /etc/named.conf
+sudo chown -R named:named /etc/named*
+sudo named-checkconf /etc/named.conf
 if [ $? != 0 ] # if named-checkconf fails
 then
     exit 1
 fi
-named-checkzone "${INTERNAL_FQDN_SUFFIX}" /etc/named/zones/db.internal
+sudo named-checkzone "${INTERNAL_FQDN_SUFFIX}" /etc/named/zones/db.internal
 if [ $? != 0 ] # if named-checkzone fails
 then
     exit 1
 fi
-named-checkzone "${ptr_record_prefix}.in-addr.arpa" /etc/named/zones/db.reverse
+sudo named-checkzone "${ptr_record_prefix}.in-addr.arpa" /etc/named/zones/db.reverse
 if [ $? != 0 ] # if named-checkzone fails
 then
     exit 1
 fi
 
-service named start
-chkconfig named on
+sudo service named start
+sudo chkconfig named on
 #
 # This host is now running BIND
 #
@@ -240,7 +238,7 @@ chkconfig named on
 
 # Taken from https://github.com/cloudera/director-scripts/blob/master/azure-dns-scripts/bootstrap_dns.sh
 # cat a here-doc represenation of the hooks to the appropriate file
-cat > /etc/dhcp/dhclient-exit-hooks <<"EOF"
+sudo cat > /etc/dhcp/dhclient-exit-hooks <<"EOF"
 #!/bin/bash
 printf "\ndhclient-exit-hooks running...\n\treason:%s\n\tinterface:%s\n" "${reason:?}" "${interface:?}"
 # only execute on the primary nic
@@ -256,10 +254,10 @@ EOF
 # this is a separate here-doc because there's two sets of variable substitution going on, this set
 # needs to be evaluated when written to the file, the two others (with "EOF" surrounded by quotes)
 # should not have variable substitution occur when creating the file.
-cat >> /etc/dhcp/dhclient-exit-hooks <<EOF
+sudo cat >> /etc/dhcp/dhclient-exit-hooks <<EOF
     domain=${INTERNAL_FQDN_SUFFIX}
 EOF
-cat >> /etc/dhcp/dhclient-exit-hooks <<"EOF"
+sudo cat >> /etc/dhcp/dhclient-exit-hooks <<"EOF"
     resolvconfupdate=$(mktemp -t resolvconfupdate.XXXXXXXXXX)
     echo updating resolv.conf
     grep -iv "search" /etc/resolv.conf > "$resolvconfupdate"
@@ -269,24 +267,21 @@ fi
 #done
 exit 0;
 EOF
-chmod 755 /etc/dhcp/dhclient-exit-hooks
+sudo chmod 755 /etc/dhcp/dhclient-exit-hooks
 
 #
 # Now it's time to update Azure DNS settings in portal
 #
 echo ""
-echo "-- STOP -- STOP -- STOP --"
 echo "Go to -- portal.azure.com -- and change Azure DNS to point to the private IP of this host: ${internal_ip}"
-printf "Press [Enter] once you have gone to portal.azure.com and this is completed."
-read -r
 
 #
 # Loop until DNS nameserver updates have propagated to /etc/resolv.conf
 # NB: search server updates don't take place until dhclient-exit-hooks have executed
 #
-until grep "nameserver ${internal_ip}" /etc/resolv.conf
+until sudo grep "nameserver ${internal_ip}" /etc/resolv.conf
 do
-    service network restart
+    sudo service network restart
     echo "Waiting for Azure DNS nameserver updates to propagate, this usually takes less than 2 minutes..."
     sleep 10
 done
