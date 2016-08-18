@@ -39,7 +39,7 @@ log "initializing DNS Server..."
 sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
 echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-
+exit 0
 #
 # Setup
 #
