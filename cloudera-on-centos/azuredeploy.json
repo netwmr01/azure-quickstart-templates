@@ -337,7 +337,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('scriptsUri'), 'update-new-vnet-dns.json')]",
+          "uri": "[concat(variables('scriptsUri'), '/update-new-vnet-dns.json')]",
           "contentVersion": "1.0.0.1"
         },
         "parameters": {
