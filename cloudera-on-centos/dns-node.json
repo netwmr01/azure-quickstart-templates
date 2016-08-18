@@ -28,7 +28,7 @@
     }
   },
   "variables": {
-    "vmName": "[concat(parameters('dnsNamePrefix'), '-dns')]",
+    "vmName": "[concat(parameters('dnsNamePrefix'), '-dns', parameters('dnsNameSuffix'))]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
     "storageAccountName": "[concat(parameters('storageAccount').prefix, 'dns')]",
     "securityGroupName": "[concat(parameters('dnsNamePrefix'), '-dns-sg')]"
