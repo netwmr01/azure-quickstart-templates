@@ -180,5 +180,11 @@
         }
       }
     }
-  ]
+  ],
+  "outputs": {
+    "vmName": {
+      "type": "string",
+      "value": "[variables('vmName')]"
+    }
+  }
 }

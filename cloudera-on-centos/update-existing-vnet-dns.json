@@ -11,31 +11,5 @@
   },
   "variables": {},
   "resources": [
-    {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "[parameters('networkSpec').virtualNetworkName]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "dhcpOptions": {
-          "dnsServers": [
-            "[parameters('networkSpec').dnsServerIPAddress]"
-          ]
-        },
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('networkSpec').addressPrefix]"
-          ]
-        },
-        "subnets": [
-          {
-            "name": "[parameters('networkSpec').virtualNetworkSubnetName]",
-            "properties": {
-              "addressPrefix": "[parameters('networkSpec').subnetPrefix]"
-            }
-          }
-        ]
-      }
-    }
   ]
 }

@@ -204,6 +204,7 @@
     "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/director_server_dns/cloudera-on-centos",
     "share-resourcesUri": "[concat(variables('scriptsUri'), '/shared-resources-', parameters('vnetNewOrExisting'), '-vnet.json')]",
     "vnetUri": "[concat(variables('scriptsUri'), '/update-', parameters('vnetNewOrExisting'), '-vnet-dns.json')]",
+    "networkRestartUri": "[concat(variables('scriptsUri'), '/network-restart.json')]",
     "storageAccount": {
       "prefix": "[concat(uniquestring(resourceGroup().id),'storage')]",
       "type": "[parameters('storageAccountType')]"
@@ -353,7 +354,29 @@
           }
         }
       }
-
+    },
+    {
+      "name": "network-restart-dns",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('templateAPIVersion')]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/update-vnet-dns"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('networkRestartUri')]",
+          "contentVersion": "1.0.0.1"
+        },
+        "parameters": {
+          "resourceAPIVersion":{
+            "value":"[variables('resourceAPIVersion')]"
+          },
+          "vmName":{
+            "value": "[reference('dns-node').outputs.vmName.value]"
+          }
+        }
+      }
     }
   ]
 }
