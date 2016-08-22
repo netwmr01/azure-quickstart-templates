@@ -33,6 +33,7 @@ log() {
 
 ADMINUSER=$1
 INTERNAL_FQDN_SUFFIX=$2
+HOST_IP=$3
 
 log "initializing DNS Server..."
 
@@ -51,23 +52,6 @@ nameserver_ip="168.63.129.16" # used for all regions
 log "This script will turn a fresh host into a BIND server and walk you through changing Azure DNS "
 log "settings. If you have previously run this script on this host, or another host within the same "
 log "virtual network: stop running this script and run the reset script before continuing."
-
-#
-# Quick sanity checks
-#
-hostname -f
-if [ $? != 0 ]
-then
-    log "Unable to run the command 'hostname -f'; run the reset script and try again."
-    exit 1
-fi
-
-hostname -i
-if [ $? != 0 ]
-then
-    log "Unable to run the command 'hostname -i'; run the reset script and try again."
-    exit 1
-fi
 
 #
 # Install and setup the prerequisites
@@ -99,13 +83,13 @@ sudo touch /etc/named/zones/db.reverse
 
 hostname=$(hostname -s)
 
-internal_ip=$(hostname -i)
+internal_ip=${HOST_IP}
 
 subnet=$(ipcalc -np "$(ip -o -f inet addr show | awk '/scope global/ {print $4}')" | awk '{getline x;print x;}1' | awk -F= '{print $2}' | awk 'NR%2{printf "%s/",$0;next;}1')
 
-ptr_record_prefix=$(hostname -i | awk -F. '{print $3"." $2"."$1}')
+ptr_record_prefix=$(echo ${internal_ip} | awk -F. '{print $3"." $2"."$1}')
 
-hostnumber=$(hostname -i | cut -d . -f 4)
+hostnumber=$(echo ${internal_ip} | cut -d . -f 4)
 
 hostmaster="hostmaster"
 
