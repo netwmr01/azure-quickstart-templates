@@ -120,6 +120,13 @@
         "description": "IP address for the dns server"
       }
     },
+    "mysqlServerIPAddress": {
+      "type": "string",
+      "defaultValue": "10.3.0.6",
+      "metadata": {
+        "description": "IP address for the mysql server"
+      }
+    },
     "vmSize": {
       "type": "string",
       "defaultValue": "Standard_D3",
@@ -234,6 +241,7 @@
       "subnetPrefix": "[variables('subnetPrefix')]",
       "directorServerIPAddress":"[parameters('directorServerIPAddress')]",
       "dnsServerIPAddress":"[parameters('dnsServerIPAddress')]",
+      "dbServerIpAddress":"[parameters('mysqlServerIPAddress')]",
       "virtualNetworkName": "[parameters('virtualNetworkName')]",
       "virtualNetworkRGName":"[parameters('virtualNetworkRGName')]",
       "vnetNewOrExisting": "[parameters('vnetNewOrExisting')]",
