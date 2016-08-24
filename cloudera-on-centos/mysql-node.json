@@ -64,7 +64,7 @@
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "location": "[resourceGroup().location]",
       "properties": {
-        "accountType": "Premium_LRS"
+        "accountType": "Standard_LRS"
       }
     },
     {
