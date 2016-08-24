@@ -35,7 +35,7 @@ ADMINUSER=$1
 INTERNAL_FQDN_SUFFIX=$2
 HOST_IP=$3
 
-log "initializing DNS Server..."
+log "initializing MySQL Server..."
 
 # Disable the need for a tty when running sudo and allow passwordless sudo for the admin user
 sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
@@ -44,7 +44,7 @@ echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 sudo yum install mysql-server -y
 sudo service mysqld stop
 
-sudo cat > /etc/mysql/my.cnf <<EOF
+sudo cat > /etc/my.cnf <<EOF
 [mysqld]
 transaction-isolation = READ-COMMITTED
 # Disabling symbolic-links is recommended to prevent assorted security risks;
