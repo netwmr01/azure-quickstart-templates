@@ -2,35 +2,32 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.1",
   "parameters": {
-    "storageAccountPrefix": {
-      "value": "GEN-UNIQUE-10"
-    },
     "adminPassword": {
-      "value": "GEN-PASSWORD"
+      "value": "!QAZxsw23edc"
     },
-    "cmPassword": {
-      "value": "GEN-PASSWORD"
+    "dirPassword": {
+      "value": "!QAZxsw23edc"
     },
-    "numberOfDataNodes": {
-      "value": 3
+    "dbPassword": {
+      "value": "!QAZxsw23edc"
     },
     "dnsNamePrefix": {
-      "value": "GEN-UNIQUE-10"
+      "value": "jherfkdvnj"
+    },
+    "dnsNameSuffix": {
+      "value": "fkdvnj.internal"
     },
     "storageAccountType": {
-      "value": "Premium_LRS"
+      "value": "Standard_LRS"
     },
     "virtualNetworkName": {
-      "value": "GEN-UNIQUE-10"
+      "value": "euywifdjhu"
     },
     "subnetName": {
-      "value": "GEN-UNIQUE-10"
-    },
-    "tshirtSize": {
-      "value": "Eval"
+      "value": "euyfidvjhgu"
     },
     "vmSize": {
-      "value": "Standard_DS14"
+      "value": "Standard_D3"
     },
     "company": {
       "value": "company"
