@@ -30,8 +30,8 @@
   "variables": {
     "vmName": "[concat(parameters('dnsNamePrefix'), '-mysql')]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
-    "storageAccountName": "[concat(parameters('storageAccount').prefix, 'mysql')]",
-    "securityGroupName": "[concat(parameters('dnsNamePrefix'), '-dns-sg')]"
+    "storageAccountName": "[concat(parameters('storageAccount').prefix, 'db')]",
+    "securityGroupName": "[concat(parameters('dnsNamePrefix'), '-db-sg')]"
   },
   "resources": [
     {
