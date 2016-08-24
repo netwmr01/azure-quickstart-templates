@@ -28,7 +28,19 @@
         "description": "password for the Cloudera Director (A mix of upper and lower-case characters, digits and symbols)"
       }
     },
-
+    "dbUsername": {
+      "type": "string",
+      "defaultValue": "dbadmin",
+      "metadata": {
+        "description": "User name for the MySQL Server"
+      }
+    },
+    "dbPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "password for the DB Server (A mix of upper and lower-case characters, digits and symbols)"
+      }
+    },
     "dnsNamePrefix": {
       "type": "string",
       "metadata": {
@@ -213,7 +225,9 @@
       "vmSize": "[parameters('vmSize')]",
       "adminUserName": "[parameters('adminUserName')]",
       "adminPassword": "[parameters('adminPassword')]",
-      "asName": "[concat(parameters('dnsNamePrefix'), '-as')]"
+      "asName": "[concat(parameters('dnsNamePrefix'), '-as')]",
+      "dbUserName": "[parameters('dbUserName')]",
+      "dbPassword": "[parameters('dbPassword')]"
     },
     "networkSpec": {
       "addressPrefix": "[variables('addressPrefix')]",
