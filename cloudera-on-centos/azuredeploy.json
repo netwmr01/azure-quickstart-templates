@@ -331,6 +331,46 @@
           }
         }
       }
+    },{
+      "name": "mysql-node",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('templateAPIVersion')]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/shared-resources"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('scriptsUri'), '/mysql-node.json')]",
+          "contentVersion": "1.0.0.1"
+        },
+        "parameters": {
+          "vnetID":{
+            "value":"[variables('VNetId')]"
+          },
+          "resourceAPIVersion":{
+            "value":"[variables('resourceAPIVersion')]"
+          },
+          "dnsNamePrefix": {
+            "value": "[parameters('dnsNamePrefix')]"
+          },
+          "dnsNameSuffix": {
+            "value": "[parameters('dnsNameSuffix')]"
+          },
+          "scriptsUri": {
+            "value": "[variables('scriptsUri')]"
+          },
+          "storageAccount": {
+            "value": "[variables('storageAccount')]"
+          },
+          "vmSpec": {
+            "value": "[variables('vmSpec')]"
+          },
+          "networkSpec": {
+            "value": "[variables('networkSpec')]"
+          }
+        }
+      }
     },
     {
       "name": "update-vnet-dns",
