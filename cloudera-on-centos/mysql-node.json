@@ -145,7 +145,8 @@
               "vhd": {
                 "Uri": "[concat('http://', variables('storageAccountName'), '.blob.core.windows.net/vhds0/', variables('vmName'), '-datadisk0.vhd')]"
               },
-              "createOption": "ReadWrite"
+              "caching": "ReadWrite",
+              "createOption": "Empty"
             }
           ]
         },
