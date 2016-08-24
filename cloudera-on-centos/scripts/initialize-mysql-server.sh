@@ -32,7 +32,8 @@ log() {
 }
 
 ADMINUSER=$1
-MYSQL_ROOT_PASSWORD=$2
+MYSQL_USER=$2
+MYSQL_PASSWORD=$3
 
 
 log "initializing MySQL Server..."
@@ -96,23 +97,25 @@ EOF
 sudo /sbin/chkconfig mysqld on
 sudo service mysqld start 
 
-sudo yum install -y expect
+log "Creating user for mysql"
+mysql -u root -e "CREATE USER '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD'"
+mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'localhost' WITH GRANT OPTION"
 
+mysql -u root -e "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'"
+mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'%' WITH GRANT OPTION"
+
+sudo yum install -y expect
 SECURE_MYSQL=$(expect -c "
 set timeout 10
 spawn mysql_secure_installation
 expect \"Enter current password for root (enter for none):\"
 send \"\r\"
 expect \"Change the root password?\"
-send \"y\r\"
-expect \"New password:\"
-send \"$MYSQL_ROOT_PASSWORD\r\"
-expect \"Re-enter new password:\"
-send \"$MYSQL_ROOT_PASSWORD\r\"
+send \"n\r\"
 expect \"Remove anonymous users?\"
 send \"y\r\"
 expect \"Disallow root login remotely?\"
-send \"n\r\"
+send \"y\r\"
 expect \"Remove test database and access to it?\"
 send \"y\r\"
 expect \"Reload privilege tables now?\"
@@ -123,7 +126,6 @@ expect eof
 echo "$SECURE_MYSQL"
 
 yum remove -y expect
-
 
 log "Everything is working!"
 exit 0
