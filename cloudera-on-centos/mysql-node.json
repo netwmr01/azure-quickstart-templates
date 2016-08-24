@@ -177,7 +177,7 @@
             "[concat(parameters('scriptsUri'), '/scripts/prepare-mysql-disks.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-mysql-server.sh')]"
           ],
-          "commandToExecute": "[concat('sh initialize-mysql-server.sh \"', parameters('vmSpec').adminUserName, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('vmSpec').dbUserName, '\" \"', parameters('vmSpec').dbPassword,'\"')]"
+          "commandToExecute": "[concat('sh initialize-mysql-server.sh \"', parameters('vmSpec').adminUserName, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('vmSpec').dbPassword,'\"')]"
         }
       }
     }
