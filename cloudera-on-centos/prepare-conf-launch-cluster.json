@@ -7,6 +7,9 @@
     },
     "vmName":{
       "type":"string"
+    },
+    "clusterParameters":{
+      "type":"secureObject"
     }
   },
   "resources": [
@@ -21,7 +24,9 @@
         "typeHandlerVersion": "1.4",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "commandToExecute": "service network restart"
+          "commandToExecute": "[concat('python prepare-director-conf.py \"', parameters('clusterParameters'), '\" \"', parameters('vmSpec').dbUserName, '\" \"', parameters('vmSpec').dbPassword,'\"')]"
+
+          "commandToExecute": "python prepare-director-conf.py mytest eastus sub_id, ten_id client_id client_secret user_name mykey networkSecurityGroupResourceGroup networkSecruityGroup virtualNetworkResourceGroup virtualNetwork subnetName computeResourceGroup hostFqdnSuffix 10.0.0.1 dbUserName dbPassword ds13 ds14 ds13"
         }
       }
     }
