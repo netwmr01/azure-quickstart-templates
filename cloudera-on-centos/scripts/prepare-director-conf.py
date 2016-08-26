@@ -1,13 +1,18 @@
 from pyhocon import ConfigFactory
-from pyhocon import ConfigTree
 from pyhocon import tool
 import sys
 
 
-def setInstanceParameters (section, networkSecurityGroupResourceGroup, networkSecurityGroup, subnetName,
-                           computeResourceGroup, hostFqdnSuffix):
-  conf.put(section+'.networkSecuritGroupResourceGroup', networkSecurityGroupResourceGroup)
+def setInstanceParameters (section, machineType, networkSecurityGroupResourceGroup, networkSecurityGroup, virtualNetworkResourceGroup,
+                           virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix):
+  conf.put(section+'.type', machineType)
+  conf.put(section+'.networkSecurityGroupResourceGroup', networkSecurityGroupResourceGroup)
   conf.put(section+'.networkSecurityGroup', networkSecurityGroup)
+  conf.put(section+'.virtualNetworkResourceGroup', virtualNetworkResourceGroup)
+  conf.put(section+'.virtualNetwork', virtualNetwork)
+  conf.put(section+'.subnetName', subnetName)
+  conf.put(section+'.computeResourceGroup', computeResourceGroup)
+  conf.put(section+'.hostFqdnSuffix', hostFqdnSuffix)
 
 
 
@@ -18,7 +23,7 @@ region = sys.argv[2]
 subscriptionId = sys.argv[3]
 tenantId = sys.argv[4]
 clientId = sys.argv[5]
-clientSercret = sys.argv[6]
+clientSecret = sys.argv[6]
 
 username = sys.argv[7]
 privateKey = sys.argv[8]
@@ -39,25 +44,33 @@ masterType = sys.argv[19]
 workerType = sys.argv[20]
 edgeType = sys.argv[21]
 
-subscriptionId = conf.get('provider.subscriptionId')
-print subscriptionId
 conf.put('name', name)
 
 conf.put('provider.region', region)
 conf.put('provider.subscriptionId', subscriptionId)
 conf.put('provider.tenantId', tenantId)
 conf.put('provider.clientId', clientId)
-conf.put('provider.clientSecret', clientSercret)
+conf.put('provider.clientSecret', clientSecret)
 
 conf.put('ssh.username', username)
 conf.put('ssh.privateKey', privateKey)
 
-conf.put('instances.ds14-master.type', masterType)
-conf.put('instances.ds14-worker.type', workerType)
-conf.put('instances.ds14-edge.type', edgeType)
+setInstanceParameters('instances.ds14-master', masterType, networkSecuritGroupResourceGroup, networkSecurityGroup,
+                      virtualNetworkResourceGroup, virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix)
+setInstanceParameters('instances.ds14-worker', workerType, networkSecuritGroupResourceGroup, networkSecurityGroup,
+                      virtualNetworkResourceGroup, virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix)
+setInstanceParameters('instances.ds14-edge', edgeType, networkSecuritGroupResourceGroup, networkSecurityGroup,
+                      virtualNetworkResourceGroup, virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix)
+setInstanceParameters('cloudera-manager.instance', edgeType, networkSecuritGroupResourceGroup, networkSecurityGroup,
+                      virtualNetworkResourceGroup, virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix)
+setInstanceParameters('cluster.masters.instance', masterType, networkSecuritGroupResourceGroup, networkSecurityGroup,
+                      virtualNetworkResourceGroup, virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix)
+setInstanceParameters('cluster.workers.instance', masterType, networkSecuritGroupResourceGroup, networkSecurityGroup,
+                      virtualNetworkResourceGroup, virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix)
 
 conf.put('databaseServers.mysqlprod1.host', dbHostOrIP)
 conf.put('databaseServers.mysqlprod1.user', dbUserName)
 conf.put('databaseServers.mysqlprod1.password', dbPassword)
 
-print tool.HOCONConverter.to_hocon(conf)
+with open("/tmp/azure.conf", "w") as text_file:
+    text_file.write(tool.HOCONConverter.to_hocon(conf))
