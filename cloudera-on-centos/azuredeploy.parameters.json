@@ -26,9 +26,6 @@
     "subnetName": {
       "value": "euyfidvjhgu"
     },
-    "vmSize": {
-      "value": "Standard_D3"
-    },
     "subscriptionId":{
       "value": "string"
     },
