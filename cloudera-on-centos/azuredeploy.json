@@ -272,7 +272,7 @@
     "resourceAPIVersion":"2015-06-15",
     "addressPrefix":"[parameters('addressPrefix')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
-    "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/director_server_dns/cloudera-on-centos",
+    "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/prepare-dir-conf/cloudera-on-centos",
     "share-resourcesUri": "[concat(variables('scriptsUri'), '/shared-resources-', parameters('vnetNewOrExisting'), '-vnet.json')]",
     "vnetUri": "[concat(variables('scriptsUri'), '/update-', parameters('vnetNewOrExisting'), '-vnet-dns.json')]",
     "networkRestartUri": "[concat(variables('scriptsUri'), '/network-restart.json')]",
