@@ -24,9 +24,7 @@
         "typeHandlerVersion": "1.4",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "commandToExecute": "[concat('python prepare-director-conf.py \"', parameters('clusterParameters'), '\" \"', parameters('vmSpec').dbUserName, '\" \"', parameters('vmSpec').dbPassword,'\"')]"
-
-          "commandToExecute": "python prepare-director-conf.py mytest eastus sub_id, ten_id client_id client_secret user_name mykey networkSecurityGroupResourceGroup networkSecruityGroup virtualNetworkResourceGroup virtualNetwork subnetName computeResourceGroup hostFqdnSuffix 10.0.0.1 dbUserName dbPassword ds13 ds14 ds13"
+          "commandToExecute": "[concat('python prepare-director-conf.py \"', parameters('clusterParameters').envName, '\" \"', parameters('clusterParameters').location, '\" \"', parameters('clusterParameters').subId, '\" \"', parameters('clusterParameters').tenantId, '\" \"', parameters('clusterParameters').clientId, '\" \"', parameters('clusterParameters').clientSecret, '\" \"', parameters('clusterParameters').userName, '\" \"', parameters('clusterParameters').privateKey, '\" \"', parameters('clusterParameters').networkSecurityGroupResourceGroup, '\" \"', parameters('clusterParameters').networkSecurityGroup, '\" \"', parameters('clusterParameters').virtualNetworkResourceGroup, '\" \"', parameters('clusterParameters').virtualNetwork, '\" \"', parameters('clusterParameters').subnetName, '\" \"', parameters('clusterParameters').computeResourceGroup, '\" \"', parameters('clusterParameters').hostFqdnSuffix, '\" \"', parameters('clusterParameters').dbAddress, '\" \"', parameters('clusterParameters').dbUserName, '\" \"', parameters('clusterParameters').dbPassword, '\" \"', parameters('clusterParameters').masterType, '\" \"', parameters('clusterParameters').workerType, '\" \"', parameters('clusterParameters').edgeType,'\"')]"
         }
       }
     }

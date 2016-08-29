@@ -41,6 +41,57 @@
         "description": "password for the DB Server (A mix of upper and lower-case characters, digits and symbols)"
       }
     },
+    "subscriptionId":{
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "tenantId":{
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "clientId":{
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "clientSecret":{
+      "type": "securestring",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "privateKey":{
+      "type": "securestring",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "masterType": {
+      "type": "string",
+      "defaultValue": "Standard_DS14",
+      "metadata": {
+        "description": "The size of the VMs deployed as Master(s) in the cluster"
+      }
+    },
+    "workerType": {
+      "type": "string",
+      "defaultValue": "Standard_DS14",
+      "metadata": {
+        "description": "The size of the VMs deployed as Workers in the cluster"
+      }
+    },
+    "edgeType": {
+      "type": "string",
+      "defaultValue": "Standard_DS14",
+      "metadata": {
+        "description": "The size of the VMs deployed as Edge(s) in the cluster"
+      }
+    },
     "dnsNamePrefix": {
       "type": "string",
       "metadata": {
@@ -125,13 +176,6 @@
       "defaultValue": "10.3.0.6",
       "metadata": {
         "description": "IP address for the mysql server"
-      }
-    },
-    "vmSize": {
-      "type": "string",
-      "defaultValue": "Standard_D3",
-      "metadata": {
-        "description": "The size of the VMs deployed for Director server and DNS server"
       }
     },
     "company": {
@@ -227,6 +271,29 @@
     "storageAccount": {
       "prefix": "[concat(uniquestring(resourceGroup().id),'storage')]",
       "type": "[parameters('storageAccountType')]"
+    },
+    "clusterParameters":{
+      "envName":"",
+      "location":"",
+      "subId":"",
+      "tenantId":"",
+      "clientId":"",
+      "clientSecret":"",
+      "userName":"",
+      "privateKey":"",
+      "networkSecurityGroupResourceGroup":"",
+      "networkSecurityGroup":"",
+      "virtualNetworkResourceGroup":"",
+      "virtualNetwork":"",
+      "subnetName":"",
+      "computeResourceGroup":"",
+      "hostFqdnSuffix":"",
+      "dbAddress":"[parameters('dnsServerIPAddress')]",
+      "dbUserName":"[parameters('dbUserName')]",
+      "dbPassword":"[parameters('dbPassword')]",
+      "masterType":"",
+      "workerType":"",
+      "edgeType":""
     },
     "vmSpec": {
       "vmSize": "[parameters('vmSize')]",

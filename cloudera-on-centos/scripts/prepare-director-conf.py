@@ -1,6 +1,8 @@
 from pyhocon import ConfigFactory
 from pyhocon import tool
 import sys
+from subprocess import call
+call(["ls", "-l"])
 
 
 def setInstanceParameters (section, machineType, networkSecurityGroupResourceGroup, networkSecurityGroup, virtualNetworkResourceGroup,
