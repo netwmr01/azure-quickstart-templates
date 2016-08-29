@@ -29,6 +29,21 @@
     "vmSize": {
       "value": "Standard_D3"
     },
+    "subscriptionId":{
+      "value": "string"
+    },
+    "tenantId":{
+      "value": "string"
+    },
+    "clientId":{
+      "value": "string"
+    },
+    "clientSecret":{
+      "value": "securestring"
+    },
+    "privateKey":{
+      "value": "securestring"
+    },
     "company": {
       "value": "company"
     },

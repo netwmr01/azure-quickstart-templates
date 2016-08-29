@@ -12,12 +12,37 @@
       "type": "string"
     }
   },
-  "variables": {},
+  "variables": {
+    "masterAsName":"asmaster",
+    "workerAsName":"asworker",
+    "edgeAsName":"asedge"
+  },
   "resources": [
     {
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[parameters('asName')]",
+      "location": "[resourceGroup().location]",
+      "properties": { }
+    },
+    {
+      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('masterAsName')]",
+      "location": "[resourceGroup().location]",
+      "properties": { }
+    },
+    {
+      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('workerAsName')]",
+      "location": "[resourceGroup().location]",
+      "properties": { }
+    },
+    {
+      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('edgeAsName')]",
       "location": "[resourceGroup().location]",
       "properties": { }
     },

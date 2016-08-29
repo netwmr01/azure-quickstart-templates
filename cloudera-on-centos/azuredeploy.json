@@ -92,6 +92,13 @@
         "description": "The size of the VMs deployed as Edge(s) in the cluster"
       }
     },
+    "directorEnvironmentName":{
+      "type": "string",
+      "defaultValue": "Director_Azure_Deployment",
+      "metadata": {
+        "description": "Environment name use by Cloudera Director"
+      }
+    },
     "dnsNamePrefix": {
       "type": "string",
       "metadata": {
@@ -178,6 +185,7 @@
         "description": "IP address for the mysql server"
       }
     },
+
     "company": {
       "type": "string",
       "defaultValue": "Company",
@@ -273,30 +281,30 @@
       "type": "[parameters('storageAccountType')]"
     },
     "clusterParameters":{
-      "envName":"",
-      "location":"",
-      "subId":"",
-      "tenantId":"",
-      "clientId":"",
-      "clientSecret":"",
-      "userName":"",
-      "privateKey":"",
-      "networkSecurityGroupResourceGroup":"",
-      "networkSecurityGroup":"",
-      "virtualNetworkResourceGroup":"",
-      "virtualNetwork":"",
-      "subnetName":"",
-      "computeResourceGroup":"",
-      "hostFqdnSuffix":"",
+      "envName":"[parameters('directorEnvironmentName')]",
+      "location":"[resourceGroup().location]",
+      "subId":"[parameters('subscriptionId')]",
+      "tenantId":"[parameters('tenantId')]",
+      "clientId":"[parameters('clientId')]",
+      "clientSecret":"[parameters('clientSecret')]",
+      "userName":"[parameters('adminUserName')]",
+      "privateKey":"[parameters('privateKey')]",
+      "networkSecurityGroupResourceGroup":"[resourceGroup().name]",
+      "networkSecurityGroup":"[concat(parameters('virtualNetworkName'),'-nsg')]",
+      "virtualNetworkResourceGroup":"[resourceGroup().name]",
+      "virtualNetwork":"[parameters('virtualNetworkName')]",
+      "subnetName":"[parameters('subnetName')]",
+      "computeResourceGroup":"[resourceGroup().name]",
+      "hostFqdnSuffix":"[parameters('dnsNameSuffix')]",
       "dbAddress":"[parameters('dnsServerIPAddress')]",
       "dbUserName":"[parameters('dbUserName')]",
       "dbPassword":"[parameters('dbPassword')]",
-      "masterType":"",
-      "workerType":"",
-      "edgeType":""
+      "masterType":"[parameters('masterType')]",
+      "workerType":"[parameters('workerType')]",
+      "edgeType":"[parameters('edgeType')]"
     },
     "vmSpec": {
-      "vmSize": "[parameters('vmSize')]",
+      "vmSize": "Standard_D3",
       "adminUserName": "[parameters('adminUserName')]",
       "adminPassword": "[parameters('adminPassword')]",
       "asName": "[concat(parameters('dnsNamePrefix'), '-as')]",
