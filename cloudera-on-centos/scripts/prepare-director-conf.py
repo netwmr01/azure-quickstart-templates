@@ -5,7 +5,7 @@ import logging
 from subprocess import call
 call(["ls", "-l"])
 
-logging.basicConfig(filename='/tmp/prepare-director-conf.log')
+logging.basicConfig(filename='/tmp/prepare-director-conf.log', level=logging.DEBUG)
 logging.info('started')
 
 def setInstanceParameters (section, machineType, networkSecurityGroupResourceGroup, networkSecurityGroup, virtualNetworkResourceGroup,
