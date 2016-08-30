@@ -108,9 +108,6 @@
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
       ],
       "properties": {
-        "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('vmSpec').asName)]"
-        },
         "hardwareProfile": {
           "vmSize": "Standard_DS3"
         },
