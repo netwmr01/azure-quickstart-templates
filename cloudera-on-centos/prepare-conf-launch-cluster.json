@@ -29,8 +29,7 @@
         "settings": {
           "fileUris": [
             "[concat(parameters('scriptsUri'), '/scripts/prepare-director-conf.py')]"
-            ]
-        },
+          ],
           "commandToExecute": "[concat('python prepare-director-conf.py \"', parameters('clusterParameters').envName, '\" \"', parameters('clusterParameters').location, '\" \"', parameters('clusterParameters').subId, '\" \"', parameters('clusterParameters').tenantId, '\" \"', parameters('clusterParameters').clientId, '\" \"', parameters('clusterParameters').clientSecret, '\" \"', parameters('clusterParameters').userName, '\" \"', parameters('clusterParameters').privateKey, '\" \"', parameters('clusterParameters').networkSecurityGroupResourceGroup, '\" \"', parameters('clusterParameters').networkSecurityGroup, '\" \"', parameters('clusterParameters').virtualNetworkResourceGroup, '\" \"', parameters('clusterParameters').virtualNetwork, '\" \"', parameters('clusterParameters').subnetName, '\" \"', parameters('clusterParameters').computeResourceGroup, '\" \"', parameters('clusterParameters').hostFqdnSuffix, '\" \"', parameters('clusterParameters').dbAddress, '\" \"', parameters('clusterParameters').dbUserName, '\" \"', parameters('clusterParameters').dbPassword, '\" \"', parameters('clusterParameters').masterType, '\" \"', parameters('clusterParameters').workerType, '\" \"', parameters('clusterParameters').edgeType,'\"')]"
         }
       }
