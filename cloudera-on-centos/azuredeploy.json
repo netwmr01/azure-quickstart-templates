@@ -534,7 +534,7 @@
             "value":"[variables('resourceAPIVersion')]"
           },
           "vmName":{
-            "value": "[reference('dns-node').outputs.vmName.value]"
+            "value": "[concat(parameters('dnsNamePrefix'), '-dir')]"
           },
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"
