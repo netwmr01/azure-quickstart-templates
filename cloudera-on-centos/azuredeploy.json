@@ -526,7 +526,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('scriptsUri'), '/prepare-conf-launch-cluster.json']",
+          "uri": "[concat(variables('scriptsUri'), '/prepare-conf-launch-cluster.json')]",
           "contentVersion": "1.0.0.1"
         },
         "parameters": {
