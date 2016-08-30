@@ -27,7 +27,10 @@ bash ./prepare-director-disks.sh
 
 log "Set cloudera-manager.repo to CM v5"
 sudo yum clean all >> /tmp/initialize-cloudera-server.log
-sudo yum install wget -y 
+sudo yum install -y wget
+sudo yum install -y epel-release 
+sudo yum install -y python-pip
+sudo pip install pyhocon
 
 sudo wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> /tmp/initialize-cloudera-server.log
 sudo wget http://archive.cloudera.com/director/redhat/6/x86_64/director/cloudera-director.repo -O /etc/yum.repos.d/cloudera-director.repo >> /tmp/initialize-cloudera-server.log
