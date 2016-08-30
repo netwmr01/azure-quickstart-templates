@@ -536,6 +536,9 @@
           "vmName":{
             "value": "[reference('dns-node').outputs.vmName.value]"
           },
+          "scriptsUri": {
+            "value": "[variables('scriptsUri')]"
+          },
           "clusterParameters":{
             "value": "[variables('clusterParameters')]"
           }
