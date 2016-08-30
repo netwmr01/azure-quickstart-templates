@@ -21,11 +21,7 @@ def setInstanceParameters (section, machineType, networkSecurityGroupResourceGro
 
 
 
-myMutiLine = "line1\nline2\nline3"
-
-conf = ConfigFactory.parse_file('/Users/mwei/Documents/azure.simple.conf')
-bss = conf.get('instances.ds14-master.bootstrapScript')
-conf.put('instances.ds14-master.bootstrapScript', bss)
+conf = ConfigFactory.parse_file('/tmp/azure.simple.conf')
 name = sys.argv[1]
 region = sys.argv[2]
 subscriptionId = sys.argv[3]
@@ -62,7 +58,7 @@ conf.put('provider.clientId', clientId)
 conf.put('provider.clientSecret', clientSecret)
 
 conf.put('ssh.username', username)
-conf.put('ssh.privateKey', myMutiLine)
+conf.put('ssh.privateKey', privateKey)
 
 
 setInstanceParameters('instances.ds14-master', masterType, networkSecuritGroupResourceGroup, networkSecurityGroup,
