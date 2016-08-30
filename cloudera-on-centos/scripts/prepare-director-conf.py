@@ -1,9 +1,12 @@
 from pyhocon import ConfigFactory
 from pyhocon import tool
 import sys
+import logging
 from subprocess import call
 call(["ls", "-l"])
 
+logging.basicConfig(filename='/tmp/prepare-director-conf.log')
+logging.info('started')
 
 def setInstanceParameters (section, machineType, networkSecurityGroupResourceGroup, networkSecurityGroup, virtualNetworkResourceGroup,
                            virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix):
@@ -81,3 +84,5 @@ conf.put('databaseServers.mysqlprod1.password', dbPassword)
 
 with open("/tmp/azure.conf", "w") as text_file:
     text_file.write(tool.HOCONConverter.to_hocon(conf))
+
+logging.info('finish')
