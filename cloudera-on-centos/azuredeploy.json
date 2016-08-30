@@ -73,7 +73,7 @@
     },
     "masterType": {
       "type": "string",
-      "defaultValue": "Standard_DS14",
+      "defaultValue": "Standard_DS13",
       "metadata": {
         "description": "The size of the VMs deployed as Master(s) in the cluster"
       }
