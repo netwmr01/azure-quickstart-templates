@@ -428,7 +428,8 @@
           }
         }
       }
-    },{
+    },
+    {
       "name": "mysql-node",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('templateAPIVersion')]",
@@ -511,6 +512,32 @@
           },
           "vmName":{
             "value": "[reference('dns-node').outputs.vmName.value]"
+          }
+        }
+      }
+    },
+    {
+      "name": "prepare-conf-launch-cluster",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('templateAPIVersion')]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/update-vnet-dns"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('scriptsUri'), '/prepare-conf-launch-cluster.json']",
+          "contentVersion": "1.0.0.1"
+        },
+        "parameters": {
+          "resourceAPIVersion":{
+            "value":"[variables('resourceAPIVersion')]"
+          },
+          "vmName":{
+            "value": "[reference('dns-node').outputs.vmName.value]"
+          },
+          "clusterParameters":{
+            "value": "[variables('clusterParameters')]"
           }
         }
       }
