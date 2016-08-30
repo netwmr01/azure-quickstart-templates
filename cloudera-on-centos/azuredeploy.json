@@ -521,7 +521,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('templateAPIVersion')]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/update-vnet-dns"
+        "Microsoft.Resources/deployments/network-restart-dns",
+        "Microsoft.Resources/deployments/director-node"
       ],
       "properties": {
         "mode": "Incremental",
