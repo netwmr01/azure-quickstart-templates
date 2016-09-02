@@ -19,6 +19,11 @@ def setInstanceParameters (section, machineType, networkSecurityGroupResourceGro
   conf.put(section+'.computeResourceGroup', computeResourceGroup)
   conf.put(section+'.hostFqdnSuffix', hostFqdnSuffix)
 
+def writeToFile(privateKey, keyFileName):
+  target = open(keyFileName, 'w')
+  target.truncate()
+  target.write(privateKey)
+  target.close()
 
 
 conf = ConfigFactory.parse_file('/tmp/azure.simple.conf')
@@ -31,23 +36,25 @@ clientSecret = sys.argv[6]
 
 username = sys.argv[7]
 passphrase = sys.argv[8]
-privateKey = sys.argv[8]
+privateKey = sys.argv[9]
+keyFileName = "/tmp/keyfile"
+writeToFile(privateKey, keyFileName)
 
-networkSecuritGroupResourceGroup = sys.argv[9]
-networkSecurityGroup = sys.argv[10]
-virtualNetworkResourceGroup = sys.argv[11]
-virtualNetwork = sys.argv[12]
-subnetName = sys.argv[13]
-computeResourceGroup = sys.argv[14]
-hostFqdnSuffix = sys.argv[15]
+networkSecuritGroupResourceGroup = sys.argv[10]
+networkSecurityGroup = sys.argv[11]
+virtualNetworkResourceGroup = sys.argv[12]
+virtualNetwork = sys.argv[13]
+subnetName = sys.argv[14]
+computeResourceGroup = sys.argv[15]
+hostFqdnSuffix = sys.argv[16]
 
-dbHostOrIP = sys.argv[16]
-dbUserName = sys.argv[17]
-dbPassword = sys.argv[18]
+dbHostOrIP = sys.argv[17]
+dbUserName = sys.argv[18]
+dbPassword = sys.argv[19]
 
-masterType = sys.argv[19]
-workerType = sys.argv[20]
-edgeType = sys.argv[21]
+masterType = sys.argv[20]
+workerType = sys.argv[21]
+edgeType = sys.argv[22]
 
 conf.put('name', name)
 
@@ -58,7 +65,9 @@ conf.put('provider.clientId', clientId)
 conf.put('provider.clientSecret', clientSecret)
 
 conf.put('ssh.username', username)
-conf.put('ssh.privateKey', privateKey)
+if passphrase:
+  conf.put('ssh.passphrase', passphrase)
+conf.put('ssh.privateKey', keyFileName)
 
 
 setInstanceParameters('instances.ds14-master', masterType, networkSecuritGroupResourceGroup, networkSecurityGroup,
