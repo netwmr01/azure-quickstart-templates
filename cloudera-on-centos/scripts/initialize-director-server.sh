@@ -17,7 +17,9 @@ log() {
 ADMINUSER=$1
 INTERNAL_FQDN_SUFFIX=$2
 HOST_IP=$3
-
+echo $1
+echo $2
+echo $3
 log "initializing Director Server..."
 
 # Disable the need for a tty when running sudo and allow passwordless sudo for the admin user

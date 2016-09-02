@@ -208,7 +208,7 @@
             "[concat(parameters('scriptsUri'), '/scripts/initialize-director-server.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
           ],
-          "commandToExecute": "[concat('sh initialize-director-server.sh \"', '\" \"', parameters('vmSpec').adminUserName, parameters('dnsNameSuffix'), '\" \"', parameters('networkSpec').dnsServerIPAddress,'\" ')]"
+          "commandToExecute": "[concat('sh initialize-director-server.sh \"', parameters('vmSpec').adminUserName, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('networkSpec').dnsServerIPAddress,'\" ')]"
         }
       }
     }
