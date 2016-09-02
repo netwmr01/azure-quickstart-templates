@@ -42,7 +42,14 @@ log "initializing MySQL Server..."
 sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
 echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-sudo yum install mysql-server -y
+n=0
+until [ $n -ge 5 ]
+do
+    sudo sudo yum install -y mysql-server >> /tmp/initialize-mysql-server.log 2>> /tmp/initialize-mysql-server.err && break
+    n=$[$n+1]
+    sleep 15s
+done
+if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 sudo service mysqld stop
 
 sudo cat > /etc/my.cnf <<EOF
@@ -127,5 +134,5 @@ echo "$SECURE_MYSQL"
 
 yum remove -y expect
 
-log "Everything is working!"
+log "Everything should be working!"
 exit 0

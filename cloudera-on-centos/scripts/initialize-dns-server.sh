@@ -31,18 +31,10 @@ log() {
   echo "$(date): [${execname}] $@" >> /tmp/initialize-dns-server.log
 }
 
-ADMINUSER=$1
-INTERNAL_FQDN_SUFFIX=$2
-HOST_IP=$3
+INTERNAL_FQDN_SUFFIX=$1
+HOST_IP=$2
 
 log "initializing DNS Server..."
-
-# Disable the need for a tty when running sudo and allow passwordless sudo for the admin user
-sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
-echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
-
-
 
 #
 # Microsoft Azure Assumptions
@@ -56,19 +48,15 @@ log "virtual network: stop running this script and run the reset script before c
 #
 # Install and setup the prerequisites
 #
-sudo yum -y install bind bind-utils
-yum list installed bind
-if [ $? != 0 ]
-then
-    log "Unable to install package 'bind', manual troubleshoot required."
-    exit 1
-fi
-yum list installed bind-utils
-if [ $? != 0 ]
-then
-    log "Unable to install package 'bind-utils', manual troubleshoot required."
-    exit 1
-fi
+
+n=0
+until [ $n -ge 5 ]
+do
+    sudo yum -y install bind bind-utils >> /tmp/initialize-dns-server.log 2>> /tmp/initialize-dns-server.err && break
+    n=$[$n+1]
+    sleep 15s
+done
+if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 
 # make the directories that bind will use
 sudo mkdir /etc/named/zones
@@ -257,13 +245,11 @@ sudo chmod 755 /etc/dhcp/dhclient-exit-hooks
 # Now it's time to update Azure DNS settings in portal
 #
 log ""
-log "Go to -- portal.azure.com -- and change Azure DNS to point to the private IP of this host: ${internal_ip}"
+log "Go to -- portal.azure.com -- confirm Azure DNS points to the private IP of this host: ${internal_ip}"
 
 #
 # Loop until DNS nameserver updates have propagated to /etc/resolv.conf
 # NB: search server updates don't take place until dhclient-exit-hooks have executed
 #
 
-
-log "Everything is working!"
 exit 0

@@ -15,6 +15,8 @@ log() {
 }
 
 ADMINUSER=$1
+INTERNAL_FQDN_SUFFIX=$2
+HOST_IP=$3
 
 log "initializing Director Server..."
 
@@ -25,29 +27,50 @@ echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 # mount log device for director server
 bash ./prepare-director-disks.sh
 
-log "Set cloudera-manager.repo to CM v5"
-sudo yum clean all >> /tmp/initialize-cloudera-server.log
-sudo yum install -y wget
-sudo yum install -y epel-release 
-sudo yum install -y python-pip
-sudo pip install pyhocon
+
+sudo yum clean all >> /tmp/initialize-cloudera-director.log
+n=0
+until [ $n -ge 5 ]
+do
+    sudo yum install -y wget epel-release>> /tmp/initialize-cloudera-director.log 2>> /tmp/initialize-cloudera-director.err && break
+    n=$[$n+1]
+    sleep 15s
+done
+if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
+
 
 sudo wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> /tmp/initialize-cloudera-server.log
 sudo wget http://archive.cloudera.com/director/redhat/6/x86_64/director/cloudera-director.repo -O /etc/yum.repos.d/cloudera-director.repo >> /tmp/initialize-cloudera-server.log
 sudo wget https://raw.githubusercontent.com/cloudera/director-scripts/master/configs/azure.simple.conf -O /tmp/azure.simple.conf
 sudo wget https://raw.githubusercontent.com/cloudera/director-scripts/master/configs/azure.reference.conf -O /tmp/azure.reference.conf
+
 # this often fails so adding retry logic
 n=0
 until [ $n -ge 5 ]
 do
-    sudo yum install -y oracle-j2sdk* cloudera-director-server cloudera-director-client >> /tmp/initialize-cloudera-director.log 2>> /tmp/initialize-cloudera-director.err && break
+    sudo yum install -y bind bind-utils python-pip oracle-j2sdk* cloudera-director-server cloudera-director-client >> /tmp/initialize-cloudera-director.log 2>> /tmp/initialize-cloudera-director.err && break
     n=$[$n+1]
     sleep 15s
 done
-if [ $n -ge 5 ]; then log "scp error $remote, exiting..." & exit 1; fi
+if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
+
+n=0
+until [ $n -ge 5 ]
+do
+    sudo pip install pyhocon cloudera-director-python-client >> /tmp/initialize-cloudera-director.log 2>> /tmp/initialize-cloudera-director.err && break
+    n=$[$n+1]
+    sleep 15s
+done
+if [ $n -ge 5 ]; then log "pip install error, exiting..." & exit 1; fi
 
 sudo service cloudera-director-server start
 sudo service iptables save
 sudo chkconfig iptables off
 sudo service iptables stop
+
+# setup DNS server
+bash ./initialize-dns-server.sh ${INTERNAL_FQDN_SUFFIX} ${HOST_IP}
+
+log "Everything should be working!"
+exit 0
 
