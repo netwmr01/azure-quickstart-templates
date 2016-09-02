@@ -380,6 +380,9 @@
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
           },
+          "dnsNameSuffix": {
+            "value": "[parameters('dnsNameSuffix')]"
+          },
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"
           },
@@ -477,7 +480,7 @@
             "value":"[variables('resourceAPIVersion')]"
           },
           "vmName":{
-            "value": "[reference('dns-node').outputs.vmName.value]"
+            "value": "[concat(parameters('dnsNamePrefix'), '-dir')]"
           }
         }
       }

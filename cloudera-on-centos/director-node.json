@@ -11,6 +11,9 @@
     "dnsNamePrefix": {
       "type": "string"
     },
+    "dnsNameSuffix": {
+      "type": "string"
+    },
     "scriptsUri": {
       "type": "string"
     },
@@ -143,7 +146,7 @@
           "vmSize": "[parameters('vmSpec').vmSize]"
         },
         "osProfile": {
-          "computerName": "[reference(concat(variables('publicIPAddressName'))).dnsSettings.fqdn]",
+          "computerName": "[variables('vmName')]",
           "adminUsername": "[parameters('vmSpec').adminUserName]",
           "adminPassword": "[parameters('vmSpec').adminPassword]",
           "linuxConfiguration": {
