@@ -322,7 +322,7 @@
       "addressPrefix": "[variables('addressPrefix')]",
       "subnetPrefix": "[variables('subnetPrefix')]",
       "directorServerIPAddress":"[parameters('directorServerIPAddress')]",
-      "dnsServerIPAddress":"[parameters('dnsServerIPAddress')]",
+      "dnsServerIPAddress":"[parameters('directorServerIPAddress')]",
       "dbServerIpAddress":"[parameters('mysqlServerIPAddress')]",
       "virtualNetworkName": "[parameters('virtualNetworkName')]",
       "virtualNetworkRGName":"[parameters('virtualNetworkRGName')]",
