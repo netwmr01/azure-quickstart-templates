@@ -1,12 +1,20 @@
 from pyhocon import ConfigFactory
 from pyhocon import tool
+from urllib2 import HTTPError
+from cloudera.director.latest.models import Login, User
+from cloudera.director.common.client import ApiClient
+from cloudera.director.latest import AuthenticationApi, UsersApi
 import sys
 import logging
 from subprocess import call
 call(["ls", "-l"])
-
+#loging starts
 logging.basicConfig(filename='/tmp/prepare-director-conf.log', level=logging.DEBUG)
 logging.info('started')
+
+class ExitCodes(object):
+    OK = 0
+    DUPLICATE_USER = 10
 
 def setInstanceParameters (section, machineType, networkSecurityGroupResourceGroup, networkSecurityGroup, virtualNetworkResourceGroup,
                            virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix):
@@ -24,6 +32,33 @@ def writeToFile(privateKey, keyFileName):
   target.truncate()
   target.write(privateKey)
   target.close()
+
+def secure_user(username, password):
+    """
+    Create a new user account
+    @param args: dict of parsed command line arguments that include
+                 an username and a password for the new account
+    @return:     script exit code
+    """
+    # Cloudera Director server runs at http://127.0.0.1:7189
+    try:
+      client = ApiClient("http://localhost:7189")
+      AuthenticationApi(client).login(Login(username="admin", password="admin"))
+      #create new login base on user input
+      users_api = UsersApi(client)
+      users_api.create(User(username=username, password=password, enabled=True, roles=["ROLE_ADMIN"]))
+
+      # delete default user access
+      AuthenticationApi(client).login(Login(username="username", password="password"))
+      users_api.delete("admin")
+      return ExitCodes.OK
+
+    except HTTPError, e:
+      if  e.code == 302:  # found
+        # sys.stderr.write("Cannot create duplicate user '%s'.\n" % (username,))
+        return ExitCodes.DUPLICATE_USER
+      else:
+        raise e
 
 
 conf = ConfigFactory.parse_file('/tmp/azure.simple.conf')
@@ -55,8 +90,11 @@ dbPassword = sys.argv[19]
 masterType = sys.argv[20]
 workerType = sys.argv[21]
 edgeType = sys.argv[22]
+dirUsername = sys.argv[23]
+dirPassword = sys.argv[24]
 
 conf.put('name', name)
+secure_user(dirUsername, dirPassword)
 
 conf.put('provider.region', region)
 conf.put('provider.subscriptionId', subscriptionId)

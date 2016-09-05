@@ -308,7 +308,9 @@
       "dbPassword":"[parameters('dbPassword')]",
       "masterType":"[parameters('masterType')]",
       "workerType":"[parameters('workerType')]",
-      "edgeType":"[parameters('edgeType')]"
+      "edgeType":"[parameters('edgeType')]",
+      "dirUsername":"[parameters('dirUsername')]",
+      "dirPassword":"[parameters('dirPassword')]",
     },
     "vmSpec": {
       "vmSize": "Standard_D3",
