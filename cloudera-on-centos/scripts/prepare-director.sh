@@ -29,11 +29,11 @@ edgeType = ${22}
 dirUsername = ${23}
 dirPassword = ${24}
 
-python prepare-director-conf.py ${name} ${region} ${subscriptionId} ${tenantId} ${clientId} ${clientSecret} ${username} \
-${passphrase} ${privateKey} ${networkSecuritGroupResourceGroup} ${networkSecurityGroup} ${virtualNetworkResourceGroup} \
-${virtualNetwork} ${subnetName} ${computeResourceGroup} ${hostFqdnSuffix} ${dbHostOrIP} ${dbUserName} ${dbPassword} \
-${masterType} ${workerType} ${edgeType} ${dirUsername} ${dirPassword}
+python prepare-director-conf.py "$name" "$region" "$subscriptionId" "$tenantId" "$clientId" "$clientSecret" "$username" \
+"$passphrase" "$privateKey" "$networkSecuritGroupResourceGroup" "$networkSecurityGroup" "$virtualNetworkResourceGroup" \
+"$virtualNetwork" "$subnetName" "$computeResourceGroup" "$hostFqdnSuffix" "$dbHostOrIP" "$dbUserName" "$dbPassword" \
+"$masterType" "$workerType" "$edgeType" "$dirUsername" "$dirPassword"
 
-python setup-default.py --admin-username ${dirUsername} --admin-password ${dirPassword} "/tmp/azure.conf"
+python setup-default.py --admin-username "$dirUsername" --admin-password "$dirPassword" "/tmp/azure.conf"
 
 exit 0
