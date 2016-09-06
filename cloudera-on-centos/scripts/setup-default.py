@@ -301,9 +301,9 @@ def create_instance_template(client, environment_name, template):
     return template.name
 
 
-def create_external_db_servers(client, config, environment_name):
+def add_existing_external_db_servers(client, config, environment_name):
     """
-    Create external DB servers with data from the configuration
+    Add existing external DB servers with data from the configuration
 
     @param client:           authenticated API client
     @param config:           parsed configuration
@@ -320,15 +320,36 @@ def create_external_db_servers(client, config, environment_name):
     db_configs_by_db_name = config.get_config('databaseServers')
     for db_name in db_configs_by_db_name.viewkeys():
         db_config = db_configs_by_db_name.get_config(db_name)
-        merged_db_config = merge_configs([merged_provider_config, db_config])
-        if debug:
-            print "external db %s: %s" % (db_name, merged_db_config)
-        db_server_template = configure_external_db_server(merged_db_config, db_name)
-        print "Creating a new external DB server: %s ..." % db_name
-        create_external_db_server(client, environment_name, db_server_template)
-        db_server_names.append(db_name)
+        if is_existing_db_server(db_config):
+            merged_db_config = merge_configs([merged_provider_config, db_config])
+            if debug:
+                print "external db %s: %s" % (db_name, merged_db_config)
+            db_server_template = configure_external_db_server(merged_db_config, db_name)
+            print "Adding an existing external DB server: %s ..." % db_name
+            create_external_db_server(client, environment_name, db_server_template)
+            db_server_names.append(db_name)
+        else:
+            print "External DB server config template %s is not referring to an existing server" \
+                  % db_name
 
     return db_server_names
+
+
+def is_existing_db_server(db_server_config):
+    """
+    Check if an external DB server config template is referring to an existing external DB server.
+    If a DB server config template has host and port defined, it is referring to an existing server.
+    :param db_server_config: External DB server config template
+    :return: True if the External DB server config template is referring to an existing DB server
+    """
+    # read and set db hostname from config
+    host_val = db_server_config.get('host', '')
+    # read and set db port from config
+    port_val = db_server_config.get('port', '')
+    if host_val and port_val:
+        return True
+    else:
+        return False
 
 
 def configure_external_db_server(db_server_config, db_name):
@@ -374,7 +395,7 @@ def configure_external_db_server(db_server_config, db_name):
 
 def create_external_db_server(client, environment_name, db_server):
     """
-    Create an external DB server with data from the configuration
+    API call to create an external DB server with DB server config template
 
     :param client:           authenticated API client
     :param environment_name: name of the environment
@@ -550,8 +571,8 @@ def main():
     print "Creating new instance templates ..."
     create_instance_templates(client, config, environment_name, providerType, cloudProviderMetadata)
 
-    print "Creating new external databases ..."
-    create_external_db_servers(client, config, environment_name)
+    print "Adding existing external database servers ..."
+    add_existing_external_db_servers(client, config, environment_name)
 
     return 0
 
