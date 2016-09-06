@@ -49,7 +49,7 @@ def secure_user(username, password):
       users_api.create(User(username=username, password=password, enabled=True, roles=["ROLE_ADMIN"]))
 
       # delete default user access
-      AuthenticationApi(client).login(Login(username="username", password="password"))
+      AuthenticationApi(client).login(Login(username=username, password=password))
       users_api.delete("admin")
       return ExitCodes.OK
 
@@ -60,8 +60,8 @@ def secure_user(username, password):
       else:
         raise e
 
-
 conf = ConfigFactory.parse_file('/tmp/azure.simple.conf')
+logging.info('parsed conf')
 name = sys.argv[1]
 region = sys.argv[2]
 subscriptionId = sys.argv[3]
@@ -93,9 +93,12 @@ edgeType = sys.argv[22]
 dirUsername = sys.argv[23]
 dirPassword = sys.argv[24]
 
-conf.put('name', name)
-secure_user(dirUsername, dirPassword)
+logging.info('parameters assigned')
 
+secure_user(dirUsername, dirPassword)
+logging.info('director server secured')
+
+conf.put('name', name)
 conf.put('provider.region', region)
 conf.put('provider.subscriptionId', subscriptionId)
 conf.put('provider.tenantId', tenantId)
@@ -124,6 +127,8 @@ setInstanceParameters('cluster.workers.instance', masterType, networkSecuritGrou
 conf.put('databaseServers.mysqlprod1.host', dbHostOrIP)
 conf.put('databaseServers.mysqlprod1.user', dbUserName)
 conf.put('databaseServers.mysqlprod1.password', dbPassword)
+
+logging.info('conf value replaced')
 
 with open("/tmp/azure.conf", "w") as text_file:
     text_file.write(tool.HOCONConverter.to_hocon(conf))
