@@ -87,9 +87,9 @@ dbHostOrIP = sys.argv[17]
 dbUserName = sys.argv[18]
 dbPassword = sys.argv[19]
 
-masterType = sys.argv[20]
-workerType = sys.argv[21]
-edgeType = sys.argv[22]
+masterType = sys.argv[20].upper()
+workerType = sys.argv[21].upper()
+edgeType = sys.argv[22].upper()
 dirUsername = sys.argv[23]
 dirPassword = sys.argv[24]
 

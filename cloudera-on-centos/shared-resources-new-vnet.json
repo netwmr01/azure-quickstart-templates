@@ -66,6 +66,30 @@
           }
         ]
       }
+    },
+    {
+      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[concat(parameters('networkSpec').virtualNetworkName,'-nsg')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "SSH",
+            "properties": {
+              "description": "Allows SSH traffic",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
     }
   ]
 }
