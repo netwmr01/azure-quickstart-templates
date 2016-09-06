@@ -28,6 +28,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
+            "[concat(parameters('scriptsUri'), '/scripts/prepare-director.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/prepare-director-conf.py')]",
             "[concat(parameters('scriptsUri'), '/scripts/setup-default.py')]"
           ],
