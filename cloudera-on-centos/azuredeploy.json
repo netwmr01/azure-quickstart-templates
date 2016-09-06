@@ -310,7 +310,7 @@
       "workerType":"[parameters('workerType')]",
       "edgeType":"[parameters('edgeType')]",
       "dirUsername":"[parameters('dirUsername')]",
-      "dirPassword":"[parameters('dirPassword')]",
+      "dirPassword":"[parameters('dirPassword')]"
     },
     "vmSpec": {
       "vmSize": "Standard_D3",
