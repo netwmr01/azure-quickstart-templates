@@ -5,6 +5,7 @@ from cloudera.director.latest.models import Login, User
 from cloudera.director.common.client import ApiClient
 from cloudera.director.latest import AuthenticationApi, UsersApi
 import sys
+import os
 import logging
 from subprocess import call
 call(["ls", "-l"])
@@ -132,5 +133,10 @@ logging.info('conf value replaced')
 
 with open("/tmp/azure.conf", "w") as text_file:
     text_file.write(tool.HOCONConverter.to_hocon(conf))
+
+logging.info("conf file has been written")
+
+command="python setup-default.py --admin-username {} --admin-password {} /tmp/azure.conf".format(dirUsername, dirPassword)
+os.system(command)
 
 logging.info('finish')
