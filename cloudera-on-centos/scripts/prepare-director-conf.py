@@ -7,8 +7,7 @@ from cloudera.director.latest import AuthenticationApi, UsersApi
 import sys
 import os
 import logging
-from subprocess import call
-call(["ls", "-l"])
+
 #loging starts
 logging.basicConfig(filename='/tmp/prepare-director-conf.log', level=logging.DEBUG)
 logging.info('started')
@@ -136,7 +135,7 @@ with open("/tmp/azure.conf", "w") as text_file:
 
 logging.info("conf file has been written")
 
-command="python setup-default.py --admin-username {} --admin-password {} /tmp/azure.conf".format(dirUsername, dirPassword)
+command="python setup-default.py --admin-username %s --admin-password %s /tmp/azure.conf"%(dirUsername, dirPassword)
 os.system(command)
 
 logging.info('finish')
