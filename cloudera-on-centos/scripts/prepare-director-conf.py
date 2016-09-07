@@ -84,7 +84,7 @@ computeResourceGroup = sys.argv[15]
 hostFqdnSuffix = sys.argv[16]
 
 dbHostOrIP = sys.argv[17]
-dbUserName = sys.argv[18]
+dbUsername = sys.argv[18]
 dbPassword = sys.argv[19]
 
 masterType = sys.argv[20].upper()
@@ -125,7 +125,7 @@ setInstanceParameters('cluster.workers.instance', masterType, networkSecuritGrou
                       virtualNetworkResourceGroup, virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix)
 
 conf.put('databaseServers.mysqlprod1.host', dbHostOrIP)
-conf.put('databaseServers.mysqlprod1.user', dbUserName)
+conf.put('databaseServers.mysqlprod1.user', dbUsername)
 conf.put('databaseServers.mysqlprod1.password', dbPassword)
 
 logging.info('conf value replaced')

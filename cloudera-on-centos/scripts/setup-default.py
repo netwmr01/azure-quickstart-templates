@@ -308,7 +308,7 @@ def add_existing_external_db_servers(client, config, environment_name):
     @param client:           authenticated API client
     @param config:           parsed configuration
     @param environment_name: name of the environment
-    :return:
+    :return:                 the external DB server config template names
     """
 
     db_server_names = []
@@ -342,14 +342,7 @@ def is_existing_db_server(db_server_config):
     :param db_server_config: External DB server config template
     :return: True if the External DB server config template is referring to an existing DB server
     """
-    # read and set db hostname from config
-    host_val = db_server_config.get('host', '')
-    # read and set db port from config
-    port_val = db_server_config.get('port', '')
-    if host_val and port_val:
-        return True
-    else:
-        return False
+    return db_server_config.get('host') and db_server_config.get('port')
 
 
 def configure_external_db_server(db_server_config, db_name):
@@ -372,7 +365,7 @@ def configure_external_db_server(db_server_config, db_name):
     if config_value:
         db_server_template.port = config_value
     # read and set db username from config
-    config_value = db_server_config.get('username', '')
+    config_value = db_server_config.get('user', '')
     if config_value:
         db_server_template.username = config_value
     # read and set db password from config

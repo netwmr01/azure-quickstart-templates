@@ -2,7 +2,7 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.1",
   "parameters": {
-    "adminUserName": {
+    "adminUsername": {
       "type": "string",
       "defaultValue": "azureuser",
       "metadata": {
@@ -293,7 +293,7 @@
       "tenantId":"[parameters('tenantId')]",
       "clientId":"[parameters('clientId')]",
       "clientSecret":"[parameters('clientSecret')]",
-      "userName":"[parameters('adminUserName')]",
+      "adminUsername":"[parameters('adminUsername')]",
       "passPhrase":"[parameters('passPhrase')]",
       "privateKey":"[parameters('privateKey')]",
       "networkSecurityGroupResourceGroup":"[resourceGroup().name]",
@@ -304,7 +304,7 @@
       "computeResourceGroup":"[resourceGroup().name]",
       "hostFqdnSuffix":"[parameters('dnsNameSuffix')]",
       "dbAddress":"[parameters('mysqlServerIPAddress')]",
-      "dbUserName":"[parameters('dbUserName')]",
+      "dbUsername":"[parameters('dbUsername')]",
       "dbPassword":"[parameters('dbPassword')]",
       "masterType":"[parameters('masterType')]",
       "workerType":"[parameters('workerType')]",
@@ -314,10 +314,10 @@
     },
     "vmSpec": {
       "vmSize": "Standard_D3",
-      "adminUserName": "[parameters('adminUserName')]",
+      "adminUsername": "[parameters('adminUsername')]",
       "adminPassword": "[parameters('adminPassword')]",
       "asName": "[concat(parameters('dnsNamePrefix'), '-as')]",
-      "dbUserName": "[parameters('dbUserName')]",
+      "dbUsername": "[parameters('dbUsername')]",
       "dbPassword": "[parameters('dbPassword')]"
     },
     "networkSpec": {

@@ -116,7 +116,7 @@
         },
         "osProfile": {
           "computerName": "[variables('vmName')]",
-          "adminUsername": "[parameters('vmSpec').adminUserName]",
+          "adminUsername": "[parameters('vmSpec').adminUsername]",
           "adminPassword": "[parameters('vmSpec').adminPassword]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": "false"
@@ -176,7 +176,7 @@
             "[concat(parameters('scriptsUri'), '/scripts/prepare-director-disks.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
           ],
-          "commandToExecute": "[concat('sh initialize-dns-server.sh \"', parameters('vmSpec').adminUserName, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('networkSpec').dnsServerIPAddress, '\"')]"
+          "commandToExecute": "[concat('sh initialize-dns-server.sh \"', parameters('vmSpec').adminUsername, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('networkSpec').dnsServerIPAddress, '\"')]"
         }
       }
     }
