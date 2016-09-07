@@ -136,7 +136,7 @@ with open("/tmp/azure.conf", "w") as text_file:
 logging.info("conf file has been written")
 
 command="python setup-default.py --admin-username %s --admin-password %s /tmp/azure.conf"%(dirUsername, dirPassword)
-logging.into(command)
+logging.info(command)
 os.system(command)
 
 logging.info('finish')
