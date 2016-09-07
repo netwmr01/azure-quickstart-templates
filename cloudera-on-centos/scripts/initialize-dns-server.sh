@@ -182,17 +182,17 @@ EOF
 #
 sudo chown -R named:named /etc/named*
 sudo named-checkconf /etc/named.conf
-if [ $? != 0 ] # if named-checkconf fails
+if [ $? -ne 0 ] # if named-checkconf fails
 then
     exit 1
 fi
 sudo named-checkzone "${INTERNAL_FQDN_SUFFIX}" /etc/named/zones/db.internal
-if [ $? != 0 ] # if named-checkzone fails
+if [ $? -ne 0 ] # if named-checkzone fails
 then
     exit 1
 fi
 sudo named-checkzone "${ptr_record_prefix}.in-addr.arpa" /etc/named/zones/db.reverse
-if [ $? != 0 ] # if named-checkzone fails
+if [ $? -ne 0 ] # if named-checkzone fails
 then
     exit 1
 fi

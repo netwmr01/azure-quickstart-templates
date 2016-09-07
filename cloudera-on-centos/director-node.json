@@ -5,8 +5,8 @@
     "vnetID": {
       "type":"string"
     },
-    "resourceAPIVersion":{
-      "type":"string"
+    "version":{
+      "type":"object"
     },
     "dnsNamePrefix": {
       "type": "string"
@@ -36,7 +36,7 @@
   },
   "resources": [
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('securityGroupName')]",
       "location": "[resourceGroup().location]",
@@ -76,14 +76,14 @@
     {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageAccountName')]",
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "location": "[resourceGroup().location]",
       "properties": {
         "accountType": "[parameters('storageAccount').type]"
       }
     },
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
       "location": "[resourceGroup().location]",
@@ -95,7 +95,7 @@
       }
     },
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat(variables('nicName'))]",
       "location": "[resourceGroup().location]",
@@ -125,7 +125,7 @@
       }
     },
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat(variables('vmName'))]",
       "plan": {
@@ -167,18 +167,7 @@
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
-          },
-          "dataDisks": [
-            {
-              "name": "datadisk0",
-              "diskSizeGB": "512",
-              "lun": 0,
-              "vhd": {
-                "Uri": "[concat('http://', variables('storageAccountName'), '.blob.core.windows.net/vhds0/', variables('vmName'), '-datadisk0.vhd')]"
-              },
-              "createOption": "Empty"
-            }
-          ]
+          }
         },
         "networkProfile": {
           "networkInterfaces": [
@@ -192,7 +181,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmName'), '/prepareDisks')]",
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
@@ -200,11 +189,10 @@
       "properties": {
         "publisher": "Microsoft.OSTCExtensions",
         "type": "CustomScriptForLinux",
-        "typeHandlerVersion": "1.4",
+        "typeHandlerVersion": "[parameters('version').typeHandlerVersion]",
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('scriptsUri'), '/scripts/prepare-director-disks.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-director-server.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
           ],

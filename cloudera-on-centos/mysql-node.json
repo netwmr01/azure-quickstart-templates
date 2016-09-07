@@ -5,8 +5,8 @@
     "vnetID": {
       "type":"string"
     },
-    "resourceAPIVersion":{
-      "type":"string"
+    "version":{
+      "type":"object"
     },
     "dnsNamePrefix": {
       "type": "string"
@@ -35,7 +35,7 @@
   },
   "resources": [
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('securityGroupName')]",
       "location": "[resourceGroup().location]",
@@ -61,14 +61,14 @@
     {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageAccountName')]",
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "location": "[resourceGroup().location]",
       "properties": {
         "accountType": "Premium_LRS"
       }
     },
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('nicName')]",
       "location": "[resourceGroup().location]",
@@ -94,7 +94,7 @@
       }
     },
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('vmName')]",
       "plan": {
@@ -159,7 +159,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmName'), '/prepareDisks')]",
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
@@ -167,7 +167,7 @@
       "properties": {
         "publisher": "Microsoft.OSTCExtensions",
         "type": "CustomScriptForLinux",
-        "typeHandlerVersion": "1.4",
+        "typeHandlerVersion": "[parameters('version').typeHandlerVersion]",
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [

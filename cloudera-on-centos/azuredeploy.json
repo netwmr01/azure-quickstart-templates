@@ -274,10 +274,12 @@
     }
   },
   "variables": {
-    "templateAPIVersion":"2015-11-01",
-    "resourceAPIVersion":"2015-06-15",
-    "extensionHandlerVersion":"1.5",
-    "contentVersion":"1.0.0.1",
+    "version":{
+      "templateAPIVersion":"2015-11-01",
+      "resourceAPIVersion":"2015-06-15",
+      "typeHandlerVersion":"1.5",
+      "contentVersion":"1.0.0.1"
+    },
     "addressPrefix":"[parameters('addressPrefix')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/prepare-dir-conf/cloudera-on-centos",
@@ -341,16 +343,16 @@
     {
       "name": "shared-resources",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('templateAPIVersion')]",
+      "apiVersion": "[variables('version').templateAPIVersion]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
           "uri": "[variables('share-resourcesUri')]",
-          "contentVersion": "1.0.0.1"
+          "contentVersion": "[variables('version').contentVersion]"
         },
         "parameters": {
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "version":{
+            "value":"[variables('version')]"
           },
           "networkSpec": {
             "value": "[variables('networkSpec')]"
@@ -364,7 +366,7 @@
     {
       "name": "director-node",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('templateAPIVersion')]",
+      "apiVersion": "[variables('version').templateAPIVersion]",
       "dependsOn": [
         "Microsoft.Resources/deployments/shared-resources"
       ],
@@ -372,14 +374,14 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(variables('scriptsUri'), '/director-node.json')]",
-          "contentVersion": "1.0.0.1"
+          "contentVersion": "[variables('version').contentVersion]"
         },
         "parameters": {
           "vnetID":{
             "value":"[variables('VNetId')]"
           },
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "version":{
+            "value":"[variables('version')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
@@ -405,7 +407,7 @@
     {
       "name": "mysql-node",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('templateAPIVersion')]",
+      "apiVersion": "[variables('version').templateAPIVersion]",
       "dependsOn": [
         "Microsoft.Resources/deployments/shared-resources"
       ],
@@ -413,14 +415,14 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(variables('scriptsUri'), '/mysql-node.json')]",
-          "contentVersion": "1.0.0.1"
+          "contentVersion": "[variables('version').contentVersion]"
         },
         "parameters": {
           "vnetID":{
             "value":"[variables('VNetId')]"
           },
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "version":{
+            "value":"[variables('version')]"
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
@@ -446,7 +448,7 @@
     {
       "name": "update-vnet-dns",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('templateAPIVersion')]",
+      "apiVersion": "[variables('version').templateAPIVersion]",
       "dependsOn": [
         "Microsoft.Resources/deployments/director-node"
       ],
@@ -454,11 +456,11 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[variables('vnetUri')]",
-          "contentVersion": "1.0.0.1"
+          "contentVersion": "[variables('version').contentVersion]"
         },
         "parameters": {
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "version":{
+            "value":"[variables('version')]"
           },
           "networkSpec": {
             "value": "[variables('networkSpec')]"
@@ -469,7 +471,7 @@
     {
       "name": "network-restart-dns",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('templateAPIVersion')]",
+      "apiVersion": "[variables('version').templateAPIVersion]",
       "dependsOn": [
         "Microsoft.Resources/deployments/update-vnet-dns"
       ],
@@ -477,11 +479,11 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[variables('networkRestartUri')]",
-          "contentVersion": "1.0.0.1"
+          "contentVersion": "[variables('version').contentVersion]"
         },
         "parameters": {
           "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+            "value":"[variables('version').resourceAPIVersion]"
           },
           "vmName":{
             "value": "[concat(parameters('dnsNamePrefix'), '-dir')]"
@@ -492,7 +494,7 @@
     {
       "name": "prepare-conf-launch-cluster",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('templateAPIVersion')]",
+      "apiVersion": "[variables('version').templateAPIVersion]",
       "dependsOn": [
         "Microsoft.Resources/deployments/network-restart-dns",
         "Microsoft.Resources/deployments/director-node"
@@ -501,11 +503,11 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(variables('scriptsUri'), '/prepare-conf-launch-cluster.json')]",
-          "contentVersion": "1.0.0.1"
+          "contentVersion": "[variables('version').contentVersion]"
         },
         "parameters": {
-          "resourceAPIVersion":{
-            "value":"[variables('resourceAPIVersion')]"
+          "version":{
+            "value":"[variables('version')]"
           },
           "vmName":{
             "value": "[concat(parameters('dnsNamePrefix'), '-dir')]"

@@ -2,7 +2,7 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.1",
   "parameters": {
-    "resourceAPIVersion":{
+    "version":{
       "type":"string"
     },
     "networkSpec": {
@@ -19,35 +19,35 @@
   },
   "resources": [
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[parameters('asName')]",
       "location": "[resourceGroup().location]",
       "properties": { }
     },
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('masterAsName')]",
       "location": "[resourceGroup().location]",
       "properties": { }
     },
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('workerAsName')]",
       "location": "[resourceGroup().location]",
       "properties": { }
     },
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[variables('edgeAsName')]",
       "location": "[resourceGroup().location]",
       "properties": { }
     },
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[parameters('networkSpec').virtualNetworkName]",
       "location": "[resourceGroup().location]",
@@ -68,7 +68,7 @@
       }
     },
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[concat(parameters('networkSpec').virtualNetworkName,'-nsg')]",
       "location": "[resourceGroup().location]",
