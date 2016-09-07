@@ -276,6 +276,8 @@
   "variables": {
     "templateAPIVersion":"2015-11-01",
     "resourceAPIVersion":"2015-06-15",
+    "extensionHandlerVersion":"1.5",
+    "contentVersion":"1.0.0.1",
     "addressPrefix":"[parameters('addressPrefix')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/prepare-dir-conf/cloudera-on-centos",
