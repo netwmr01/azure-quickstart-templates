@@ -15,7 +15,7 @@
   "variables": {},
   "resources": [
     {
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion']",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[parameters('asName')]",
       "location": "[resourceGroup().location]",

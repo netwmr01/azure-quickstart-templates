@@ -482,8 +482,8 @@
           "contentVersion": "[variables('version').contentVersion]"
         },
         "parameters": {
-          "resourceAPIVersion":{
-            "value":"[variables('version').resourceAPIVersion]"
+          "version":{
+            "value":"[variables('version')]"
           },
           "vmName":{
             "value": "[concat(parameters('dnsNamePrefix'), '-dir')]"
