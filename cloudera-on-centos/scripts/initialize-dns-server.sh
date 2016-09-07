@@ -45,19 +45,6 @@ log "This script will turn a fresh host into a BIND server and walk you through 
 log "settings. If you have previously run this script on this host, or another host within the same "
 log "virtual network: stop running this script and run the reset script before continuing."
 
-#
-# Install and setup the prerequisites
-#
-
-n=0
-until [ $n -ge 5 ]
-do
-    sudo yum -y install bind bind-utils >> /tmp/initialize-dns-server.log 2>> /tmp/initialize-dns-server.err && break
-    n=$[$n+1]
-    sleep 15s
-done
-if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
-
 # make the directories that bind will use
 sudo mkdir /etc/named/zones
 # make the files that bind will use

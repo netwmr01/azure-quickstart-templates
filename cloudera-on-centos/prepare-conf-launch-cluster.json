@@ -2,8 +2,8 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.1",
   "parameters": {
-    "resourceAPIVersion":{
-      "type":"string"
+    "version":{
+      "type":"object"
     },
     "vmName":{
       "type":"string"
@@ -19,12 +19,12 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('vmName'), '/prepareDisks')]",
-      "apiVersion": "[parameters('resourceAPIVersion')]",
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
       "location": "[resourceGroup().location]",
       "properties": {
         "publisher": "Microsoft.OSTCExtensions",
         "type": "CustomScriptForLinux",
-        "typeHandlerVersion": "1.4",
+        "typeHandlerVersion": "[parameters('version').typeHandlerVersion]",
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [

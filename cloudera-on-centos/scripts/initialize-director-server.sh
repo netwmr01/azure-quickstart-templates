@@ -37,8 +37,8 @@ do
 done
 if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 
-sudo wget http://archive.cloudera.com/director/redhat/6/x86_64/director/cloudera-director.repo -O /etc/yum.repos.d/cloudera-director.repo >> /tmp/initialize-director-server.log
-sudo wget https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/prepare-dir-conf/cloudera-on-centos/scripts/requirements.txt -O /tmp/requirements.txt >> /tmp/initialize-director-server.log
+sudo wget -t 5 http://archive.cloudera.com/director/redhat/6/x86_64/director/cloudera-director.repo -O /etc/yum.repos.d/cloudera-director.repo >> /tmp/initialize-director-server.log
+
 # this often fails so adding retry logic
 n=0
 until [ $n -ge 5 ]
@@ -52,7 +52,7 @@ if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 n=0
 until [ $n -ge 5 ]
 do
-    sudo pip install -r /tmp/requirements.txt >> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
+    sudo pip install -r requirements.txt >> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
     n=$[$n+1]
     sleep 15s
 done

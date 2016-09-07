@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.1",
   "parameters": {
     "version":{
-      "type":"string"
+      "type":"object"
     },
     "networkSpec": {
       "type": "object"

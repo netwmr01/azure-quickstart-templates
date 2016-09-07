@@ -194,7 +194,8 @@
         "settings": {
           "fileUris": [
             "[concat(parameters('scriptsUri'), '/scripts/initialize-director-server.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]"
+            "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]",
+            "[concat(parameters('scriptsUri'), '/scripts/requirements.txt')]"
           ],
           "commandToExecute": "[concat('sh initialize-director-server.sh \"', parameters('vmSpec').adminUsername, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('networkSpec').directorServerIPAddress,'\" ')]"
         }
