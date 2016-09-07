@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 log() {
-  echo "$(date): [${execname}] $@" >> /tmp/initialize-cloudera-server.log
+  echo "$(date): [${execname}] $@" >> /tmp/initialize-director-server.log
 }
 
 ADMINUSER=$1
@@ -30,25 +30,25 @@ echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 bash ./prepare-director-disks.sh
 
 
-sudo yum clean all >> /tmp/initialize-cloudera-director.log
+sudo yum clean all >> /tmp/initialize-director-server.log
 n=0
 until [ $n -ge 5 ]
 do
-    sudo yum install -y wget epel-release>> /tmp/initialize-cloudera-director.log 2>> /tmp/initialize-cloudera-director.err && break
+    sudo yum install -y wget epel-release>> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
     n=$[$n+1]
     sleep 15s
 done
 if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 
 
-sudo wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> /tmp/initialize-cloudera-server.log
-sudo wget http://archive.cloudera.com/director/redhat/6/x86_64/director/cloudera-director.repo -O /etc/yum.repos.d/cloudera-director.repo >> /tmp/initialize-cloudera-server.log
-
+sudo wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> /tmp/initialize-director-server.log
+sudo wget http://archive.cloudera.com/director/redhat/6/x86_64/director/cloudera-director.repo -O /etc/yum.repos.d/cloudera-director.repo >> /tmp/initialize-director-server.log
+sudo wget https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/prepare-dir-conf/cloudera-on-centos/scripts/ -O /tmp/requirements.txt >> /tmp/initialize-director-server.log
 # this often fails so adding retry logic
 n=0
 until [ $n -ge 5 ]
 do
-    sudo yum install -y bind bind-utils python-pip oracle-j2sdk* cloudera-director-server cloudera-director-client >> /tmp/initialize-cloudera-director.log 2>> /tmp/initialize-cloudera-director.err && break
+    sudo yum install -y bind bind-utils python-pip oracle-j2sdk* cloudera-director-server cloudera-director-client >> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
     n=$[$n+1]
     sleep 15s
 done
@@ -57,7 +57,7 @@ if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 n=0
 until [ $n -ge 5 ]
 do
-    sudo pip install pyhocon cloudera-director-python-client >> /tmp/initialize-cloudera-director.log 2>> /tmp/initialize-cloudera-director.err && break
+    sudo pip install -r /tmp/requirements.txt >> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
     n=$[$n+1]
     sleep 15s
 done

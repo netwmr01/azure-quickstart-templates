@@ -179,14 +179,14 @@
     },
     "dnsServerIPAddress": {
       "type": "string",
-      "defaultValue": "10.3.0.5",
+      "defaultValue": "10.3.0.4",
       "metadata": {
         "description": "IP address for the dns server"
       }
     },
     "mysqlServerIPAddress": {
       "type": "string",
-      "defaultValue": "10.3.0.6",
+      "defaultValue": "10.3.0.5",
       "metadata": {
         "description": "IP address for the mysql server"
       }
@@ -303,7 +303,7 @@
       "subnetName":"[parameters('subnetName')]",
       "computeResourceGroup":"[resourceGroup().name]",
       "hostFqdnSuffix":"[parameters('dnsNameSuffix')]",
-      "dbAddress":"[parameters('dnsServerIPAddress')]",
+      "dbAddress":"[parameters('mysqlServerIPAddress')]",
       "dbUserName":"[parameters('dbUserName')]",
       "dbPassword":"[parameters('dbPassword')]",
       "masterType":"[parameters('masterType')]",
