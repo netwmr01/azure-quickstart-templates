@@ -43,8 +43,6 @@ if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 
 sudo wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> /tmp/initialize-cloudera-server.log
 sudo wget http://archive.cloudera.com/director/redhat/6/x86_64/director/cloudera-director.repo -O /etc/yum.repos.d/cloudera-director.repo >> /tmp/initialize-cloudera-server.log
-sudo wget https://raw.githubusercontent.com/cloudera/director-scripts/master/configs/azure.simple.conf -O /tmp/azure.simple.conf
-sudo wget https://raw.githubusercontent.com/cloudera/director-scripts/master/configs/azure.reference.conf -O /tmp/azure.reference.conf
 
 # this often fails so adding retry logic
 n=0

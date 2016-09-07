@@ -60,7 +60,7 @@ def secure_user(username, password):
       else:
         raise e
 
-conf = ConfigFactory.parse_file('/tmp/azure.simple.conf')
+conf = ConfigFactory.parse_file('azure.simple.conf')
 logging.info('parsed conf')
 name = sys.argv[1]
 region = sys.argv[2]
