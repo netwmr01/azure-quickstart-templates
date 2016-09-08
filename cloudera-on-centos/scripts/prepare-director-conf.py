@@ -71,7 +71,7 @@ clientSecret = sys.argv[6]
 
 username = sys.argv[7]
 passphrase = sys.argv[8]
-privateKey = sys.argv[9]
+privateKey = sys.argv[9].decode('string_escape')
 keyFileName = "/tmp/keyfile"
 writeToFile(privateKey, keyFileName)
 logging.info(privateKey)
