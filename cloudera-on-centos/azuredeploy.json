@@ -292,7 +292,7 @@
       "subnetName":"[parameters('subnetName')]",
       "computeResourceGroup":"[resourceGroup().name]",
       "hostFqdnSuffix":"[parameters('dnsNameSuffix')]",
-      "dbAddress":"[parameters('mysqlServerIPAddress')]",
+      "dbAddress":"[parameters('directorServerIPAddress')]",
       "dbUsername":"[parameters('dbUsername')]",
       "dbPassword":"[parameters('dbPassword')]",
       "masterType":"[parameters('masterType')]",
