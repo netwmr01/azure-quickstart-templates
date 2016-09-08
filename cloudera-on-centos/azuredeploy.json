@@ -305,7 +305,6 @@
       "vmSize": "[parameters('directorSize')]",
       "adminUsername": "[parameters('adminUsername')]",
       "adminPassword": "[parameters('adminPassword')]",
-      "asName": "[concat(parameters('dnsNamePrefix'), '-as')]",
       "dbUsername": "[parameters('dbUsername')]",
       "dbPassword": "[parameters('dbPassword')]"
     },
@@ -341,9 +340,6 @@
           },
           "networkSpec": {
             "value": "[variables('networkSpec')]"
-          },
-          "asName": {
-            "value": "[variables('vmSpec').asName]"
           }
         }
       }
