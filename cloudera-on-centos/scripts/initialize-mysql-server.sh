@@ -31,16 +31,15 @@ log() {
   echo "$(date): [${execname}] $@" >> /tmp/initialize-mysql-server.log
 }
 
-ADMINUSER=$1
-MYSQL_USER=$2
-MYSQL_PASSWORD=$3
+MYSQL_USER=$1
+MYSQL_PASSWORD=$2
 
 
 log "initializing MySQL Server..."
 
-# Disable the need for a tty when running sudo and allow passwordless sudo for the admin user
-sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
-echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+bash ./prepare-mysql-disks.sh
+status=$?
+if [ $status -ne 0]; then log "fail to mount disk for mysql server" & exit status; fi
 
 n=0
 until [ $n -ge 5 ]

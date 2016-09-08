@@ -28,16 +28,17 @@
     }
   },
   "variables": {
-    "vmName": "[concat(parameters('dnsNamePrefix'), '-mysql')]",
+    "vmName": "[concat(parameters('dnsNamePrefix'), '-dir')]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
-    "storageAccountName": "[concat(parameters('storageAccount').prefix, 'db')]",
-    "securityGroupName": "[concat(parameters('dnsNamePrefix'), '-db-sg')]"
+    "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
+    "storageAccountName": "[concat(parameters('storageAccount').prefix, 'dir')]",
+    "dirSecurityGroupName": "[concat(parameters('dnsNamePrefix'), '-dir-sg')]"
   },
   "resources": [
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkSecurityGroups",
-      "name": "[variables('securityGroupName')]",
+      "name": "[concat(parameters('networkSpec').virtualNetworkName,'-nsg')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
@@ -59,21 +60,72 @@
       }
     },
     {
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('dirSecurityGroupName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "SSH",
+            "properties": {
+              "description": "Allows SSH traffic",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Director.Web.UI",
+            "properties": {
+              "description": "Allows Director.Web.UI traffic",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "7189",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 110,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageAccountName')]",
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "location": "[resourceGroup().location]",
       "properties": {
-        "accountType": "Premium_LRS"
+        "accountType": "[parameters('storageAccount').type]"
+      }
+    },
+    {
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIPAddressName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "[concat(parameters('dnsNamePrefix'), '-dir')]"
+        }
       }
     },
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nicName')]",
+      "name": "[concat(variables('nicName'))]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkSecurityGroups/', variables('securityGroupName'))]"
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('dirSecurityGroupName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -81,22 +133,25 @@
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[parameters('networkSpec').dbServerIPAddress]",
+              "privateIPAddress": "[parameters('networkSpec').directorServerIPAddress]",
               "subnet": {
                 "id": "[concat(parameters('vnetID'), '/subnets/', parameters('networkSpec').virtualNetworkSubnetName)]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('publicIPAddressName')))]"
               }
             }
           }
         ],
         "networkSecurityGroup": {
-          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('securityGroupName'))]"
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('dirSecurityGroupName'))]"
         }
       }
     },
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vmName')]",
+      "name": "[concat(variables('vmName'))]",
       "plan": {
         "name": "cloudera-centos-6",
         "publisher": "cloudera",
@@ -108,8 +163,11 @@
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
       ],
       "properties": {
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('vmSpec').asName)]"
+        },
         "hardwareProfile": {
-          "vmSize": "Standard_DS3"
+          "vmSize": "[parameters('vmSpec').vmSize]"
         },
         "osProfile": {
           "computerName": "[variables('vmName')]",
@@ -171,18 +229,15 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
+            "[concat(parameters('scriptsUri'), '/scripts/initialize-director-server.sh')]",
+            "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]",
+            "[concat(parameters('scriptsUri'), '/scripts/requirements.txt')]",
             "[concat(parameters('scriptsUri'), '/scripts/prepare-mysql-disks.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-mysql-server.sh')]"
           ],
-          "commandToExecute": "[concat('sh initialize-mysql-server.sh \"', parameters('vmSpec').adminUsername, '\" \"', parameters('vmSpec').dbUsername, '\" \"', parameters('vmSpec').dbPassword,'\"')]"
+          "commandToExecute": "[concat('sh initialize-director-server.sh \"', parameters('vmSpec').adminUsername, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('networkSpec').directorServerIPAddress, '\" \"', parameters('vmSpec').dbUsername, '\" \"', parameters('vmSpec').dbPassword,'\"')]"
         }
       }
     }
-  ],
-  "outputs": {
-    "vmName": {
-      "type": "string",
-      "value": "[variables('vmName')]"
-    }
-  }
+  ]
 }

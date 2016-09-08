@@ -17,6 +17,9 @@ log() {
 ADMINUSER=$1
 INTERNAL_FQDN_SUFFIX=$2
 HOST_IP=$3
+MYSQL_USER=$4
+MYSQL_PASSWORD=$5
+
 log $1
 log $2
 log $3
@@ -66,6 +69,11 @@ sudo service iptables stop
 bash ./initialize-dns-server.sh ${INTERNAL_FQDN_SUFFIX} ${HOST_IP}
 status=$?
 if [ $status -ne 0]; then log "fail to setup dns server" & exit status; fi
+
+# Setup MySQL server
+bash ./initialize-mysql-server.sh ${MYSQL_USER} ${MYSQL_PASSWORD}
+status=$?
+if [ $status -ne 0]; then log "fail to setup mysql server" & exit status; fi
 
 log "Everything should be working!"
 exit 0
