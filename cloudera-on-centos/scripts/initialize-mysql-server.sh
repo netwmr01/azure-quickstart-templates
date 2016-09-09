@@ -39,7 +39,7 @@ log "initializing MySQL Server..."
 
 bash ./prepare-mysql-disks.sh
 status=$?
-if [ $status -ne 0]; then log "fail to mount disk for mysql server" & exit status; fi
+if [ $status -ne 0 ]; then log "fail to mount disk for mysql server" & exit status; fi
 
 n=0
 until [ $n -ge 5 ]

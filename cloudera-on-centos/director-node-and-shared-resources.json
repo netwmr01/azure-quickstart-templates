@@ -32,9 +32,33 @@
     "nicName": "[concat(variables('vmName'), '-nic')]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
     "storageAccountName": "[concat(parameters('storageAccount').prefix, 'dir')]",
-    "dirSecurityGroupName": "[concat(parameters('dnsNamePrefix'), '-dir-sg')]"
+    "dirSecurityGroupName": "[concat(parameters('dnsNamePrefix'), '-dir-sg')]",
+    "masterAsName":"asmaster",
+    "workerAsName":"asworker",
+    "edgeAsName":"asedge"
   },
   "resources": [
+    {
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('masterAsName')]",
+      "location": "[resourceGroup().location]",
+      "properties": { }
+    },
+    {
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('workerAsName')]",
+      "location": "[resourceGroup().location]",
+      "properties": { }
+    },
+    {
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('edgeAsName')]",
+      "location": "[resourceGroup().location]",
+      "properties": { }
+    },
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkSecurityGroups",

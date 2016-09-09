@@ -68,12 +68,12 @@ sudo service iptables stop
 # Setup DNS server
 bash ./initialize-dns-server.sh ${INTERNAL_FQDN_SUFFIX} ${HOST_IP}
 status=$?
-if [ $status -ne 0]; then log "fail to setup dns server" & exit status; fi
+if [ $status -ne 0 ]; then log "fail to setup dns server" & exit status; fi
 
 # Setup MySQL server
 bash ./initialize-mysql-server.sh ${MYSQL_USER} ${MYSQL_PASSWORD}
 status=$?
-if [ $status -ne 0]; then log "fail to setup mysql server" & exit status; fi
+if [ $status -ne 0 ]; then log "fail to setup mysql server" & exit status; fi
 
 log "Everything should be working!"
 exit 0
