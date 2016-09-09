@@ -7,6 +7,9 @@
     },
     "vmName":{
       "type":"string"
+    },
+    "dnsServerIPAddress":{
+      "type":"string"
     }
   },
   "resources": [
@@ -21,7 +24,10 @@
         "typeHandlerVersion": "[parameters('version').typeHandlerVersion]",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "commandToExecute": "service network restart"
+          "fileUris": [
+            "[concat(parameters('scriptsUri'), '/scripts/update-vm-dns')]"
+          ],
+          "commandToExecute": "[concat('bash ./update-vm-dns.sh ', parameters('dnsServerIPAddress'))]"
         }
       }
     }

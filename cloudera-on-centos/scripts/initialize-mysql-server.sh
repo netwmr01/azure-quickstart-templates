@@ -101,7 +101,23 @@ EOF
 
 
 sudo /sbin/chkconfig mysqld on
-sudo service mysqld start 
+sudo service mysqld start
+
+i=0
+until [ $i -ge 5 ]
+do
+  i=$[$i+1]
+  mysql -u root -e "SHOW DATABASES"
+  n=$?
+  if [ $n -eq 0 ]; then
+    break;
+  fi
+  sleep 5s
+done
+if [ $i -ge 5 ]; then
+  echo "DB failed to start, exit with status 1"
+  exit 1
+fi
 
 log "Creating user for mysql"
 mysql -u root -e "CREATE USER '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD'"
