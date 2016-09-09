@@ -8,6 +8,9 @@
     "vmName":{
       "type":"string"
     },
+    "scriptsUri":{
+      "type":"string"
+    },
     "dnsServerIPAddress":{
       "type":"string"
     }

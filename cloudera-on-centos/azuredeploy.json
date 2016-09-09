@@ -428,6 +428,9 @@
           "vmName":{
             "value": "[concat(parameters('dnsNamePrefix'), '-dir')]"
           },
+          "scriptsUri": {
+            "value": "[variables('scriptsUri')]"
+          },
           "dnsServerIPAddress": {
             "value": "[parameters('directorServerIPAddress')]"
           }
