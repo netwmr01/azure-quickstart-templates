@@ -77,7 +77,7 @@ if [ $status -ne 0 ]; then log "fail to setup mysql server" & exit status; fi
 
 # Check the status of the Director server, wait 5 minutes
 n=300
-while ! (exec 6<>/dev/tcp/$(HOST_IP)/7189) ; do log 'Waiting for director-server to start...'; n=$[$n-15]; sleep 15; done
+while ! (exec 6<>/dev/tcp/${HOST_IP}/7189) ; do log 'Waiting for director-server to start...'; n=$[$n-15]; sleep 15; done
 if [ $n -le 0 ]; then log "fail to start director server, exiting..." & exit 1; fi
 
 log "Everything should be working!"
