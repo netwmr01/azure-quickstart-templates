@@ -427,6 +427,9 @@
           },
           "vmName":{
             "value": "[concat(parameters('dnsNamePrefix'), '-dir')]"
+          },
+          "dnsServerIPAddress": {
+            "value": "[parameters('directorServerIPAddress')]"
           }
         }
       }
