@@ -20,9 +20,8 @@ HOST_IP=$3
 MYSQL_USER=$4
 MYSQL_PASSWORD=$5
 
-log $1
-log $2
-log $3
+SLEEP_INTERVAL=10
+
 log "initializing Director Server..."
 
 # Disable the need for a tty when running sudo and allow passwordless sudo for the admin user
@@ -36,7 +35,7 @@ until [ $n -ge 5 ]
 do
     sudo yum install -y wget epel-release>> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
     n=$[$n+1]
-    sleep 15s
+    sleep ${SLEEP_INTERVAL}
 done
 if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 
@@ -48,7 +47,7 @@ until [ $n -ge 5 ]
 do
     sudo yum install -y bind bind-utils python-pip oracle-j2sdk* cloudera-director-server-2.1.* cloudera-director-client-2.1.* >> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
     n=$[$n+1]
-    sleep 15s
+    sleep ${SLEEP_INTERVAL}
 done
 if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 
@@ -57,7 +56,7 @@ until [ $n -ge 5 ]
 do
     sudo pip install -r requirements.txt >> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
     n=$[$n+1]
-    sleep 15s
+    sleep ${SLEEP_INTERVAL}
 done
 if [ $n -ge 5 ]; then log "pip install error, exiting..." & exit 1; fi
 
@@ -77,7 +76,13 @@ if [ $status -ne 0 ]; then log "fail to setup mysql server" & exit status; fi
 
 # Check the status of the Director server, wait 5 minutes
 n=300
-while ! (exec 6<>/dev/tcp/${HOST_IP}/7189) ; do log 'Waiting for director-server to start...'; n=$[$n-15]; sleep 15; done
+while ! (exec 6<>/dev/tcp/${HOST_IP}/7189)
+do
+    log 'Waiting for director-server to start...'
+    n=$[$n-${SLEEP_INTERVAL}]
+    sleep ${SLEEP_INTERVAL}
+done
+
 if [ $n -le 0 ]; then log "fail to start director server, exiting..." & exit 1; fi
 
 log "Everything should be working!"

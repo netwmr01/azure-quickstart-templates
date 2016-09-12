@@ -34,6 +34,7 @@ log() {
 MYSQL_USER=$1
 MYSQL_PASSWORD=$2
 
+SLEEP_INTERVAL=10
 
 log "initializing MySQL Server..."
 
@@ -46,7 +47,7 @@ until [ $n -ge 5 ]
 do
     sudo sudo yum install -y mysql-server >> /tmp/initialize-mysql-server.log 2>> /tmp/initialize-mysql-server.err && break
     n=$[$n+1]
-    sleep 15s
+    sleep ${SLEEP_INTERVAL}
 done
 if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 sudo service mysqld stop
@@ -112,7 +113,7 @@ do
   if [ $n -eq 0 ]; then
     break;
   fi
-  sleep 5s
+  sleep ${SLEEP_INTERVAL}
 done
 if [ $i -ge 5 ]; then
   echo "DB failed to start, exit with status 1"
