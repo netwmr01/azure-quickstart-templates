@@ -254,13 +254,9 @@
             "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/prepare-mysql-disks.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-mysql-server.sh')]"
-          ]
-        },
-        "protectedSettings":{
+          ],
           "commandToExecute": "[concat('sh initialize-director-server.sh \"', parameters('vmSpec').adminUsername, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('networkSpec').directorServerIPAddress, '\" \"', parameters('vmSpec').dbUsername, '\" \"', parameters('vmSpec').dbPassword,'\"')]",
-          "Items": {
-            "dbPassword": "[parameters('vmSpec').dbPassword]"
-          }
+
         }
       }
     }
