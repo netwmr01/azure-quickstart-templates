@@ -29,7 +29,9 @@
         "settings": {
           "fileUris": [
             "[concat(parameters('scriptsUri'), '/scripts/update-vm-dns.sh')]"
-          ],
+          ]
+        },
+        "protectedSettings":{
           "commandToExecute": "[concat('bash ./update-vm-dns.sh ', parameters('dnsServerIPAddress'))]"
         }
       }

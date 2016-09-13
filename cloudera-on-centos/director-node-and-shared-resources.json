@@ -252,7 +252,6 @@
           "fileUris": [
             "[concat(parameters('scriptsUri'), '/scripts/initialize-director-server.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/requirements.txt')]",
             "[concat(parameters('scriptsUri'), '/scripts/prepare-mysql-disks.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-mysql-server.sh')]"
           ]
