@@ -74,7 +74,6 @@ passphrase = sys.argv[8]
 privateKey = sys.argv[9].decode('string_escape')
 keyFileName = "/tmp/keyfile"
 writeToFile(privateKey, keyFileName)
-logging.info(privateKey)
 
 networkSecuritGroupResourceGroup = sys.argv[10]
 networkSecurityGroup = sys.argv[11]
