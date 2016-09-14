@@ -3,7 +3,6 @@
 import urllib
 import urllib2
 from optparse import OptionParser
-import time
 import sys
 import logging
 
