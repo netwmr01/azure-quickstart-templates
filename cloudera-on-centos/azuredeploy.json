@@ -211,6 +211,15 @@
       "prefix": "[concat(uniquestring(resourceGroup().id),'storage')]",
       "type": "Premium_LRS"
     },
+    "userInfo":{
+      "company":"[parameters('company')]",
+      "emailAddress": "[parameters('emailAddress')]",
+      "businessPhone": "[parameters('businessPhone')]",
+      "firstName": "[parameters('firstName')]",
+      "lastName": "[parameters('lastName')]",
+      "jobRole": "[parameters('jobRole')]",
+      "jobFunction": "[parameters('jobFunction')]"
+    },
     "clusterParameters":{
       "adminUsername":"[parameters('adminUsername')]",
       "networkSecurityGroupResourceGroup":"[resourceGroup().name]",
@@ -306,6 +315,9 @@
           },
           "networkSpec": {
             "value": "[variables('networkSpec')]"
+          },
+          "userInfo": {
+            "value": "[variables('userInfo')]"
           }
         }
       }

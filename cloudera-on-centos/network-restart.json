@@ -25,6 +25,7 @@
         "publisher": "Microsoft.OSTCExtensions",
         "type": "CustomScriptForLinux",
         "typeHandlerVersion": "[parameters('version').typeHandlerVersion]",
+        "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
             "[concat(parameters('scriptsUri'), '/scripts/update-vm-dns.sh')]"

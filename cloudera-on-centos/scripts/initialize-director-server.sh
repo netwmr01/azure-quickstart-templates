@@ -20,9 +20,20 @@ HOST_IP=$3
 MYSQL_USER=$4
 MYSQL_PASSWORD=$5
 
+COMPANY=$6,
+EMAIL_ADDRESS=$7
+BUSINESS_PHONE=$8
+FIRSTNAME=$9
+LASTNAME=${10}
+JOBROLE=${11}
+JOBFUNCTION=${12}
+
 SLEEP_INTERVAL=10
 
 log "initializing Director Server..."
+
+log "marketing info"
+python ./marketing.python -c "${COMPANY}" -e "${EMAIL_ADDRESS}" -b "${BUSINESS_PHONE}" -f "${FIRSTNAME}" -l "${LASTNAME}" -r "${JOBROLE}" -j "${JOBFUNCTION}"
 
 # Disable the need for a tty when running sudo and allow passwordless sudo for the admin user
 sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
