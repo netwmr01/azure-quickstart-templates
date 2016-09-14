@@ -8,5 +8,8 @@
     "networkSpec": {
       "type": "object"
     }
-  }
+  },
+  "variables": {},
+  "resources": [
+  ]
 }
