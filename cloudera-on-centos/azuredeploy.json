@@ -205,8 +205,8 @@
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/prepare-dir-conf/cloudera-on-centos",
     "share-resourcesUri": "[concat(variables('scriptsUri'), '/shared-resources-', parameters('vnetNewOrExisting'), '-vnet.json')]",
-    "vnetUri": "[concat(variables('scriptsUri'), '/update-', parameters('vnetNewOrExisting'), '-vnet-dns.json')]",
-    "networkRestartUri": "[concat(variables('scriptsUri'), '/network-restart-', parameters('vnetNewOrExisting'), '-vnet-dns.json')]",
+    "vnetUri": "[concat(variables('scriptsUri'), '/update-', parameters('vnetNewOrExisting'), '-vnet.json')]",
+    "networkRestartUri": "[concat(variables('scriptsUri'), '/network-restart-', parameters('vnetNewOrExisting'), '-vnet.json')]",
     "storageAccount": {
       "prefix": "[concat(uniquestring(resourceGroup().id),'storage')]",
       "type": "Premium_LRS"
