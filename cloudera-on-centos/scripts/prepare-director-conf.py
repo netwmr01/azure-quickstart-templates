@@ -2,6 +2,7 @@ from pyhocon import ConfigFactory
 from pyhocon import tool
 import os
 import logging
+import sys
 from optparse import OptionParser
 
 # logging starts
@@ -129,8 +130,9 @@ def prepareConf(options):
 
   command="python setup-default.py --admin-username %s --admin-password %s /tmp/azure.conf"%(dirUsername, dirPassword)
   logging.info(command)
-  os.system(command)
-
+  status = os.system(command)
+  if status != 0:
+    sys.exit(status)
   logging.info('finish')
 
 def main():
