@@ -64,13 +64,13 @@ def prepareConf(options):
   conf = ConfigFactory.parse_file('azure.simple.conf')
   logging.info('parsed conf')
   name = options.env
-  region = options.env
-  subscriptionId = options.env
-  tenantId = options.env
-  clientId = options.env
-  clientSecret = options.env
+  region = options.region
+  subscriptionId = options.subId
+  tenantId = options.tenantId
+  clientId = options.clientId
+  clientSecret = options.clientSecret
 
-  username = options.env
+  username = options.username
   keyFileName = options.keyFileName
   generateKeyToFile(keyFileName)
 
