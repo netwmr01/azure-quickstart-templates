@@ -25,9 +25,6 @@
     },
     "networkSpec": {
       "type": "object"
-    },
-    "userInfo": {
-      "type": "object"
     }
   },
   "variables": {
@@ -255,13 +252,13 @@
           "fileUris": [
             "[concat(parameters('scriptsUri'), '/scripts/initialize-director-server.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]",
+            "[concat(parameters('scriptsUri'), '/scripts/requirements.txt')]",
             "[concat(parameters('scriptsUri'), '/scripts/prepare-mysql-disks.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/initialize-mysql-server.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/marketing.py')]"
+            "[concat(parameters('scriptsUri'), '/scripts/initialize-mysql-server.sh')]"
           ]
         },
         "protectedSettings":{
-          "commandToExecute": "[concat('sh initialize-director-server.sh \"', parameters('vmSpec').adminUsername, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('networkSpec').directorServerIPAddress, '\" \"', parameters('vmSpec').dbUsername, '\" \"', parameters('vmSpec').dbPassword, '\" \"', parameters('userInfo').company, '\" \"', parameters('userInfo').emailAddress, '\" \"', parameters('userInfo').businessPhone, '\" \"', parameters('userInfo').firstName, '\" \"', parameters('userInfo').lastName, '\" \"', parameters('userInfo').jobRole, '\" \"', parameters('userInfo').jobFunction, '\"')]",
+          "commandToExecute": "[concat('sh initialize-director-server.sh \"', parameters('vmSpec').adminUsername, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('networkSpec').directorServerIPAddress, '\" \"', parameters('vmSpec').dbUsername, '\" \"', parameters('vmSpec').dbPassword,'\"')]",
           "Items": {
             "dbPassword": "[parameters('vmSpec').dbPassword]"
           }

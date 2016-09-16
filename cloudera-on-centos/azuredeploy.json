@@ -15,19 +15,6 @@
         "description": "Admin password for the VMs (A mix of upper and lower-case characters, digits and symbols)"
       }
     },
-    "dirUsername": {
-      "type": "string",
-      "defaultValue": "diradmin",
-      "metadata": {
-        "description": "User name for the Cloudera Director Server"
-      }
-    },
-    "dirPassword": {
-      "type": "securestring",
-      "metadata": {
-        "description": "password for the Cloudera Director (A mix of upper and lower-case characters, digits and symbols)"
-      }
-    },
     "dbUsername": {
       "type": "string",
       "defaultValue": "dbadmin",
@@ -41,11 +28,69 @@
         "description": "password for the DB Server (A mix of upper and lower-case characters, digits and symbols)"
       }
     },
+    "subscriptionId":{
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "tenantId":{
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "clientId":{
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "clientSecret":{
+      "type": "securestring",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "keyFileName":{
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
     "directorSize": {
       "type": "string",
       "defaultValue": "Standard_DS12_v2",
       "metadata": {
         "description": "The size of the VM for Director server"
+      }
+    },
+    "masterType": {
+      "type": "string",
+      "defaultValue": "Standard_DS14_v2",
+      "metadata": {
+        "description": "The size of the VMs deployed as Master(s) in the cluster"
+      }
+    },
+    "workerType": {
+      "type": "string",
+      "defaultValue": "Standard_DS14_v2",
+      "metadata": {
+        "description": "The size of the VMs deployed as Workers in the cluster"
+      }
+    },
+    "edgeType": {
+      "type": "string",
+      "defaultValue": "Standard_DS14_v2",
+      "metadata": {
+        "description": "The size of the VMs deployed as Edge(s) in the cluster"
+      }
+    },
+    "directorEnvironmentName":{
+      "type": "string",
+      "defaultValue": "Director_Azure_Deployment",
+      "metadata": {
+        "description": "Environment name use by Cloudera Director"
       }
     },
     "dnsNamePrefix": {
@@ -71,8 +116,7 @@
       "type" : "string",
       "defaultValue": "new",
       "allowedValues": [
-        "new",
-        "existing"
+        "new"
       ],
       "metadata": {
         "description": "Indicator for new or exiting Virtual Network"
@@ -211,17 +255,16 @@
       "prefix": "[concat(uniquestring(resourceGroup().id),'storage')]",
       "type": "Premium_LRS"
     },
-    "userInfo":{
-      "company":"[parameters('company')]",
-      "emailAddress": "[parameters('emailAddress')]",
-      "businessPhone": "[parameters('businessPhone')]",
-      "firstName": "[parameters('firstName')]",
-      "lastName": "[parameters('lastName')]",
-      "jobRole": "[parameters('jobRole')]",
-      "jobFunction": "[parameters('jobFunction')]"
-    },
     "clusterParameters":{
+      "envName":"[parameters('directorEnvironmentName')]",
+      "location":"[resourceGroup().location]",
+      "subId":"[parameters('subscriptionId')]",
+      "tenantId":"[parameters('tenantId')]",
+      "clientId":"[parameters('clientId')]",
+      "clientSecret":"[parameters('clientSecret')]",
       "adminUsername":"[parameters('adminUsername')]",
+      "passPhrase":"[parameters('passPhrase')]",
+      "keyFileName":"[parameters('keyFileName')]",
       "networkSecurityGroupResourceGroup":"[resourceGroup().name]",
       "networkSecurityGroup":"[concat(parameters('virtualNetworkName'),'-nsg')]",
       "virtualNetworkResourceGroup":"[resourceGroup().name]",
@@ -232,8 +275,9 @@
       "dbAddress":"[parameters('directorServerIPAddress')]",
       "dbUsername":"[parameters('dbUsername')]",
       "dbPassword":"[parameters('dbPassword')]",
-      "dirUsername":"[parameters('dirUsername')]",
-      "dirPassword":"[parameters('dirPassword')]"
+      "masterType":"[parameters('masterType')]",
+      "workerType":"[parameters('workerType')]",
+      "edgeType":"[parameters('edgeType')]"
     },
     "vmSpec": {
       "vmSize": "[parameters('directorSize')]",
@@ -315,9 +359,6 @@
           },
           "networkSpec": {
             "value": "[variables('networkSpec')]"
-          },
-          "userInfo": {
-            "value": "[variables('userInfo')]"
           }
         }
       }
@@ -370,6 +411,36 @@
           },
           "dnsServerIPAddress": {
             "value": "[parameters('directorServerIPAddress')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "prepare-conf-launch-cluster",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('version').templateAPIVersion]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/network-restart-dns",
+        "Microsoft.Resources/deployments/director-node"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('scriptsUri'), '/prepare-conf-launch-cluster.json')]",
+          "contentVersion": "[variables('version').contentVersion]"
+        },
+        "parameters": {
+          "version":{
+            "value":"[variables('version')]"
+          },
+          "vmName":{
+            "value": "[concat(parameters('dnsNamePrefix'), '-dir')]"
+          },
+          "scriptsUri": {
+            "value": "[variables('scriptsUri')]"
+          },
+          "clusterParameters":{
+            "value": "[variables('clusterParameters')]"
           }
         }
       }

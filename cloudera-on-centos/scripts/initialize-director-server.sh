@@ -20,20 +20,9 @@ HOST_IP=$3
 MYSQL_USER=$4
 MYSQL_PASSWORD=$5
 
-COMPANY=$6,
-EMAIL_ADDRESS=$7
-BUSINESS_PHONE=$8
-FIRSTNAME=$9
-LASTNAME=${10}
-JOBROLE=${11}
-JOBFUNCTION=${12}
-
 SLEEP_INTERVAL=10
 
 log "initializing Director Server..."
-
-log "marketing info"
-python ./marketing.py -c "${COMPANY}" -e "${EMAIL_ADDRESS}" -b "${BUSINESS_PHONE}" -f "${FIRSTNAME}" -l "${LASTNAME}" -r "${JOBROLE}" -j "${JOBFUNCTION}"
 
 # Disable the need for a tty when running sudo and allow passwordless sudo for the admin user
 sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
@@ -61,6 +50,15 @@ do
     sleep ${SLEEP_INTERVAL}
 done
 if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
+
+n=0
+until [ $n -ge 5 ]
+do
+    sudo pip install -r requirements.txt >> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
+    n=$[$n+1]
+    sleep ${SLEEP_INTERVAL}
+done
+if [ $n -ge 5 ]; then log "pip install error, exiting..." & exit 1; fi
 
 sudo service cloudera-director-server start
 sudo chkconfig iptables off
