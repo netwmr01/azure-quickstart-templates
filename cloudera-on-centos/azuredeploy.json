@@ -263,7 +263,6 @@
       "clientId":"[parameters('clientId')]",
       "clientSecret":"[parameters('clientSecret')]",
       "adminUsername":"[parameters('adminUsername')]",
-      "passPhrase":"[parameters('passPhrase')]",
       "keyFileName":"[parameters('keyFileName')]",
       "networkSecurityGroupResourceGroup":"[resourceGroup().name]",
       "networkSecurityGroup":"[concat(parameters('virtualNetworkName'),'-nsg')]",
