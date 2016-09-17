@@ -60,6 +60,7 @@ def setInstanceParameters (conf, section, machineType, networkSecurityGroupResou
 def generateKeyToFile(keyFileName):
   command='ssh-keygen -f %s -q -N ""'%(keyFileName)
   os.system(command)
+  os.system('chmod 644 %s'%(keyFileName))
 
 def prepareConf(options):
   conf = ConfigFactory.parse_file('azure.simple.conf')
@@ -87,9 +88,9 @@ def prepareConf(options):
   dbUsername = options.dbUsername
   dbPassword = options.dbPassword
 
-  masterType = options.masterType
-  workerType = options.workerType
-  edgeType = options.edgeType
+  masterType = options.masterType.upper()
+  workerType = options.workerType.upper()
+  edgeType = options.edgeType.upper()
 
   logging.info('parameters assigned')
 
