@@ -58,11 +58,6 @@ if [ ${status} -ne 0 ]; then
 fi
 log "Collecting marketing info ... Successful"
 
-cp ./azure-plugin.conf /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc
-chmod 644 /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc/azure-plugin.conf
-cp ./images.conf /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc
-chmod 644 /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc/images.conf
-
 log "Initializing Director Server, DNS server and MySQL DB server ..."
 
 #
@@ -117,6 +112,12 @@ if [ ${n} -ge 5 ]; then
 fi
 
 log "Installing Cloudera Director Server, Client, Plugins and dependencies ... Successful"
+
+log "Updating director plugin conf"
+cp ./azure-plugin.conf /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc
+chmod 644 /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc/azure-plugin.conf
+cp ./images.conf /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc
+chmod 644 /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc/images.conf
 
 log "Starting cloudera-director-server ..."
 
