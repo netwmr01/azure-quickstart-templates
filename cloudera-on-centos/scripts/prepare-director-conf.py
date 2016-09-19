@@ -25,7 +25,7 @@ import sys
 from optparse import OptionParser
 
 # logging starts
-logging.basicConfig(filename='/tmp/prepare-director-conf.log', level=logging.DEBUG)
+logging.basicConfig(filename='/var/log/prepare-director-conf.log', level=logging.DEBUG)
 logging.info('started')
 
 DIRUSERNAME = 'admin'
@@ -172,7 +172,8 @@ def main():
     logging.info("parse_options")
     options = parse_options()
     prepareConf(options)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
