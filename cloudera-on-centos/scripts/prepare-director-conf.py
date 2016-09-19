@@ -106,7 +106,7 @@ def prepareConf(options):
 
   username = options.username
   keyFileName = options.keyFileName
-  generateKeyToFile(keyFileName)
+  generateKeyToFile(keyFileName, username)
 
   networkSecurityGroupResourceGroup = options.networkSecurityGroupResourceGroup
   networkSecurityGroup = options.networkSecurityGroup
