@@ -10,11 +10,18 @@
 # 
 # See the License for the specific language governing permissions and
 # limitations under the License.
-log() {
-  echo "$(date): [${execname}] $@" >> /tmp/initialize-director-server.log
-}
 
-ADMINUSER=$1
+#
+# Master script that drives installation and setup of:
+# - Basic dependencies
+# - Cloudera Director Server, Client, Plugins and dependencies
+# - DNS server (bind)
+# - MySQL server
+#
+
+LOG_FILE=/var/log/azure-template_initialize-server.log
+
+ADMIN_USER=$1
 INTERNAL_FQDN_SUFFIX=$2
 HOST_IP=$3
 MYSQL_USER=$4
@@ -30,71 +37,145 @@ JOBFUNCTION=${12}
 
 SLEEP_INTERVAL=10
 
-log "initializing Director Server..."
+log() {
+  echo "$(date): $*" >> ${LOG_FILE}
+}
 
-log "marketing info"
+log "---------- VM extension scripts starting ----------"
+
+#
+# Collect marketing info and send it to eloqua.com
+#
+
+log "Collecting marketing info ..."
+
 python ./marketing.py -c "${COMPANY}" -e "${EMAIL_ADDRESS}" -b "${BUSINESS_PHONE}" -f "${FIRSTNAME}" -l "${LASTNAME}" -r "${JOBROLE}" -j "${JOBFUNCTION}"
 
+# IMPORTANT: Do NOT fail deployment if marketing info collection failed
+status=$?
+if [ ${status} -ne 0 ]; then
+  log "Collecting marketing info ... Failed";
+fi
+log "Collecting marketing info ... Successful"
+
+cp ./azure-plugin.conf /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc
+chmod 644 /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc/azure-plugin.conf
+cp ./images.conf /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc
+chmod 644 /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc/images.conf
+
+log "Initializing Director Server, DNS server and MySQL DB server ..."
+
+#
 # Disable the need for a tty when running sudo and allow passwordless sudo for the admin user
+#
+
+log "Enabling password-less sudoer ..."
+
 sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
-echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+echo "$ADMIN_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-# Install Director Server
-sudo yum clean all >> /tmp/initialize-director-server.log
+log "Enabling password-less sudoer ... Successful"
+
+#
+# Install wget, Director server and other required packages
+#
+
+log "Installing basic tools ..."
+
+sudo yum clean all >> ${LOG_FILE}
+
+# install with retry
 n=0
-until [ $n -ge 5 ]
+until [ ${n} -ge 5 ]
 do
-    sudo yum install -y wget epel-release>> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
-    n=$[$n+1]
+    sudo yum install -y wget expect epel-release>> ${LOG_FILE} 2>&1 && break
+    n=$((n+1))
     sleep ${SLEEP_INTERVAL}
 done
-if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 
-sudo wget -t 5 http://archive.cloudera.com/director/redhat/6/x86_64/director/cloudera-director.repo -O /etc/yum.repos.d/cloudera-director.repo >> /tmp/initialize-director-server.log
+if [ ${n} -ge 5 ]; then
+  log "Installing basic tools ... Failed" & exit 1;
+fi
 
-# this often fails so adding retry logic
+log "Installing basic tools ... Successful"
+
+log "Installing Cloudera Director Server, Client, Plugins and dependencies ..."
+
+sudo wget -t 5 http://archive.cloudera.com/director/redhat/6/x86_64/director/cloudera-director.repo -O /etc/yum.repos.d/cloudera-director.repo >> ${LOG_FILE}
+
+# install with retry
 n=0
-until [ $n -ge 5 ]
+until [ ${n} -ge 5 ]
 do
-    sudo yum install -y bind bind-utils python-pip oracle-j2sdk* cloudera-director-server-2.1.* cloudera-director-client-2.1.* >> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
-    n=$[$n+1]
+    sudo yum install -y bind bind-utils python-pip oracle-j2sdk* cloudera-director-server-2.1.* cloudera-director-client-2.1.* >> ${LOG_FILE} 2>&1 && break
+    n=$((n+1))
     sleep ${SLEEP_INTERVAL}
 done
-if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 
-n=0
-until [ $n -ge 5 ]
-do
-    sudo pip install -r requirements.txt >> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
-    n=$[$n+1]
-    sleep ${SLEEP_INTERVAL}
-done
-if [ $n -ge 5 ]; then log "pip install error, exiting..." & exit 1; fi
+if [ ${n} -ge 5 ]; then
+  log "Installing Cloudera Director Server, Client, Plugins and dependencies ... Failed" & exit 1;
+fi
+
+log "Installing Cloudera Director Server, Client, Plugins and dependencies ... Successful"
+
+log "Starting cloudera-director-server ..."
 
 sudo service cloudera-director-server start
-sudo chkconfig iptables off
-sudo service iptables stop
-
-# Setup DNS server
-bash ./initialize-dns-server.sh ${INTERNAL_FQDN_SUFFIX} ${HOST_IP}
-status=$?
-if [ $status -ne 0 ]; then log "fail to setup dns server" & exit status; fi
-
-# Setup MySQL server
-bash ./initialize-mysql-server.sh ${MYSQL_USER} ${MYSQL_PASSWORD}
-status=$?
-if [ $status -ne 0 ]; then log "fail to setup mysql server" & exit status; fi
 
 # Check the status of the Director server, wait 5 minutes
 n=300
-while ! (exec 6<>/dev/tcp/${HOST_IP}/7189)
+while ! (exec 6<>/dev/tcp/"${HOST_IP}"/7189)
 do
-    log 'Waiting for director-server to start...'
-    n=$[$n-${SLEEP_INTERVAL}]
+    log 'Waiting for director-server to start ...'
+    n=$((n-SLEEP_INTERVAL))
     sleep ${SLEEP_INTERVAL}
 done
 
-if [ $n -le 0 ]; then log "fail to start director server, exiting..." & exit 1; fi
+if [ ${n} -le 0 ]; then
+  log "Starting cloudera-director-server ... Failed" & exit 1;
+fi
 
-log "Everything should be working!"
+log "Starting cloudera-director-server ... Successful"
+
+#
+# Disable iptables so API calls to Director server works.
+#
+
+log "Disabling iptables ..."
+
+sudo chkconfig iptables off
+sudo service iptables stop
+
+log "Disabling iptables ... Successful"
+
+#
+# Setup DNS server
+#
+
+log "Initializing DNS server ..."
+
+bash ./initialize-dns-server.sh "${INTERNAL_FQDN_SUFFIX}" "${HOST_IP}" "${LOG_FILE}"
+status=$?
+if [ ${status} -ne 0 ]; then
+  log "Initializing DNS server ... Failed" & exit status;
+fi
+
+log "Initializing DNS server ... Successful"
+
+#
+# Setup MySQL server
+#
+
+log "Initializing MySQL server ..."
+
+bash ./initialize-mysql-server.sh "${MYSQL_USER}" "${MYSQL_PASSWORD}" "${LOG_FILE}"
+status=$?
+if [ ${status} -ne 0 ]; then
+  log "Initializing MySQL server ... Failed" & exit status;
+fi
+
+log "Initializing MySQL server ... Successful"
+
+log "Initializing Director Server, DNS server and MySQL DB server ... Successful"
+
 exit 0

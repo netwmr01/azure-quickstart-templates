@@ -1,6 +1,6 @@
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
+  "contentVersion": "1.0.0.1",
   "parameters": {
     "vnetID": {
       "type":"string"
@@ -35,33 +35,9 @@
     "nicName": "[concat(variables('vmName'), '-nic')]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
     "storageAccountName": "[concat(parameters('storageAccount').prefix, 'dir')]",
-    "dirSecurityGroupName": "[concat(parameters('dnsNamePrefix'), '-dir-sg')]",
-    "masterAsName":"asmaster",
-    "workerAsName":"asworker",
-    "edgeAsName":"asedge"
+    "dirSecurityGroupName": "[concat(parameters('dnsNamePrefix'), '-dir-sg')]"
   },
   "resources": [
-    {
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
-      "type": "Microsoft.Compute/availabilitySets",
-      "name": "[variables('masterAsName')]",
-      "location": "[resourceGroup().location]",
-      "properties": { }
-    },
-    {
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
-      "type": "Microsoft.Compute/availabilitySets",
-      "name": "[variables('workerAsName')]",
-      "location": "[resourceGroup().location]",
-      "properties": { }
-    },
-    {
-      "apiVersion": "[parameters('version').resourceAPIVersion]",
-      "type": "Microsoft.Compute/availabilitySets",
-      "name": "[variables('edgeAsName')]",
-      "location": "[resourceGroup().location]",
-      "properties": { }
-    },
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkSecurityGroups",
@@ -255,10 +231,11 @@
           "fileUris": [
             "[concat(parameters('scriptsUri'), '/scripts/initialize-director-server.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/requirements.txt')]",
             "[concat(parameters('scriptsUri'), '/scripts/prepare-mysql-disks.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-mysql-server.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/marketing.py')]"
+            "[concat(parameters('scriptsUri'), '/scripts/marketing.py')]",
+            "[concat(parameters('scriptsUri'), '/scripts/azure-plugin.conf')]",
+            "[concat(parameters('scriptsUri'), '/scripts/images.conf')]"
           ]
         },
         "protectedSettings":{
