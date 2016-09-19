@@ -67,21 +67,21 @@
     },
     "masterType": {
       "type": "string",
-      "defaultValue": "Standard_DS14_v2",
+      "defaultValue": "Standard_DS14",
       "metadata": {
         "description": "The size of the VMs deployed as Master(s) in the cluster"
       }
     },
     "workerType": {
       "type": "string",
-      "defaultValue": "Standard_DS14_v2",
+      "defaultValue": "Standard_DS14",
       "metadata": {
         "description": "The size of the VMs deployed as Workers in the cluster"
       }
     },
     "edgeType": {
       "type": "string",
-      "defaultValue": "Standard_DS14_v2",
+      "defaultValue": "Standard_DS14",
       "metadata": {
         "description": "The size of the VMs deployed as Edge(s) in the cluster"
       }

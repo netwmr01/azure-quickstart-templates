@@ -1,6 +1,25 @@
+#! /usr/bin/env python
+
+# Copyright (c) 2016 Cloudera, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Simple script that shows how to use the Cloudera Director API to initialize
+# the environment and instance templates
+
 from pyhocon import ConfigFactory
 from pyhocon import tool
-import os
+import commands
 import logging
 import sys
 from optparse import OptionParser
@@ -9,8 +28,20 @@ from optparse import OptionParser
 logging.basicConfig(filename='/tmp/prepare-director-conf.log', level=logging.DEBUG)
 logging.info('started')
 
-dirUsername = 'admin'
-dirPassword = 'admin'
+DIRUSERNAME = 'admin'
+DIRPASSWORD = 'admin'
+DEFAULT_BASE_DIR = "/home"
+DEFAULT_CONF_NAME = "azure.simple.expanded.conf"
+
+
+def execAndLog(command):
+  status, output = commands.getstatusoutput(command)
+  if status != 0:
+    logging.error(command + " has none zero return status: "+str(status))
+    logging.error(output)
+    sys.exit(status)
+  logging.info(output)
+
 
 def parse_options():
 
@@ -57,10 +88,11 @@ def setInstanceParameters (conf, section, machineType, networkSecurityGroupResou
   conf.put(section+'.computeResourceGroup', computeResourceGroup)
   conf.put(section+'.hostFqdnSuffix', hostFqdnSuffix)
 
-def generateKeyToFile(keyFileName):
-  command='ssh-keygen -f %s -q -N ""'%(keyFileName)
-  os.system(command)
-  os.system('chmod 644 %s'%(keyFileName))
+def generateKeyToFile(keyFileName, username):
+  command='ssh-keygen -f %s -t rsa -q -N ""'%(keyFileName)
+  execAndLog(command)
+  execAndLog("chown "+username+" "+keyFileName)
+  execAndLog('chmod 644 %s'%(keyFileName))
 
 def prepareConf(options):
   conf = ConfigFactory.parse_file('azure.simple.conf')
@@ -124,16 +156,15 @@ def prepareConf(options):
 
   logging.info('conf value replaced')
 
-  with open("/tmp/azure.conf", "w") as text_file:
+  confLocation = DEFAULT_BASE_DIR+"/"+username+"/"+DEFAULT_CONF_NAME
+  with open(confLocation, "w") as text_file:
       text_file.write(tool.HOCONConverter.to_hocon(conf))
 
   logging.info("conf file has been written")
 
-  command="python setup-default.py --admin-username %s --admin-password %s /tmp/azure.conf"%(dirUsername, dirPassword)
-  logging.info(command)
-  status = os.system(command)
-  if status != 0:
-    sys.exit(status)
+  command = "python setup-default.py --admin-username %s --admin-password %s %s"%(DIRUSERNAME, DIRPASSWORD, confLocation)
+  execAndLog(command)
+
   logging.info('finish')
 
 def main():
