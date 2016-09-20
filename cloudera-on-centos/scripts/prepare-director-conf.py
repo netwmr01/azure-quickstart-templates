@@ -105,7 +105,7 @@ def prepareConf(options):
   clientSecret = options.clientSecret
 
   username = options.username
-  keyFileName = options.keyFileName
+  keyFileName = DEFAULT_BASE_DIR+"/"+username+"/"+options.keyFileName
   generateKeyToFile(keyFileName, username)
 
   networkSecurityGroupResourceGroup = options.networkSecurityGroupResourceGroup
