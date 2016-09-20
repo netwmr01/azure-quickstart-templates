@@ -258,7 +258,9 @@
             "[concat(parameters('scriptsUri'), '/scripts/requirements.txt')]",
             "[concat(parameters('scriptsUri'), '/scripts/prepare-mysql-disks.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-mysql-server.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/marketing.py')]"
+            "[concat(parameters('scriptsUri'), '/scripts/marketing.py')]",
+            "[concat(parameters('scriptsUri'), '/scripts/azure-plugin.conf')]",
+            "[concat(parameters('scriptsUri'), '/scripts/images.conf')]"
           ]
         },
         "protectedSettings":{

@@ -27,19 +27,18 @@
 #   info: https://blogs.msdn.microsoft.com/mast/2015/05/18/what-is-the-ip-address-168-63-129-16/.
 #
 
-log() {
-  echo "$(date): [${execname}] $@" >> /tmp/initialize-dns-server.log
-}
-
 INTERNAL_FQDN_SUFFIX=$1
 HOST_IP=$2
+LOG_FILE=$3
 
-log "initializing DNS Server..."
+log() {
+  echo "$(date): $*" >> ${LOG_FILE}
+}
 
 #
-# Microsoft Azure Assumptions
+# Default (Virtual) IP for Azure DNS, used for all regions
 #
-nameserver_ip="168.63.129.16" # used for all regions
+nameserver_ip="168.63.129.16"
 
 log "This script will turn a fresh host into a BIND server and walk you through changing Azure DNS "
 log "settings. If you have previously run this script on this host, or another host within the same "
@@ -67,7 +66,6 @@ ptr_record_prefix=$(echo ${internal_ip} | awk -F. '{print $3"." $2"."$1}')
 hostnumber=$(echo ${internal_ip} | cut -d . -f 4)
 
 hostmaster="hostmaster"
-
 
 log "[DEBUG: Variables used]"
 log "subnet: $subnet"
@@ -196,7 +194,7 @@ sudo chkconfig named on
 #
 
 # Taken from https://github.com/cloudera/director-scripts/blob/master/azure-dns-scripts/bootstrap_dns.sh
-# cat a here-doc represenation of the hooks to the appropriate file
+# cat a here-doc representation of the hooks to the appropriate file
 sudo cat > /etc/dhcp/dhclient-exit-hooks <<"EOF"
 #!/bin/bash
 printf "\ndhclient-exit-hooks running...\n\treason:%s\n\tinterface:%s\n" "${reason:?}" "${interface:?}"
@@ -231,12 +229,7 @@ sudo chmod 755 /etc/dhcp/dhclient-exit-hooks
 #
 # Now it's time to update Azure DNS settings in portal
 #
-log ""
-log "Go to -- portal.azure.com -- confirm Azure DNS points to the private IP of this host: ${internal_ip}"
 
-#
-# Loop until DNS nameserver updates have propagated to /etc/resolv.conf
-# NB: search server updates don't take place until dhclient-exit-hooks have executed
-#
+log "Go to -- portal.azure.com -- confirm Azure DNS points to the private IP of this host: ${internal_ip}"
 
 exit 0

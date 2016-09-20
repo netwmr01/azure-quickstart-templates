@@ -137,11 +137,11 @@ def prepareConf(options):
   conf.put('ssh.privateKey', keyFileName)
 
 
-  setInstanceParameters(conf, 'instances.ds14-master', masterType, networkSecurityGroupResourceGroup, networkSecurityGroup,
+  setInstanceParameters(conf, 'instances.master', masterType, networkSecurityGroupResourceGroup, networkSecurityGroup,
                         virtualNetworkResourceGroup, virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix)
-  setInstanceParameters(conf, 'instances.ds14-worker', workerType, networkSecurityGroupResourceGroup, networkSecurityGroup,
+  setInstanceParameters(conf, 'instances.worker', workerType, networkSecurityGroupResourceGroup, networkSecurityGroup,
                         virtualNetworkResourceGroup, virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix)
-  setInstanceParameters(conf, 'instances.ds14-edge', edgeType, networkSecurityGroupResourceGroup, networkSecurityGroup,
+  setInstanceParameters(conf, 'instances.edge', edgeType, networkSecurityGroupResourceGroup, networkSecurityGroup,
                         virtualNetworkResourceGroup, virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix)
   setInstanceParameters(conf, 'cloudera-manager.instance', edgeType, networkSecurityGroupResourceGroup, networkSecurityGroup,
                         virtualNetworkResourceGroup, virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix)

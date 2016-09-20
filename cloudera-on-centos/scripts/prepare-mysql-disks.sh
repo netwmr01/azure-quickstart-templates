@@ -1,11 +1,24 @@
 #!/bin/bash
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-# ok this is the fun part. Let's create a file here
-# use temp file to use sudo
-cat > inputs2.sh << 'END'
-  
+#
+# This script prepares a premium storage drive for MySQL server
+# IMPORTANT the mount point of the premium storage drive is /var/lib/mysql/
+#
 
-
+# Create a helper script to drive disk preparation
+cat > /tmp/mount_drive_helper.sh << 'END'
+# Helper script to drive disk preparation for MySQL server
 mountDriveForMySQL()
 {
   dirname=/var/lib/mysql/
@@ -97,5 +110,6 @@ prepare_disk()
 
 END
 
-sudo bash -c "source ./inputs2.sh; prepare_unmounted_volumes"
+sudo bash -c "source /tmp/mount_drive_helper.sh; prepare_unmounted_volumes"
+
 exit 0
