@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7ef5784e-b502-4f8a-9a82-398df16821fe" name="Default" comment="links">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/scripts/marketing.py" afterPath="" />
+    <list default="true" id="7ef5784e-b502-4f8a-9a82-398df16821fe" name="Default" comment="UI changes">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/scripts/azure-plugin.conf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/scripts/images.conf" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/prepare-director-conf.py" afterPath="$PROJECT_DIR$/scripts/prepare-director-conf.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/azuredeploy.json" afterPath="$PROJECT_DIR$/azuredeploy.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/director-node-and-shared-resources.json" afterPath="$PROJECT_DIR$/director-node-and-shared-resources.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/initialize-director-server.sh" afterPath="$PROJECT_DIR$/scripts/initialize-director-server.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/initialize-dns-server.sh" afterPath="$PROJECT_DIR$/scripts/initialize-dns-server.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/initialize-mysql-server.sh" afterPath="$PROJECT_DIR$/scripts/initialize-mysql-server.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/marketing.py" afterPath="$PROJECT_DIR$/scripts/marketing.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/prepare-mysql-disks.sh" afterPath="$PROJECT_DIR$/scripts/prepare-mysql-disks.sh" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scripts/update-vm-dns.sh" afterPath="$PROJECT_DIR$/scripts/update-vm-dns.sh" />
     </list>
     <ignored path="cloudera-on-centos.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,53 +33,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="azuredeploy.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/azuredeploy.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.5686274">
-              <caret line="243" column="40" selection-start-line="243" selection-start-column="40" selection-end-line="243" selection-end-column="40" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="update-existing-vnet-dns.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/update-existing-vnet-dns.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.875">
+            <state vertical-scroll-proportion="0.0">
               <caret line="11" column="2" selection-start-line="11" selection-start-column="2" selection-end-line="13" selection-end-column="3" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="prepare-director-conf.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/scripts/prepare-director-conf.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.34647304">
-              <caret line="131" column="2" selection-start-line="131" selection-start-column="2" selection-end-line="131" selection-end-column="23" />
-              <folding>
-                <element signature="e#0#33#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="shared-resources-new-vnet.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/shared-resources-new-vnet.json">
+      <file leaf-file-name="update-new-vnet-dns.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/update-new-vnet-dns.json">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="shared-resources-existing-vnet.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/shared-resources-existing-vnet.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -110,18 +86,38 @@
       <file leaf-file-name="azuredeploy.parameters.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/azuredeploy.parameters.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.1764706">
-              <caret line="4" column="14" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="14" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="36" column="6" selection-start-line="36" selection-start-column="6" selection-end-line="36" selection-end-column="6" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="setup-default.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/setup-default.py">
+      <file leaf-file-name="azuredeploy.plus.parameters.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/azuredeploy.plus.parameters.json">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="32" column="60" selection-start-line="32" selection-start-column="16" selection-end-line="32" selection-end-column="60" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="initialize-director-server.sh" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/scripts/initialize-director-server.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.51859504">
+              <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="initialize-dns-server.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scripts/initialize-dns-server.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -155,7 +151,6 @@
         <option value="$PROJECT_DIR$/data-node-ds13.json" />
         <option value="$PROJECT_DIR$/data-node-ds14.json" />
         <option value="$PROJECT_DIR$/scripts/prepare-director-disks.sh" />
-        <option value="$PROJECT_DIR$/scripts/initialize-director-server.sh" />
         <option value="$PROJECT_DIR$/scripts/initialize-dns-server.sh" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/shared-resources-new-vnet.json" />
@@ -164,9 +159,12 @@
         <option value="$PROJECT_DIR$/shared-resources-existing-vnet.json" />
         <option value="$PROJECT_DIR$/azuredeploy.parameters.existingvnet.json" />
         <option value="$PROJECT_DIR$/network-restart-existing-vnet.json" />
-        <option value="$PROJECT_DIR$/azuredeploy.parameters.json" />
         <option value="$PROJECT_DIR$/azuredeploy.json" />
         <option value="$PROJECT_DIR$/scripts/prepare-director-conf.py" />
+        <option value="$PROJECT_DIR$/prepare-conf-launch-cluster.json" />
+        <option value="$PROJECT_DIR$/update-existing-vnet-dns.json" />
+        <option value="$PROJECT_DIR$/azuredeploy.parameters.json" />
+        <option value="$PROJECT_DIR$/scripts/initialize-director-server.sh" />
       </list>
     </option>
   </component>
@@ -410,54 +408,6 @@
       <created>1458762138033</created>
       <option name="number" value="Default" />
       <updated>1458762138033</updated>
-    </task>
-    <task id="LOCAL-00011" summary="get latest from master">
-      <created>1462231942235</created>
-      <option name="number" value="00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1462231942235</updated>
-    </task>
-    <task id="LOCAL-00012" summary="hacks for vnetID">
-      <created>1462281518687</created>
-      <option name="number" value="00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1462281518687</updated>
-    </task>
-    <task id="LOCAL-00013" summary="more hacks for vnetid">
-      <created>1462283216585</created>
-      <option name="number" value="00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1462283216585</updated>
-    </task>
-    <task id="LOCAL-00014" summary="typo">
-      <created>1462293190971</created>
-      <option name="number" value="00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1462293190971</updated>
-    </task>
-    <task id="LOCAL-00015" summary="typo">
-      <created>1462293637466</created>
-      <option name="number" value="00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1462293637466</updated>
-    </task>
-    <task id="LOCAL-00016" summary="fixing problem with vnetID generation">
-      <created>1462298102734</created>
-      <option name="number" value="00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1462298102734</updated>
-    </task>
-    <task id="LOCAL-00017" summary="lower default gap between master and worker node ip addresses">
-      <created>1462905740900</created>
-      <option name="number" value="00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1462905740900</updated>
-    </task>
-    <task id="LOCAL-00018" summary="playing with disk mount">
-      <created>1463092893146</created>
-      <option name="number" value="00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1463092893146</updated>
     </task>
     <task id="LOCAL-00019" summary="playing with disk mount">
       <created>1463092971600</created>
@@ -705,7 +655,55 @@
       <option name="project" value="LOCAL" />
       <updated>1474069089439</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="exit status">
+      <created>1474070073189</created>
+      <option name="number" value="00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1474070073189</updated>
+    </task>
+    <task id="LOCAL-00061" summary="permission and upper">
+      <created>1474071031631</created>
+      <option name="number" value="00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1474071031631</updated>
+    </task>
+    <task id="LOCAL-00062" summary="update to prepare conf">
+      <created>1474306436113</created>
+      <option name="number" value="00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1474306436113</updated>
+    </task>
+    <task id="LOCAL-00063" summary="update to prepare conf">
+      <created>1474307916003</created>
+      <option name="number" value="00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1474307916003</updated>
+    </task>
+    <task id="LOCAL-00064" summary="UI changes">
+      <created>1474323478227</created>
+      <option name="number" value="00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1474323478227</updated>
+    </task>
+    <task id="LOCAL-00065" summary="UI changes">
+      <created>1474323753713</created>
+      <option name="number" value="00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1474323753713</updated>
+    </task>
+    <task id="LOCAL-00066" summary="update">
+      <created>1474326727888</created>
+      <option name="number" value="00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1474326727888</updated>
+    </task>
+    <task id="LOCAL-00067" summary="copy files">
+      <created>1474328847002</created>
+      <option name="number" value="00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1474328847002</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -714,14 +712,14 @@
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25369978" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972974" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32918397" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32702702" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2926491" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29183957" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972974" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -764,12 +762,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="setup nodes only" />
-    <MESSAGE value="test largest as log device" />
-    <MESSAGE value="test samesize as log device" />
-    <MESSAGE value="test smallest as log device" />
-    <MESSAGE value="new log device mounting logic base on size" />
-    <MESSAGE value="fixing HDFS/ZooKeeper stop start order" />
     <MESSAGE value="setup repo base on OS version for pip-install" />
     <MESSAGE value="get a cluster without CDH installed." />
     <MESSAGE value="using link in the same repo" />
@@ -789,13 +781,123 @@
     <MESSAGE value="test import" />
     <MESSAGE value="typo" />
     <MESSAGE value="typos" />
-    <option name="LAST_COMMIT_MESSAGE" value="typos" />
+    <MESSAGE value="exit status" />
+    <MESSAGE value="permission and upper" />
+    <MESSAGE value="update to prepare conf" />
+    <MESSAGE value="UI changes" />
+    <MESSAGE value="update" />
+    <MESSAGE value="copy files" />
+    <option name="LAST_COMMIT_MESSAGE" value="copy files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/scripts/initialize-dns-server.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/update-existing-vnet-dns.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="11" column="2" selection-start-line="11" selection-start-column="2" selection-end-line="13" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/update-new-vnet-dns.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/azuredeploy.parameters.existingvnet.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="38" column="21" selection-start-line="38" selection-start-column="21" selection-end-line="38" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network-restart-new-vnet.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network-restart-existing-vnet.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/azuredeploy.parameters.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/azuredeploy.parameters.existingvnet.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="38" column="21" selection-start-line="38" selection-start-column="21" selection-end-line="38" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network-restart-new-vnet.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network-restart-existing-vnet.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/azuredeploy.parameters.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="31" column="16" selection-start-line="31" selection-start-column="16" selection-end-line="31" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network-restart-existing-vnet.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/azuredeploy.parameters.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="4" column="14" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/network-restart-existing-vnet.json">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -816,15 +918,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/azuredeploy.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -840,7 +933,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -848,7 +940,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="14" column="1" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -888,15 +979,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/azuredeploy.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="188" column="15" selection-start-line="188" selection-start-column="15" selection-end-line="188" selection-end-column="15" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -912,7 +994,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -923,14 +1004,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/azuredeploy.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="165" column="19" selection-start-line="165" selection-start-column="19" selection-end-line="165" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/LICENSE.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -938,34 +1011,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/azuredeploy.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="165" column="19" selection-start-line="165" selection-start-column="19" selection-end-line="165" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/LICENSE.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/azuredeploy.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="328" column="12" selection-start-line="328" selection-start-column="12" selection-end-line="328" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/azuredeploy.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="193" column="22" selection-start-line="193" selection-start-column="22" selection-end-line="193" selection-end-column="22" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -983,14 +1032,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/azuredeploy.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="193" column="22" selection-start-line="193" selection-start-column="22" selection-end-line="193" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/shared-resources-new-vnet.json">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1002,13 +1043,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="4" column="15" selection-start-line="4" selection-start-column="15" selection-end-line="4" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/azuredeploy.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="8" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -1020,13 +1054,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/shared-resources-existing-vnet.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/azuredeploy.json">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1079,19 +1106,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/initialize-director-server.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/shared-resources-new-vnet.json">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1099,7 +1117,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1119,6 +1136,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/update-existing-vnet-dns.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="11" column="2" selection-start-line="11" selection-start-column="2" selection-end-line="13" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/update-new-vnet-dns.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/initialize-dns-server.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/azuredeploy.parameters.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="36" column="6" selection-start-line="36" selection-start-column="6" selection-end-line="36" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/azuredeploy.parameters.existingvnet.json">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1127,45 +1176,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/setup-default.py">
+    <entry file="file://$PROJECT_DIR$/azuredeploy.plus.parameters.json">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <caret line="32" column="60" selection-start-line="32" selection-start-column="16" selection-end-line="32" selection-end-column="60" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/azuredeploy.parameters.json">
+    <entry file="file://$PROJECT_DIR$/scripts/initialize-director-server.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.1764706">
-          <caret line="4" column="14" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="14" />
+        <state vertical-scroll-proportion="0.51859504">
+          <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/azuredeploy.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.5686274">
-          <caret line="243" column="40" selection-start-line="243" selection-start-column="40" selection-end-line="243" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/update-existing-vnet-dns.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.875">
-          <caret line="11" column="2" selection-start-line="11" selection-start-column="2" selection-end-line="13" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/prepare-director-conf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.34647304">
-          <caret line="131" column="2" selection-start-line="131" selection-start-column="2" selection-end-line="131" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>

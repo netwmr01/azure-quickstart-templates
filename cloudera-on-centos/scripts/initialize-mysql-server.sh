@@ -12,56 +12,44 @@
 # limitations under the License.
 
 #
-# This scripts installs, configures and secures a MySQL server
+# This script will walk you through setting up BIND on the host and making the changes needed in
+# Azure portal.
 #
+
+#
+# WARNING
+#
+# - This script only creates one zone file which supports <= 255 hosts. It has not been tested
+#   with > 255 hosts trying to use the same zone file. It "might just work", or it may require
+#   manually configuring additional zone files in `/etc/named/named.conf.local` and
+#   `/etc/named/zones/`.
+# - It is assumed that the Azure nameserver IP address will always be `168.63.129.16`. See more
+#   info: https://blogs.msdn.microsoft.com/mast/2015/05/18/what-is-the-ip-address-168-63-129-16/.
+#
+
+log() {
+  echo "$(date): [${execname}] $@" >> /tmp/initialize-mysql-server.log
+}
 
 MYSQL_USER=$1
 MYSQL_PASSWORD=$2
-LOG_FILE=$3
 
 SLEEP_INTERVAL=10
 
-log() {
-  echo "$(date): $*" >> ${LOG_FILE}
-}
+log "initializing MySQL Server..."
 
-#
-# Prepare disk for MySQL server
-#
-
-log "Preparing disk for MySQL server ..."
-
-bash ./prepare-mysql-disks.sh >> ${LOG_FILE} 2>&1
-
+bash ./prepare-mysql-disks.sh
 status=$?
-if [ ${status} -ne 0 ]; then
-  log "Preparing disk for MySQL server ... Failed" & exit status;
-fi
-
-log "Preparing disk for MySQL server ... Successful"
-
-
-#
-# Install MySQL sever and configure it
-#
-
-log "Installing MySQL server packages ..."
+if [ $status -ne 0 ]; then log "fail to mount disk for mysql server" & exit status; fi
 
 n=0
-until [ ${n} -ge 5 ]
+until [ $n -ge 5 ]
 do
-    sudo sudo yum install -y mysql-server >> ${LOG_FILE} 2>&1 && break
-    n=$((n+1))
+    sudo sudo yum install -y mysql-server >> /tmp/initialize-mysql-server.log 2>> /tmp/initialize-mysql-server.err && break
+    n=$[$n+1]
     sleep ${SLEEP_INTERVAL}
 done
-if [ ${n} -ge 5 ]; then
-  log "Installing MySQL server packages ... Failed" & exit 1;
-fi
-
-log "Installing MySQL server packages ... Successful"
-
-log "Updating MySQL server configurations ..."
-
+if [ $n -ge 5 ]; then log "yum install error, exiting..." & exit 1; fi
 sudo service mysqld stop
 
 sudo cat > /etc/my.cnf <<EOF
@@ -112,59 +100,34 @@ pid-file=/var/run/mysqld/mysqld.pid
 sql_mode=STRICT_ALL_TABLES
 EOF
 
-log "Updating MySQL server configurations ... Successful"
-
-
-#
-# Start MySQL server and make sure it starts properly
-#
-
-log "Starting MySQL server ..."
 
 sudo /sbin/chkconfig mysqld on
 sudo service mysqld start
 
-# Wait till MySQL server starts
 i=0
-until [ ${i} -ge 5 ]
+until [ $i -ge 5 ]
 do
-  i=$((i+1))
+  i=$[$i+1]
   mysql -u root -e "SHOW DATABASES"
-  if [ $? -eq 0 ]; then
+  n=$?
+  if [ $n -eq 0 ]; then
     break;
   fi
   sleep ${SLEEP_INTERVAL}
 done
-
-if [ ${i} -ge 5 ]; then
-  log "Starting MySQL server ... Failed"
+if [ $i -ge 5 ]; then
+  echo "DB failed to start, exit with status 1"
   exit 1
 fi
 
-log "Starting MySQL server ... Successful"
-
-
-#
-# Create User with proper permission for to access MySQL server
-#
-
-log "Creating User ${MYSQL_USER} for MySQL server ..."
-
+log "Creating user for mysql"
 mysql -u root -e "CREATE USER '$MYSQL_USER'@'localhost' IDENTIFIED BY '$MYSQL_PASSWORD'"
 mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'localhost' WITH GRANT OPTION"
 
 mysql -u root -e "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'"
 mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$MYSQL_USER'@'%' WITH GRANT OPTION"
 
-log "Creating User ${MYSQL_USER} for MySQL server ... Successful"
-
-
-#
-# Secure MySQL server
-#
-
-log "Securing MySQL server ..."
-
+sudo yum install -y expect
 SECURE_MYSQL=$(expect -c "
 set timeout 10
 spawn mysql_secure_installation
@@ -183,8 +146,9 @@ send \"y\r\"
 expect eof
 ")
 
-echo "$SECURE_MYSQL" >> ${LOG_FILE} 2>&1
+echo "$SECURE_MYSQL"
 
-log "Securing MySQL server ... Successful"
+yum remove -y expect
 
+log "Everything should be working!"
 exit 0
