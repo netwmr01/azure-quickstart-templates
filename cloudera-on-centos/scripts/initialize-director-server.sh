@@ -122,15 +122,6 @@ chmod 644 /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc/images.con
 
 log "Starting cloudera-director-server ..."
 
-n=0
-until [ $n -ge 5 ]
-do
-    sudo pip install -r requirements.txt >> /tmp/initialize-director-server.log 2>> /tmp/initialize-director-server.err && break
-    n=$[$n+1]
-    sleep ${SLEEP_INTERVAL}
-done
-if [ $n -ge 5 ]; then log "pip install error, exiting..." & exit 1; fi
-
 sudo service cloudera-director-server start
 
 # Check the status of the Director server, wait 5 minutes
