@@ -334,7 +334,7 @@
             "value":"[variables('version')]"
           },
           "vmName":{
-            "value": "[concat(parameters('dnsNamePrefix'), '-dir')]"
+            "value": "[parameters('dnsNamePrefix')]"
           },
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"
