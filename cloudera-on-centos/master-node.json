@@ -408,7 +408,7 @@
         "type": "CustomScriptForLinux",
         "typeHandlerVersion": "1.4",
         "autoUpgradeMinorVersion": true,
-        "settings": {
+        "protectedSettings": {
           "fileUris": [
             "[concat(parameters('scriptsUri'), '/scripts/prepare-masternode-disks.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-node.sh')]"
