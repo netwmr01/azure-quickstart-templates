@@ -7,11 +7,6 @@ Once the trial has concluded, the Cloudera Enterprise features will be disabled 
     <img src="http://azuredeploy.net/deploybutton.png" />
 </a>
 
-# DS13 Deployment(smaller size machine for batch and poc)
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2Fcloudera-on-centos%2Fds13.json" target="_blank">
-    <img src="http://azuredeploy.net/deploybutton.png" />
-</a>
-
 Version 2015-08-06
 
 END USER LICENSE TERMS AND CONDITIONS
