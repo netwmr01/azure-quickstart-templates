@@ -404,8 +404,8 @@
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), copyIndex())]"
       ],
       "properties": {
-        "publisher": "Microsoft.OSTCExtensions",
-        "type": "CustomScriptForLinux",
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
         "typeHandlerVersion": "2.0",
         "autoUpgradeMinorVersion": true,
         "settings": {
