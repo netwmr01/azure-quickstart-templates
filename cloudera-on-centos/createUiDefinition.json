@@ -1,0 +1,369 @@
+{
+    "handler": "Microsoft.Compute.MultiVm",
+    "version": "0.0.1-preview",
+    "parameters": {
+        "basics": [
+            {
+                "name": "username",
+                "type": "Microsoft.Compute.UserNameTextBox",
+                "label": "Username",
+                "toolTip": "Username for linux virtual machine",
+                "constraints": {
+                    "required": true
+                },
+                "osPlatform": "Linux"
+            },
+            {
+                "name": "password",
+                "type": "Microsoft.Common.PasswordBox",
+                "label":"Password for Linux admin user",
+                "toolTip": "Password for the linux virtual machine.",
+                "constraints": {
+                    "required": true,
+                    "regex": "^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\\d\\W])|(?=.*\\W)(?=.*\\d))|(?=.*\\W)(?=.*[A-Z])(?=.*\\d)).{6,72}$",
+                    "validationMessage": "The password must be between 6 and 72 characters long, and contain characters from at least 3 of the following groups: uppercase characters, lowercase characters, numbers, and special characters."
+                },
+                "options": {
+                    "hideConfirmation": false
+                }
+            }
+        ],
+        "steps":
+        [
+            {
+                "name": "infraInfo",
+                "label": "Infrastructure information",
+                "subLabel": {
+                    "preValidation": "Provide infrastructure information",
+                    "postValidation": "Done"
+                },
+                "bladeTitle": "Infrastructure information",
+                "elements":
+                [
+                    {
+                        "name": "DNSPrefix",
+                        "type": "Microsoft.Network.PublicIpAddressCombo",
+                        "label": {
+                            "publicIpAddress": "Resource name for this IP prefix",
+                            "domainNameLabel": "Domain name prefix and cluster name for CDH"
+                        },
+                        "toolTip": {
+                            "publicIpAddress": "Only new public IP is currently supported",
+                            "domainNameLabel": "Cloudera Manager will be accessible from port 7180 of this domain"
+                        },
+                        "defaultValue": {
+                            "publicIpAddressName": "cdhpip",
+                            "domainNameLabel": "change_me_to_be_unique"
+                        },
+                        "constraints": {
+                            "required": true
+                        },
+                        "options": {
+                            "hideNone": true,
+                            "hideDomainNameLabel": false
+                        }
+                    },
+                    {
+                        "name": "storageAccount",
+                        "type": "Microsoft.Storage.MultiStorageAccountCombo",
+                        "label": {
+                            "prefix": "Storage account prefix",
+                            "type": "Storage account type"
+                        },
+                        "toolTip": {
+                            "prefix": "Storage account prefix the CDH VMs, only new storage account is supported",
+                            "type": "Only Premium Storage"
+                        },
+                        "defaultValue": {
+                            "prefix": "change_me_to_be_unique",
+                            "type": "Premium_LRS"
+                        },
+                        "constraints": {
+                            "allowedTypes": [
+                                "Premium_LRS"
+                            ],
+                            "count": 10,
+                            "required": true
+                        }
+                    },
+                    {
+                        "name": "clusterVmSize",
+                        "type": "Microsoft.Compute.SizeSelector",
+                        "label": "Virtual machine size",
+                        "defaultValue": "Standard_DS14",
+                        "toolTip": "The size of virtual machine to provision for each node. Choose a location that currently supports premium storage: East US, East US2, Central US, South Central US, West US, West Europe, North Europe, East Asia, Southeast Asia, Japan East, Japan West, Australia East, Australia Southeast.",
+                        "osPlatform": "Linux",
+                        "recommendedSizes": [
+                            "Standard_DS14",
+                            "Standard_DS14",
+                            "Standard_DS13"
+                        ],
+                        "constraints": {
+                            "required": true,
+                            "allowedSizes": [
+                                "Standard_DS13",
+                                "Standard_DS14"
+                            ]
+                        },
+                        "imageReference": {
+                            "publisher": "cloudera",
+                            "offer": "cloudera-centos-6",
+                            "sku": "CLOUDERA-CENTOS-6"
+                        }
+                    },
+                    {
+                        "name": "vnetSpec",
+                        "type": "Microsoft.Network.VirtualNetworkCombo",
+                        "label": {
+                            "virtualNetwork": "Virtual network",
+                            "subnets": "Subnets"
+                        },
+                        "toolTip": {
+                            "virtualNetwork": "",
+                            "subnets": ""
+                        },
+                        "defaultValue": {
+                            "name": "clouderaVnet",
+                            "addressPrefixSize": "/16"
+                        },
+                        "constraints": {
+                            "minAddressPrefixSize": "/29"
+                        },
+                        "subnets": {
+                            "subnet1": {
+                                "label": "Cloudera subnet",
+                                "defaultValue": {
+                                    "name": "clouderasubnet",
+                                    "addressPrefixSize": "/16"
+                                },
+                                "constraints": {
+                                    "minAddressPrefixSize": "/29",
+                                    "minAddressCount": 2,
+                                    "requireContiguousAddresses": true
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {"name": "clouderaSetupInformation",
+                "label": "Cloudera setup information",
+                "subLabel": {
+                    "preValidation": "Provide Cloudera setup information",
+                    "postValidation": "Done"
+                },
+                "bladeTitle": "Cloudera setup information",
+                "elements":
+                [
+                    {
+                        "name": "cmUsername",
+                        "type": "Microsoft.Compute.UserNameTextBox",
+                        "label": "Cloudera Manager User name",
+                        "toolTip": "Username for Cloudera Manager",
+                        "constraints": {
+                            "required": true
+                        },
+                        "osPlatform": "Linux"
+                    },
+                    {
+                        "name": "cmPassword",
+                        "type": "Microsoft.Common.PasswordBox",
+                        "label": "Password for Cloudera Manager",
+                        "toolTip": "Password for logging into Cloudera Manager",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\\d\\W])|(?=.*\\W)(?=.*\\d))|(?=.*\\W)(?=.*[A-Z])(?=.*\\d)).{6,72}$",
+                            "validationMessage": "The password must be between 6 and 72 characters long, and contain characters from at least 3 of the following groups: uppercase characters, lowercase characters, numbers, and special characters."
+                        },
+                        "options": {
+                            "hideConfirmation": false
+                        }
+                    },
+                    {
+                        "name": "clusterType",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Cluster Type",
+                        "defaultValue": "POC",
+                        "toolTip": "Choose Production for High Availability deployments, Choose POC for one master deployments ",
+                        "constraints": {
+                            "required": true,
+                            "allowedValues": [
+                                { "label": "Production", "value": "Prod"},
+                                { "label": "POC", "value": "Eval"}
+                            ]
+                        }
+                    },
+                    {
+                        "name": "datanodeCount",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Number of data nodes",
+                        "defaultValue": "3",
+                        "toolTip": "Number of data nodes, 3 to 90",
+                        "constraints": {
+                            "required": true,
+                            "regex":"^([3-9]|[1-8][0-9]|90)$",
+                            "validationMessage":"Number of data nodes must within 3 to 90"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "userInformation",
+                "label": "User information",
+                "subLabel": {
+                    "preValidation": "Provide user information",
+                    "postValidation": "Done"
+                },
+                "bladeTitle": "User information",
+                "elements": [
+                     {
+                        "name": "company",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Company",
+                        "toolTip": "Provide the company you are with",
+                        "constraints": {
+                            "required": true,
+                            "regex": "",
+                            "validationMessage": ""
+                        },
+                        "options": {
+                            "hideConfirmation": false
+                        }
+                    },
+                    {
+                        "name": "emailAddress",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Email address",
+                        "toolTip": "Provide your email address in the format user@site.com",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+                            "validationMessage": "Please provide a valid email address"
+                        },
+                        "options": {
+                            "hideConfirmation": false
+                        }
+                    },
+                    {
+                        "name": "businessPhone",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Business Phone",
+                        "toolTip": "Provide your business phone number, digits only",
+                        "constraints": {
+                            "required": true,
+                            "regex": "^[0-9]+$",
+                            "validationMessage": "please input digits only, no space, - or ()"
+                        },
+                        "options": {
+                            "hideConfirmation": false
+                        }
+                    },
+                    {
+                        "name": "firstName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "First name",
+                        "toolTip": "Provide your first name.",
+                        "constraints": {
+                            "required": true,
+                            "regex": "",
+                            "validationMessage": ""
+                        },
+                        "options": {
+                            "hideConfirmation": false
+                        }
+                    },
+                    {
+                        "name": "lastName",
+                        "type": "Microsoft.Common.TextBox",
+                        "label": "Last name",
+                        "toolTip": "Provide your last name.",
+                        "constraints": {
+                            "required": true,
+                            "regex": "",
+                            "validationMessage": ""
+                        },
+                        "options": {
+                            "hideConfirmation": false
+                        }
+                    },
+                    {
+                        "name": "jobRole",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Job role",
+                        "toolTip": "Select your job role from dropdown box.",
+                        "constraints": {
+                            "required": true,
+                            "allowedValues": [
+                                { "label": "Administrator", "value": "Administrator"},
+                                { "label": "Analyst (Industry/Finance)", "value": "Analyst (Industry/Finance)"},
+                                { "label": "Analyst (Technical)", "value": "Analyst (Technical)"},
+                                { "label": "Architect", "value": "Architect"},
+                                { "label": "C level", "value": "C level"},
+                                { "label": "Consultant", "value": "Consultant"},
+                                { "label": "Developer", "value": "Developer"},
+                                { "label": "Director", "value": "Director"},
+                                { "label": "Engineer", "value": "Engineer"},
+                                { "label": "Individual contributor", "value": "Individual contributor"},
+                                { "label": "Manager", "value": "Manager"},
+                                { "label": "Partner", "value": "Partner"},
+                                { "label": "Student", "value": "Student"},
+                                { "label": "VP", "value": "VP"}
+                            ]
+                        }
+                    },
+                    {
+                        "name": "jobFunction",
+                        "type": "Microsoft.Common.DropDown",
+                        "label": "Job function",
+                        "toolTip": "Select your job function from dropdown box.",
+                        "constraints": {
+                            "required": true,
+                            "allowedValues": [
+                                { "label": "Analytics / Business Intelligence", "value": "Analytics / Business Intelligence"},
+                                { "label": "Big Data / Architecture", "value": "Big Data / Architecture"},
+                                { "label": "Data Warehouse / Management", "value": "Data Warehouse / Management"},
+                                { "label": "Data Science", "value": "Data Science"},
+                                { "label": "Database", "value": "Database"},
+                                { "label": "ETL / ELT", "value": "ETL / ELT"},
+                                { "label": "Infrastructure", "value": "Infrastructure"},
+                                { "label": "IT", "value": "IT"},
+                                { "label": "Marketing / Sales", "value": "Marketing / Sales"},
+                                { "label": "Networking", "value": "Networking"},
+                                { "label": "Manager", "value": "Manager"},
+                                { "label": "Security / Compliance", "value": "Security / Compliance"},
+                                { "label": "Storage", "value": "Storage"}
+                            ]
+                        }
+                    }
+                    ]
+            }
+        ],
+        "outputs": {
+            "storageAccountPrefix": "[steps('infraInfo').storageAccount.prefix]",
+            "vmSize":"[steps('infraInfo').clusterVmSize]",
+            "dnsNamePrefix": "[steps('infraInfo').DNSPrefix.domainNameLabel]",
+            "virtualNetworkName":"[steps('infraInfo').vnetSpec.name]",
+            "subnetName":"[steps('infraInfo').vnetSpec.subnets.subnet1.name]",
+            "vnetNewOrExisting": "[steps('infraInfo').vnetSpec.newOrExisting]",
+            "virtualNetworkRGName": "[steps('infraInfo').vnetSpec.resourceGroup]",
+            "addressPrefix": "[steps('infraInfo').vnetSpec.addressPrefix]",
+            "subnetPrefix": "[steps('infraInfo').vnetSpec.subnets.subnet1.addressPrefix]",
+            "masterNodeIPAddress": "[steps('infraInfo').vnetSpec.subnets.subnet1.startAddress]",
+            "adminUserName": "[basics('username')]",
+            "adminPassword": "[basics('password')]",
+            "location": "[location()]",
+            "tshirtSize": "[steps('clouderaSetupInformation').clusterType]",
+            "numberOfDataNodes": "[steps('clouderaSetupInformation').datanodeCount]",
+            "cmUserName": "[steps('clouderaSetupInformation').cmUsername]",
+            "cmPassword": "[steps('clouderaSetupInformation').cmPassword]",
+            "company": "[steps('userInformation').company]",
+            "emailAddress": "[steps('userInformation').emailAddress]",
+            "businessPhone": "[steps('userInformation').businessPhone]",
+            "firstName": "[steps('userInformation').firstName]",
+            "lastName": "[steps('userInformation').lastName]",
+            "jobRole": "[steps('userInformation').jobRole]",
+            "jobFunction": "[steps('userInformation').jobFunction]"
+
+        }
+    }
+}
