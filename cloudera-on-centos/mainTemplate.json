@@ -312,7 +312,7 @@
             "value":"[variables('resourceAPIVersion')]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[resourceGroup().location]"
           },
           "networkSpec": {
             "value": "[variables('networkSpec')]"
@@ -350,7 +350,7 @@
             "value": "[parameters('dnsNamePrefix')]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[resourceGroup().location]"
           },
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"
@@ -397,7 +397,7 @@
             "value": "[parameters('dnsNamePrefix')]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[resourceGroup().location]"
           },
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"
@@ -442,7 +442,7 @@
             "value": "[parameters('dnsNamePrefix')]"
           },
           "location": {
-            "value": "[parameters('location')]"
+            "value": "[resourceGroup().location]"
           },
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"
