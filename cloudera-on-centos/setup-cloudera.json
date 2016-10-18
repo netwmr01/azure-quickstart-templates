@@ -8,6 +8,9 @@
     "dnsNamePrefix": {
       "type": "string"
     },
+    "location": {
+      "type": "string"
+    },
     "scriptsUri": {
       "type": "string"
     },
@@ -63,18 +66,18 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('dnsNamePrefix'), '-mn0', '/prepareDisks')]",
       "apiVersion": "[parameters('resourceAPIVersion')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
-        "publisher": "Microsoft.Azure.Extensions",
-        "type": "CustomScript",
-        "typeHandlerVersion": "2.0",
+        "publisher": "Microsoft.OSTCExtensions",
+        "type": "CustomScriptForLinux",
+        "typeHandlerVersion": "1.4",
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('scriptsUri'), '/scripts/bootstrap-cloudera.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/initialize-cloudera-server.sh')]",
-            "[concat(parameters('scriptsUri'), '/scripts/cmxDeployOnIbiza.py')]",
-            "[concat(parameters('scriptsUri'), '/scripts/install-postgresql.sh')]"
+            "[concat(parameters('scriptsUri'), '/bootstrap-cloudera.sh')]",
+            "[concat(parameters('scriptsUri'), '/initialize-cloudera-server.sh')]",
+            "[concat(parameters('scriptsUri'), '/cmxDeployOnIbiza.py')]",
+            "[concat(parameters('scriptsUri'), '/install-postgresql.sh')]"
           ]
         },
         "protectedSettings": {

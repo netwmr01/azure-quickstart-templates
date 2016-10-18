@@ -5,6 +5,9 @@
     "resourceAPIVersion":{
       "type":"string"
     },
+    "location": {
+      "type": "string"
+    },
     "networkSpec": {
       "type": "object"
     },
@@ -21,21 +24,21 @@
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[parameters('masterNodeASName')]",
-      "location": "[resourceGroup().location]",
-      "properties": { }
+      "location": "[parameters('location')]",
+      "properties": {}
     },
     {
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "[parameters('dataNodeASName')]",
-      "location": "[resourceGroup().location]",
-      "properties": { }
+      "location": "[parameters('location')]",
+      "properties": {}
     },
     {
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[concat(parameters('networkSpec').virtualNetworkName, '-sg')]",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "securityRules": [
           {
@@ -244,7 +247,7 @@
       "dependsOn": [
         "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSpec').virtualNetworkName, '-sg')]"
       ],
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('location')]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
