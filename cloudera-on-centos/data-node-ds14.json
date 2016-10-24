@@ -38,7 +38,7 @@
     "workerIP":"[parameters('networkSpec').workerIP]",
     "vmName": "[concat(parameters('dnsNamePrefix'), '-dn')]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
-    "storageAccountName": "[parameters('storageAccount').prefix]",
+    "storageAccountName": "[parameters('storageAccount').suffix]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
     "securityGroupName": "[concat(parameters('dnsNamePrefix'), '-dn-sg')]"
   },
