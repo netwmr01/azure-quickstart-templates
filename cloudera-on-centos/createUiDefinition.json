@@ -67,15 +67,15 @@
                         "name": "storageAccount",
                         "type": "Microsoft.Storage.MultiStorageAccountCombo",
                         "label": {
-                            "prefix": "Storage account prefix",
+                            "suffix": "Storage account suffix",
                             "type": "Worker node storage account type"
                         },
                         "toolTip": {
-                            "prefix": "Storage account prefix the CDH VMs, only new storage account is supported",
+                            "suffix": "Storage account suffix the CDH VMs, only new storage account is supported",
                             "type": "Only premium storage is suppored for master nodes. Both Premium (preferred) and Standard storage are supported for worker nodes."
                         },
                         "defaultValue": {
-                            "prefix": "change_me_to_be_unique",
+                            "suffix": "change_me_to_be_unique",
                             "type": "Premium_LRS"
                         },
                         "constraints": {
@@ -340,7 +340,7 @@
             }
         ],
         "outputs": {
-            "storageAccountPrefix": "[steps('infraInfo').storageAccount.prefix]",
+            "storageAccountSuffix": "[steps('infraInfo').storageAccount.suffix]",
             "workerStorageAccountType": "[steps('infraInfo').storageAccount.type]",
             "vmSize":"[steps('infraInfo').clusterVmSize]",
             "dnsNamePrefix": "[steps('infraInfo').DNSPrefix.domainNameLabel]",
