@@ -28,7 +28,7 @@
         "description": "password for the Cloudera Manager (A mix of upper and lower-case characters, digits and symbols)"
       }
     },
-    "storageAccountPrefix": {
+    "storageAccountSuffix": {
       "type": "string",
       "metadata": {
         "description": "Unique namespace for the Storage Account where the VM disks will be placed (alphahumeric characters only)"
@@ -228,7 +228,7 @@
     "ipOctet3": "[int(split(variables('sa'), '.')[3])]",
     "datanodeIpOctet3":"[add(int(split(variables('sa'), '.')[3]), parameters('dataNodeIPOffSetFromMaster'))]",
     "storageAccount": {
-      "prefix": "[parameters('storageAccountPrefix')]",
+      "suffix": "[parameters('storageAccountSuffix')]",
       "type": "[parameters('storageAccountType')]"
     },
     "clusterTshirtSizeEval": {

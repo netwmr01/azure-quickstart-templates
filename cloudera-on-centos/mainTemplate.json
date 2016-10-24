@@ -256,7 +256,6 @@
     "addressPrefix":"[parameters('addressPrefix')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUri": "[parameters('artifactsBaseUrl')]",
-    "storageAccountRandomPrefix":"GEN-UNIQUE-8",
     "share-resourcesUri": "[concat(variables('scriptsUri'), '/shared-resources-', parameters('vnetNewOrExisting'), '-vnet.json')]",
     "data-nodeUri":"[concat(variables('scriptsUri'), '/data-node-', toLower(subString(parameters('vmSize'), 9, 4)), '.json')]",
     "sa": "[parameters('masterNodeIPAddress')]",
@@ -265,11 +264,11 @@
     "ipOctet3": "[int(split(variables('sa'), '.')[3])]",
     "datanodeIpOctet3":"[add(int(split(variables('sa'), '.')[3]), parameters('dataNodeIPOffSetFromMaster'))]",
     "masterStorageAccount": {
-      "prefix": "[parameters('storageAccountPrefix')]",
+      "suffix": "[parameters('storageAccountPrefix')]",
       "type": "[parameters('masterStorageAccountType')]"
     },
     "workerStorageAccount": {
-      "prefix": "[parameters('storageAccountPrefix')]",
+      "suffix": "[parameters('storageAccountPrefix')]",
       "type": "[parameters('workerStorageAccountType')]"
     },
     "clusterTshirtSizeEval": {

@@ -75,7 +75,7 @@
                             "type": "Only premium storage is suppored for master nodes. Both Premium (preferred) and Standard storage are supported for worker nodes."
                         },
                         "defaultValue": {
-                            "prefix": "GEN-UNIQUE-8",
+                            "prefix": "change_me_to_be_unique",
                             "type": "Premium_LRS"
                         },
                         "constraints": {
@@ -340,7 +340,7 @@
             }
         ],
         "outputs": {
-            "storageAccountSuffix": "[steps('infraInfo').storageAccount.prefix]",
+            "storageAccountPrefix": "[steps('infraInfo').storageAccount.prefix]",
             "workerStorageAccountType": "[steps('infraInfo').storageAccount.type]",
             "vmSize":"[steps('infraInfo').clusterVmSize]",
             "dnsNamePrefix": "[steps('infraInfo').DNSPrefix.domainNameLabel]",
