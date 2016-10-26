@@ -31,7 +31,7 @@
     "storageAccountSuffix": {
       "type": "string",
       "metadata": {
-        "description": "A label between 3 and 11 alphanumeric characters, inclusive. The final Storage Account name will be [13 random characters][prefix]. Only new storage accounts are supported."
+        "description": "A label between 3 and 11 alphanumeric characters, inclusive. The final Storage Account name will be [13 random characters][suffix]. Only new storage accounts are supported."
       }
     },
     "dnsNamePrefix": {
