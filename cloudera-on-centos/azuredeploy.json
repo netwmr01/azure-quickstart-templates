@@ -1,6 +1,6 @@
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
-  "contentVersion": "1.0.0.0",
+  "contentVersion": "1.0.0.1",
   "parameters": {
     "adminUserName": {
       "type": "string",
@@ -31,35 +31,13 @@
     "storageAccountSuffix": {
       "type": "string",
       "metadata": {
-        "description": "Unique namespace for the Storage Account where the VM disks will be placed (alphahumeric characters only)"
+        "description": "A label between 3 and 11 alphanumeric characters, inclusive. The final Storage Account name will be [13 random characters][prefix]. Only new storage accounts are supported."
       }
     },
     "dnsNamePrefix": {
       "type": "string",
       "metadata": {
         "description": "Unique public DNS name where the VMs will be exposed"
-      }
-    },
-    "location": {
-      "type": "string",
-      "defaultValue": "westeurope",
-      "allowedValues": [
-        "westus",
-        "eastus",
-        "northeurope",
-        "westeurope",
-        "eastasia",
-        "southeastasia",
-        "southcentralus",
-        "centralus",
-        "eastus2",
-        "japaneast",
-        "japanwest",
-        "australiaeast",
-        "australiasoutheast"
-      ],
-      "metadata": {
-        "description": "Location where resources will be provisioned (must support premium storage)"
       }
     },
     "masterStorageAccountType": {
@@ -148,8 +126,8 @@
       }
     },
     "numberOfDataNodes": {
-      "type": "string",
-      "defaultValue": "3",
+      "type": "int",
+      "defaultValue": 3,
       "metadata": {
         "description": "Number of data nodes for Prod (defaults to 3)"
       }
@@ -240,13 +218,6 @@
         "Security / Compliance",
         "Storage"
       ]
-    },
-     "artifactsBaseUrl" : {
-      "type" : "string",
-      "metadata" : {
-        "artifactsBaseUrl" : "Base URL of the Cloudera Template gallery package"
-      },
-      "defaultValue" : ""
     }
   },
   "variables": {
@@ -255,7 +226,7 @@
     "installCDH":"True",
     "addressPrefix":"[parameters('addressPrefix')]",
     "subnetPrefix":"[parameters('subnetPrefix')]",
-    "scriptsUri": "[parameters('artifactsBaseUrl')]",
+    "scriptsUri": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/cloudera-on-centos",
     "share-resourcesUri": "[concat(variables('scriptsUri'), '/shared-resources-', parameters('vnetNewOrExisting'), '-vnet.json')]",
     "data-nodeUri":"[concat(variables('scriptsUri'), '/data-node-', toLower(subString(parameters('vmSize'), 9, 4)), '.json')]",
     "sa": "[parameters('masterNodeIPAddress')]",
@@ -264,21 +235,21 @@
     "ipOctet3": "[int(split(variables('sa'), '.')[3])]",
     "datanodeIpOctet3":"[add(int(split(variables('sa'), '.')[3]), parameters('dataNodeIPOffSetFromMaster'))]",
     "masterStorageAccount": {
-      "suffix": "[parameters('storageAccountSuffix')]",
+      "prefix": "[parameters('storageAccountSuffix')]",
       "type": "[parameters('masterStorageAccountType')]"
     },
     "workerStorageAccount": {
-      "suffix": "[parameters('storageAccountSuffix')]",
+      "prefix": "[parameters('storageAccountSuffix')]",
       "type": "[parameters('workerStorageAccountType')]"
     },
     "clusterTshirtSizeEval": {
       "masterNodeCount": 1,
-      "dataNodeCount": "[int(parameters('numberOfDataNodes'))]",
+      "dataNodeCount": "[parameters('numberOfDataNodes')]",
       "highAvailability": "false"
     },
     "clusterTshirtSizeProd": {
       "masterNodeCount": 3,
-      "dataNodeCount": "[int(parameters('numberOfDataNodes'))]",
+      "dataNodeCount": "[parameters('numberOfDataNodes')]",
       "highAvailability": "true"
     },
     "clusterSpec": "[variables(concat('clusterTshirtSize', parameters('tshirtSize')))]",
@@ -316,14 +287,11 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[variables('share-resourcesUri')]",
-          "contentVersion": "1.0.0.0"
+          "contentVersion": "1.0.0.1"
         },
         "parameters": {
           "resourceAPIVersion":{
             "value":"[variables('resourceAPIVersion')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
           },
           "networkSpec": {
             "value": "[variables('networkSpec')]"
@@ -348,7 +316,7 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(variables('scriptsUri'), '/master-node.json')]",
-          "contentVersion": "1.0.0.0"
+          "contentVersion": "1.0.0.1"
         },
         "parameters": {
           "vnetID":{
@@ -359,9 +327,6 @@
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
           },
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"
@@ -395,7 +360,7 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[variables('data-nodeUri')]",
-          "contentVersion": "1.0.0.0"
+          "contentVersion": "1.0.0.1"
         },
         "parameters": {
           "vnetID":{
@@ -406,9 +371,6 @@
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
           },
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"
@@ -443,7 +405,7 @@
         "mode": "Incremental",
         "templateLink": {
           "uri": "[concat(variables('scriptsUri'), '/setup-cloudera.json')]",
-          "contentVersion": "1.0.0.0"
+          "contentVersion": "1.0.0.1"
         },
         "parameters": {
           "resourceAPIVersion":{
@@ -451,9 +413,6 @@
           },
           "dnsNamePrefix": {
             "value": "[parameters('dnsNamePrefix')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
           },
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"

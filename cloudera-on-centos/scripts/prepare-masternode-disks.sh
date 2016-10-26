@@ -3,6 +3,8 @@
 # ok this is the fun part. Let's create a file here
 # use temp file to use sudo
 cat > inputs2.sh << 'END'
+  
+
 
 mountDriveForLogCloudera()
 {

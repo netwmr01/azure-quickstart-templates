@@ -1,6 +1,6 @@
 {
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
+  "contentVersion": "1.0.0.1",
   "parameters": {
     "vnetID": {
       "type":"string"
@@ -9,9 +9,6 @@
       "type":"string"
     },
     "dnsNamePrefix": {
-      "type": "string"
-    },
-    "location": {
       "type": "string"
     },
     "scriptsUri": {
@@ -38,7 +35,7 @@
     "workerIP":"[parameters('networkSpec').workerIP]",
     "vmName": "[concat(parameters('dnsNamePrefix'), '-dn')]",
     "nicName": "[concat(variables('vmName'), '-nic')]",
-    "storageAccountName": "[parameters('storageAccount').suffix]",
+    "storageAccountName": "[parameters('storageAccount').prefix]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
     "securityGroupName": "[concat(parameters('dnsNamePrefix'), '-dn-sg')]"
   },
@@ -47,7 +44,7 @@
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "name": "[variables('securityGroupName')]",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": [
           {
@@ -167,9 +164,9 @@
     },
     {
       "type": "Microsoft.Storage/storageAccounts",
-      "name": "[concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName'))]",
+      "name": "[concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName'))]",
       "apiVersion": "[parameters('resourceAPIVersion')]",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "copy": {
         "name": "storageAccountLoop",
         "count": "[parameters('vmCount')]"
@@ -182,7 +179,7 @@
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[concat(variables('publicIPAddressName'), copyIndex())]",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "copy": {
         "name": "publicIPLoop",
         "count": "[parameters('vmCount')]"
@@ -198,7 +195,7 @@
       "apiVersion": "[parameters('resourceAPIVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat(variables('nicName'), copyIndex())]",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'), copyIndex())]",
         "[concat('Microsoft.Network/networkSecurityGroups/', variables('securityGroupName'))]"
@@ -237,14 +234,14 @@
         "publisher": "cloudera",
         "product": "cloudera-centos-6"
       },
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "copy": {
         "name": "dataNodeNicLoop",
         "count": "[parameters('vmCount')]"
       },
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
-        "[concat('Microsoft.Storage/storageAccounts/', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName'))]"
+        "[concat('Microsoft.Storage/storageAccounts/', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')))]"
       ],
       "properties": {
         "availabilitySet": {
@@ -262,18 +259,16 @@
           }
         },
         "storageProfile": {
-          "imageReference":
-          {
+          "imageReference": {
             "publisher": "cloudera",
             "offer": "cloudera-centos-6",
             "sku": "CLOUDERA-CENTOS-6",
             "version": "latest"
           },
-          "osDisk":
-          {
+          "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds/', variables('vmName'), copyIndex(), '.vhd')]"
+              "uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds/', variables('vmName'), copyIndex(), '.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
@@ -284,7 +279,7 @@
               "diskSizeGB": "512",
               "lun": 0,
               "vhd": {
-                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds0/', variables('vmName'), '-datadisk0.vhd')]"
+                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds0/', variables('vmName'), '-datadisk0.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -293,7 +288,7 @@
               "diskSizeGB": "1023",
               "lun": 1,
               "vhd": {
-                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds1/', variables('vmName'), '-datadisk1.vhd')]"
+                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds1/', variables('vmName'), '-datadisk1.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -302,7 +297,7 @@
               "diskSizeGB": "1023",
               "lun": 2,
               "vhd": {
-                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds2/', variables('vmName'), '-datadisk2.vhd')]"
+                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds2/', variables('vmName'), '-datadisk2.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -311,7 +306,7 @@
               "diskSizeGB": "1023",
               "lun": 3,
               "vhd": {
-                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds3/', variables('vmName'), '-datadisk3.vhd')]"
+                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds3/', variables('vmName'), '-datadisk3.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -320,7 +315,7 @@
               "diskSizeGB": "1023",
               "lun": 4,
               "vhd": {
-                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds4/', variables('vmName'), '-datadisk4.vhd')]"
+                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds4/', variables('vmName'), '-datadisk4.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -329,7 +324,7 @@
               "diskSizeGB": "1023",
               "lun": 5,
               "vhd": {
-                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds5/', variables('vmName'), '-datadisk5.vhd')]"
+                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds5/', variables('vmName'), '-datadisk5.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -338,7 +333,7 @@
               "diskSizeGB": "1023",
               "lun": 6,
               "vhd": {
-                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds6/', variables('vmName'), '-datadisk6.vhd')]"
+                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds6/', variables('vmName'), '-datadisk6.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -347,7 +342,7 @@
               "diskSizeGB": "1023",
               "lun": 7,
               "vhd": {
-                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds7/', variables('vmName'), '-datadisk7.vhd')]"
+                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds7/', variables('vmName'), '-datadisk7.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -356,7 +351,7 @@
               "diskSizeGB": "1023",
               "lun": 8,
               "vhd": {
-                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds8/', variables('vmName'), '-datadisk8.vhd')]"
+                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds8/', variables('vmName'), '-datadisk8.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -365,7 +360,7 @@
               "diskSizeGB": "1023",
               "lun": 9,
               "vhd": {
-                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds9/', variables('vmName'), '-datadisk9.vhd')]"
+                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds9/', variables('vmName'), '-datadisk9.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -374,7 +369,7 @@
               "diskSizeGB": "1023",
               "lun": 10,
               "vhd": {
-                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', variables('storageAccountName')), variables('storageAccountName')), '.blob.core.windows.net/vhds10/', variables('vmName'), '-datadisk10.vhd')]"
+                "Uri": "[concat('http://', concat(uniquestring(concat(copyIndex(), 'dn', resourceGroup().id)), variables('storageAccountName')), '.blob.core.windows.net/vhds10/', variables('vmName'), '-datadisk10.vhd')]"
               },
               "createOption": "Empty"
             }
@@ -409,7 +404,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmName'), copyIndex(), '/prepareDisks')]",
       "apiVersion": "[parameters('resourceAPIVersion')]",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "copy": {
         "name": "dataNodeNicLoop",
         "count": "[parameters('vmCount')]"
@@ -418,9 +413,9 @@
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), copyIndex())]"
       ],
       "properties": {
-        "publisher": "Microsoft.OSTCExtensions",
-        "type": "CustomScriptForLinux",
-        "typeHandlerVersion": "1.4",
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [

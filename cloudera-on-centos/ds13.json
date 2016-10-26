@@ -228,7 +228,7 @@
     "ipOctet3": "[int(split(variables('sa'), '.')[3])]",
     "datanodeIpOctet3":"[add(int(split(variables('sa'), '.')[3]), parameters('dataNodeIPOffSetFromMaster'))]",
     "storageAccount": {
-      "suffix": "[parameters('storageAccountSuffix')]",
+      "prefix": "[parameters('storageAccountSuffix')]",
       "type": "[parameters('storageAccountType')]"
     },
     "clusterTshirtSizeEval": {
