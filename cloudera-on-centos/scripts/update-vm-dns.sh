@@ -14,7 +14,7 @@
 LOG_FILE=/var/log/azure-template_initialize-server.log
 
 log() {
-  echo "$(date): $*" >> ${LOG_FILE}
+  echo "$(date): $*" >> "${LOG_FILE}"
 }
 
 n=120
@@ -23,15 +23,15 @@ internal_ip=$1
 
 log "Verifying DNS configuration ..."
 
-until [[ ! -z `grep "nameserver ${internal_ip}" /etc/resolv.conf` ]] || [ ${n} -le 0 ]
+until grep "nameserver ${internal_ip}" /etc/resolv.conf || [ ${n} -le 0 ]
 do
     service network restart
     log "Waiting for Azure DNS nameserver updates to propagate, this usually takes less than 2 minutes..."
-    n=`expr ${n} - ${sleepInterval}`
+    n=$((n - sleepInterval))
     sleep ${sleepInterval}
 done
 
-if [ ${n} -le 0 ]; then
+if [ "${n}" -le 0 ]; then
   log  "Failed to pick up dns server from VNET" & exit 1;
 fi
 
@@ -67,7 +67,5 @@ fi
 
 
 log "Verifying DNS configuration ... Successful"
-
-log "---------- VM extension scripts completed ----------"
 
 exit 0

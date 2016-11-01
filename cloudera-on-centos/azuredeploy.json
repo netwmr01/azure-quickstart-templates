@@ -28,11 +28,63 @@
         "description": "password for the DB Server (A mix of upper and lower-case characters, digits and symbols)"
       }
     },
+    "subscriptionId":{
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "tenantId":{
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "clientId":{
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "clientSecret":{
+      "type": "securestring",
+      "metadata": {
+        "description": ""
+      }
+    },
     "directorSize": {
       "type": "string",
       "defaultValue": "Standard_DS12_v2",
       "metadata": {
         "description": "The size of the VM for Director server"
+      }
+    },
+    "masterType": {
+      "type": "string",
+      "defaultValue": "Standard_DS14",
+      "metadata": {
+        "description": "The size of the VMs deployed as Master(s) in the cluster"
+      }
+    },
+    "workerType": {
+      "type": "string",
+      "defaultValue": "Standard_DS14",
+      "metadata": {
+        "description": "The size of the VMs deployed as Workers in the cluster"
+      }
+    },
+    "edgeType": {
+      "type": "string",
+      "defaultValue": "Standard_DS14",
+      "metadata": {
+        "description": "The size of the VMs deployed as Edge(s) in the cluster"
+      }
+    },
+    "directorEnvironmentName":{
+      "type": "string",
+      "defaultValue": "Director_Azure_Deployment",
+      "metadata": {
+        "description": "Environment name use by Cloudera Director"
       }
     },
     "dnsNamePrefix": {
@@ -184,7 +236,7 @@
     "version":{
       "templateAPIVersion":"2015-11-01",
       "resourceAPIVersion":"2015-06-15",
-      "typeHandlerVersion":"1.5",
+      "typeHandlerVersion":"2.0",
       "contentVersion":"1.0.0.1"
     },
     "addressPrefix":"[parameters('addressPrefix')]",
@@ -196,6 +248,29 @@
     "storageAccount": {
       "prefix": "[concat(uniquestring(resourceGroup().id),'storage')]",
       "type": "Premium_LRS"
+    },
+    "clusterParameters":{
+      "envName":"[parameters('directorEnvironmentName')]",
+      "location":"[resourceGroup().location]",
+      "subId":"[parameters('subscriptionId')]",
+      "tenantId":"[parameters('tenantId')]",
+      "clientId":"[parameters('clientId')]",
+      "clientSecret":"[parameters('clientSecret')]",
+      "adminUsername":"[parameters('adminUsername')]",
+      "keyFileName": "sshKeyForAzureVM",
+      "networkSecurityGroupResourceGroup":"[resourceGroup().name]",
+      "networkSecurityGroup":"[concat(parameters('virtualNetworkName'),'-nsg')]",
+      "virtualNetworkResourceGroup":"[resourceGroup().name]",
+      "virtualNetwork":"[parameters('virtualNetworkName')]",
+      "subnetName":"[parameters('subnetName')]",
+      "computeResourceGroup":"[resourceGroup().name]",
+      "hostFqdnSuffix":"[parameters('dnsNameSuffix')]",
+      "dbAddress":"[parameters('directorServerIPAddress')]",
+      "dbUsername":"[parameters('dbUsername')]",
+      "dbPassword":"[parameters('dbPassword')]",
+      "masterType":"[parameters('masterType')]",
+      "workerType":"[parameters('workerType')]",
+      "edgeType":"[parameters('edgeType')]"
     },
     "userInfo":{
       "company":"[parameters('company')]",
@@ -341,6 +416,36 @@
           },
           "dnsServerIPAddress": {
             "value": "[parameters('directorServerIPAddress')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "prepare-conf-launch-cluster",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('version').templateAPIVersion]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/network-restart-dns",
+        "Microsoft.Resources/deployments/director-node"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('scriptsUri'), '/prepare-conf-launch-cluster.json')]",
+          "contentVersion": "[variables('version').contentVersion]"
+        },
+        "parameters": {
+          "version":{
+            "value":"[variables('version')]"
+          },
+          "vmName":{
+            "value": "[parameters('dnsNamePrefix')]"
+          },
+          "scriptsUri": {
+            "value": "[variables('scriptsUri')]"
+          },
+          "clusterParameters":{
+            "value": "[variables('clusterParameters')]"
           }
         }
       }

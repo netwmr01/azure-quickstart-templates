@@ -3,11 +3,11 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #   http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# 
+#
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
@@ -32,7 +32,7 @@ HOST_IP=$2
 LOG_FILE=$3
 
 log() {
-  echo "$(date): $*" >> ${LOG_FILE}
+  echo "$(date): $*" >> "${LOG_FILE}"
 }
 
 #
@@ -61,9 +61,9 @@ internal_ip=${HOST_IP}
 
 subnet=$(ipcalc -np "$(ip -o -f inet addr show | awk '/scope global/ {print $4}')" | awk '{getline x;print x;}1' | awk -F= '{print $2}' | awk 'NR%2{printf "%s/",$0;next;}1')
 
-ptr_record_prefix=$(echo ${internal_ip} | awk -F. '{print $3"." $2"."$1}')
+ptr_record_prefix=$(echo "${internal_ip}" | awk -F. '{print $3"." $2"."$1}')
 
-hostnumber=$(echo ${internal_ip} | cut -d . -f 4)
+hostnumber=$(echo "${internal_ip}" | cut -d . -f 4)
 
 hostmaster="hostmaster"
 

@@ -35,9 +35,33 @@
     "nicName": "[concat(variables('vmName'), '-nic')]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
     "storageAccountName": "[concat(parameters('storageAccount').prefix, 'dir')]",
-    "dirSecurityGroupName": "[concat(parameters('dnsNamePrefix'), '-dir-sg')]"
+    "dirSecurityGroupName": "[concat(parameters('dnsNamePrefix'), '-dir-sg')]",
+    "masterAsName":"asmaster",
+    "workerAsName":"asworker",
+    "edgeAsName":"asedge"
   },
   "resources": [
+    {
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('masterAsName')]",
+      "location": "[resourceGroup().location]",
+      "properties": { }
+    },
+    {
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('workerAsName')]",
+      "location": "[resourceGroup().location]",
+      "properties": { }
+    },
+    {
+      "apiVersion": "[parameters('version').resourceAPIVersion]",
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('edgeAsName')]",
+      "location": "[resourceGroup().location]",
+      "properties": { }
+    },
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
       "type": "Microsoft.Network/networkSecurityGroups",
@@ -223,14 +247,15 @@
         "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
       ],
       "properties": {
-        "publisher": "Microsoft.OSTCExtensions",
-        "type": "CustomScriptForLinux",
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
         "typeHandlerVersion": "[parameters('version').typeHandlerVersion]",
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
             "[concat(parameters('scriptsUri'), '/scripts/initialize-director-server.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-dns-server.sh')]",
+            "[concat(parameters('scriptsUri'), '/scripts/requirements.txt')]",
             "[concat(parameters('scriptsUri'), '/scripts/prepare-mysql-disks.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/initialize-mysql-server.sh')]",
             "[concat(parameters('scriptsUri'), '/scripts/marketing.py')]",
@@ -239,10 +264,7 @@
           ]
         },
         "protectedSettings":{
-          "commandToExecute": "[concat('sh initialize-director-server.sh \"', parameters('vmSpec').adminUsername, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('networkSpec').directorServerIPAddress, '\" \"', parameters('vmSpec').dbUsername, '\" \"', parameters('vmSpec').dbPassword, '\" \"', parameters('userInfo').company, '\" \"', parameters('userInfo').emailAddress, '\" \"', parameters('userInfo').businessPhone, '\" \"', parameters('userInfo').firstName, '\" \"', parameters('userInfo').lastName, '\" \"', parameters('userInfo').jobRole, '\" \"', parameters('userInfo').jobFunction, '\"')]",
-          "Items": {
-            "dbPassword": "[parameters('vmSpec').dbPassword]"
-          }
+          "commandToExecute": "[concat('sh initialize-director-server.sh \"', parameters('vmSpec').adminUsername, '\" \"', parameters('dnsNameSuffix'), '\" \"', parameters('networkSpec').directorServerIPAddress, '\" \"', parameters('vmSpec').dbUsername, '\" \"', parameters('vmSpec').dbPassword, '\" \"', parameters('userInfo').company, '\" \"', parameters('userInfo').emailAddress, '\" \"', parameters('userInfo').businessPhone, '\" \"', parameters('userInfo').firstName, '\" \"', parameters('userInfo').lastName, '\" \"', parameters('userInfo').jobRole, '\" \"', parameters('userInfo').jobFunction, '\"')]"
         }
       }
     }

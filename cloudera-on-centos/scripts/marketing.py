@@ -24,7 +24,7 @@ import sys
 import logging
 
 #loging starts
-logging.basicConfig(filename='/tmp/marketing.log', level=logging.DEBUG)
+logging.basicConfig(filename='/var/log/marketing.log', level=logging.DEBUG)
 
 
 def parse_options():

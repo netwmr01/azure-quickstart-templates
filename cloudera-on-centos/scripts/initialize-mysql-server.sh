@@ -3,11 +3,11 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #   http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# 
+#
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
@@ -22,7 +22,7 @@ LOG_FILE=$3
 SLEEP_INTERVAL=10
 
 log() {
-  echo "$(date): $*" >> ${LOG_FILE}
+  echo "$(date): $*" >> "${LOG_FILE}"
 }
 
 #
@@ -31,7 +31,7 @@ log() {
 
 log "Preparing disk for MySQL server ..."
 
-bash ./prepare-mysql-disks.sh >> ${LOG_FILE} 2>&1
+bash ./prepare-mysql-disks.sh >> "${LOG_FILE}" 2>&1
 
 status=$?
 if [ ${status} -ne 0 ]; then
@@ -50,7 +50,7 @@ log "Installing MySQL server packages ..."
 n=0
 until [ ${n} -ge 5 ]
 do
-    sudo sudo yum install -y mysql-server >> ${LOG_FILE} 2>&1 && break
+    sudo sudo yum install -y mysql-server >> "${LOG_FILE}" 2>&1 && break
     n=$((n+1))
     sleep ${SLEEP_INTERVAL}
 done
@@ -183,7 +183,7 @@ send \"y\r\"
 expect eof
 ")
 
-echo "$SECURE_MYSQL" >> ${LOG_FILE} 2>&1
+echo "$SECURE_MYSQL" >> "${LOG_FILE}" 2>&1
 
 log "Securing MySQL server ... Successful"
 
