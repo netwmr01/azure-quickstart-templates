@@ -39,6 +39,9 @@ DIRPASSWORD = 'admin'
 DEFAULT_BASE_DIR = "/home"
 DEFAULT_BASE_CONF_NAME = "azure.simple.conf"
 DEFAULT_CONF_NAME = "azure.simple.expanded.conf"
+DEFAULT_ASMASTER = "asmaster"
+DEFAULT_ASEDGE = "asedge"
+DEFAULT_ASWORKER = "asworker"
 
 
 def execAndLog(command):
@@ -94,7 +97,7 @@ def parse_options():
 
 def setInstanceParameters(conf, section, machineType, networkSecurityGroupResourceGroup,
                           networkSecurityGroup, virtualNetworkResourceGroup,
-                          virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix):
+                          virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix, availabilitySet):
     conf.put(section + '.type', machineType)
     conf.put(section + '.networkSecurityGroupResourceGroup', networkSecurityGroupResourceGroup)
     conf.put(section + '.networkSecurityGroup', networkSecurityGroup)
@@ -103,6 +106,7 @@ def setInstanceParameters(conf, section, machineType, networkSecurityGroupResour
     conf.put(section + '.subnetName', subnetName)
     conf.put(section + '.computeResourceGroup', computeResourceGroup)
     conf.put(section + '.hostFqdnSuffix', hostFqdnSuffix)
+    conf.put(section + '.availabilitySet', availabilitySet)
 
 
 def generateKeyToFile(keyFileName, username):
@@ -165,27 +169,27 @@ def prepareAndImportConf(options):
     setInstanceParameters(conf, 'instances.master', masterType, networkSecurityGroupResourceGroup,
                           networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix)
+                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASMASTER)
     setInstanceParameters(conf, 'instances.worker', workerType, networkSecurityGroupResourceGroup,
                           networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix)
+                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASWORKER)
     setInstanceParameters(conf, 'instances.edge', edgeType, networkSecurityGroupResourceGroup,
                           networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix)
+                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASEDGE)
     setInstanceParameters(conf, 'cloudera-manager.instance', edgeType,
                           networkSecurityGroupResourceGroup, networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix)
+                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASEDGE)
     setInstanceParameters(conf, 'cluster.masters.instance', masterType,
                           networkSecurityGroupResourceGroup, networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix)
+                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASMASTER)
     setInstanceParameters(conf, 'cluster.workers.instance', masterType,
                           networkSecurityGroupResourceGroup, networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix)
+                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASWORKER)
 
     conf.put('databaseServers.mysqlprod1.host', dbHostOrIP)
     conf.put('databaseServers.mysqlprod1.user', dbUsername)
