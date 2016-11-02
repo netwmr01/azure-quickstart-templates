@@ -106,7 +106,7 @@ def setInstanceParameters(conf, section, machineType, networkSecurityGroupResour
     conf.put(section + '.subnetName', subnetName)
     conf.put(section + '.computeResourceGroup', computeResourceGroup)
     conf.put(section + '.hostFqdnSuffix', hostFqdnSuffix)
-    conf.put(section + '.availabilitySet', availabilitySet)
+    #conf.put(section + '.availabilitySet', availabilitySet)
 
 
 def generateKeyToFile(keyFileName, username):
