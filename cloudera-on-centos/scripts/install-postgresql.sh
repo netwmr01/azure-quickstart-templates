@@ -1,5 +1,14 @@
 #!/bin/bash
+
+LOG_FILE="/var/log/cloudera-azure-initialize.log"
+
+EXECNAME=$0 # xxx/jason - this might just be "bash", check it
 CURRENT_VERSION_MARKER='Azure_1'
+
+# logs everything to the LOG_FILE
+log() {
+  echo "$(date) [${EXECNAME}]: $*" >> "${LOG_FILE}"
+}
 
 stop_db()
 {
@@ -16,7 +25,8 @@ fail_or_continue()
         if [[ -z $STR ]]; then
             STR="--> Error $RET"
         fi
-        echo "$STR, giving up"
+        log "$STR, giving up"
+        log "------- initialize-postgresql.sh failed -------"
         exit $RET
     fi
 }
@@ -396,6 +406,8 @@ EOF
   cat $TMPFILE > $CONF_FILE
 }
 
+log "------- initialize-postgresql.sh starting -------"
+
 sudo service postgresql initdb
 sudo service postgresql start
 SCM_PWD=`create_random_password`
@@ -449,6 +461,7 @@ do
 done
 if [ $i -ge 5 ]; then
   echo "DB failed to start, exit with status 1"
+  log "------- initialize-postgresql.sh failed -------"
   exit 1
 fi
 
@@ -465,6 +478,11 @@ create_hive_metastore
 # with dynamic db creation, no need to call "create_mgmt_role_db" for new roles
 # above calls kept for consistency
 
-/usr/share/cmf/schema/scm_prepare_database.sh postgresql scm scm $SCM_PWD >> /tmp/initialize-cloudera-server.log 2>> /tmp/initialize-cloudera-server.err
+/usr/share/cmf/schema/scm_prepare_database.sh postgresql scm scm $SCM_PWD >> "${LOG_FILE}" 2>&1
 
 configure_remote_connections
+
+log "------- initialize-postgresql.sh succeeded -------"
+
+# always `exit 0` on success
+exit 0

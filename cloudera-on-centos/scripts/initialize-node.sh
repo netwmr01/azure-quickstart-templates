@@ -11,8 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo "initializing nodes..."
+LOG_FILE="/var/log/cloudera-azure-initialize.log"
 
+EXECNAME=$0
 MASTERIP=$1
 WORKERIP=$2
 NAMEPREFIX=$3
@@ -21,6 +22,11 @@ MASTERNODES=$5
 DATANODES=$6
 ADMINUSER=$7
 NODETYPE=$8
+
+# logs everything to the LOG_FILE
+log() {
+  echo "$(date) [${EXECNAME}]: $@" >> ${LOG_FILE}
+}
 
 function atoi
 {
@@ -41,6 +47,8 @@ echo -n $(($(($((${1}/256))/256))%256)).
 echo -n $(($((${1}/256))%256)).
 echo $((${1}%256))
 }
+
+log "------- initialize-node.sh starting -------"
 
 # Converts a domain like machine.domain.com to domain.com by removing the machine name
 NAMESUFFIX=`echo $NAMESUFFIX | sed 's/^[^.]*\.//'`
@@ -156,3 +164,8 @@ sed -i "s/.*HOSTNAME.*/HOSTNAME=${fqdnstring}/g" /etc/sysconfig/network
 #sed -i "s/UsePAM\s*yes/UsePAM no/" /etc/ssh/sshd_config
 #sed -i "s/PasswordAuthentication\s*yes/PasswordAuthentication no/" /etc/ssh/sshd_config
 #/etc/init.d/sshd restart
+
+log "------- initialize-node.sh succeeded -------"
+
+# always `exit 0` on success
+exit 0

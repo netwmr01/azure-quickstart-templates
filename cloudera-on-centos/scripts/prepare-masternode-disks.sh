@@ -1,10 +1,35 @@
 #!/bin/bash
 
+LOG_FILE="/var/log/cloudera-azure-initialize.log"
+
+EXECNAME=$0
+
+# logs everything to the LOG_FILE
+log() {
+  echo "$(date) [${EXECNAME}]: $*" >> "${LOG_FILE}"
+}
+
+#
+# The following section has a mix of `<<"EOF"`` and `<<EOF`` (no quotes). That is because most 
+# parts need to be evaluated when the here-doc is created, and some parts need to be evalued on 
+# execution.
+#
 # ok this is the fun part. Let's create a file here
 # use temp file to use sudo
-cat > inputs2.sh << 'END'
+cat > inputs2.sh <<EOF
+LOG_FILE="/var/log/cloudera-azure-initialize.log"
+EOF
   
+cat >> inputs2.sh <<"EOF"
+EXECNAME=$0
 
+# logs everything to the LOG_FILE
+log() {
+  echo "$(date) [${EXECNAME}]: $*" >> "${LOG_FILE}"
+}
+EOF
+
+cat >> inputs2.sh <<"EOF"
 
 mountDriveForLogCloudera()
 {
@@ -71,7 +96,7 @@ prepare_unmounted_volumes()
     # partition with digits at the end (likely a volume that has already been
     # mounted), and is not contained in $MOUNTED_VOLUMES
     if [[ ! ${part} =~ [0-9]$ && ! ${ALL_PARTITIONS} =~ $part[0-9] && $MOUNTED_VOLUMES != *$part* ]];then
-      echo ${part}
+      log ${part}
       if [[ ${COUNTER} == 0 ]]; then
         mountDriveForLogCloudera "/dev/$part"
       elif [[ ${COUNTER} == 1 ]]; then
@@ -110,9 +135,9 @@ prepare_disk()
   # is device mounted?
   mount | grep -q "${device}"
   if [ $? == 0 ]; then
-    echo "$device is mounted"
+    log "$device is mounted"
   else
-    echo "Warning: ERASING CONTENTS OF $device"
+    log "Warning: ERASING CONTENTS OF $device"
     mkfs.$FS -F $FS_OPTS $device -m 0
 
     # If $FS is ext3 or ext4, then run tune2fs -i 0 -c 0 to disable fsck checks for data volumes
@@ -121,7 +146,7 @@ prepare_disk()
     /sbin/tune2fs -i0 -c0 ${device}
     fi
 
-    echo "Mounting $device on $mount"
+    log "Mounting $device on $mount"
     if [ ! -e "${mount}" ]; then
       mkdir "${mount}"
     fi
@@ -139,7 +164,12 @@ prepare_disk()
   fi
 }
 
-END
+EOF
+
+log "------- prepare-masternode-disks.sh starting -------"
 
 sudo bash -c "source ./inputs2.sh; prepare_unmounted_volumes"
-exit 0  # and this is useful
+log "------- prepare-masternode-disks.sh succeeded -------"
+
+# always `exit 0` on success
+exit 0 # xxx/jason - shouldn't this be relative to the success / failure of inputs2.sh?

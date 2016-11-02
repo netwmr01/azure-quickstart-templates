@@ -12,7 +12,10 @@
 # limitations under the License.
 # Usage: bootstrap-cloudera-1.0.sh {clusterName} {managment_node} {cluster_nodes} {isHA} {sshUserName} [{sshPassword}]
 
+LOG_FILE="/var/log/cloudera-azure-initialize.log"
+
 # Put the command line parameters into named variables
+EXECNAME=$0
 MASTERIP=$1
 WORKERIP=$2
 NAMEPREFIX=$3
@@ -36,7 +39,10 @@ VMSIZE=${20}
 
 CLUSTERNAME=$NAMEPREFIX
 
-execname=$0
+# logs everything to the LOG_FILE
+log() {
+  echo "$(date) [${EXECNAME}]: $*" >> "${LOG_FILE}"
+}
 
 function atoi
 {
@@ -58,9 +64,7 @@ echo -n $(($((${1}/256))%256)).
 echo $((${1}%256))
 }
 
-log() {
-  echo "$(date): [${execname}] $@" 
-}
+log "------- bootstrap-cloudera.sh starting -------"
 
 log "my vmsize: $VMSIZE"
 # Converts a domain like machine.domain.com to domain.com by removing the machine name
@@ -124,9 +128,14 @@ then
   if ! sh initialize-cloudera-server.sh "$CLUSTERNAME" "$key" "$mip" "$worker_ip" "$HA" "$ADMINUSER" "$PASSWORD" "$CMUSER" "$CMPASSWORD" "$EMAILADDRESS" "$BUSINESSPHONE" "$FIRSTNAME" "$LASTNAME" "$JOBROLE" "$JOBFUNCTION" "$COMPANY" "$VMSIZE">/dev/null 2>&1
   then
     log "initialize-cloudera-server.sh failed."
+    log "------- bootstrap-cloudera.sh failed -------"
     exit 1
   fi
   log "initialize-cloudera-server.sh succeeded."
 fi
 log "END: Detached script to finalize initialization running. PID: $!"
 
+log "------- bootstrap-cloudera.sh succeeded -------"
+
+# always `exit 0` on success
+exit 0
