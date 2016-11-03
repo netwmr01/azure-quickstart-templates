@@ -124,7 +124,7 @@ def prepareAndImportConf(options):
     conf = ConfigFactory.parse_file(DEFAULT_BASE_CONF_NAME)
     with open("/tmp/"+DEFAULT_CONF_NAME, "w") as text_file:
         text_file.write(tool.HOCONConverter.to_hocon(conf))
-    conf = ConfigFactory.parse_file("/tmp/"+DEFAULT_BASE_CONF_NAME)
+    conf = ConfigFactory.parse_file("/tmp/"+DEFAULT_CONF_NAME)
 
     logging.info('Parsing base config ... Successful')
 
