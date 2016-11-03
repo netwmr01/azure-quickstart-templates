@@ -9,6 +9,7 @@
       "type": "object"
     }
   },
+  "variables": {},
   "resources": [
     {
       "apiVersion": "[parameters('version').resourceAPIVersion]",
@@ -16,6 +17,11 @@
       "name": "[parameters('networkSpec').virtualNetworkName]",
       "location": "[resourceGroup().location]",
       "properties": {
+        "dhcpOptions": {
+          "dnsServers": [
+            "[parameters('networkSpec').dnsServerIPAddress]"
+          ]
+        },
         "addressSpace": {
           "addressPrefixes": [
             "[parameters('networkSpec').addressPrefix]"

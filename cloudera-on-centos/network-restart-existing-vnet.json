@@ -5,10 +5,15 @@
     "version":{
       "type":"object"
     },
-    "networkSpec": {
-      "type": "object"
+    "vmName":{
+      "type":"string"
+    },
+    "scriptsUri":{
+      "type":"string"
+    },
+    "dnsServerIPAddress":{
+      "type":"string"
     }
   },
-  "variables": {},
   "resources": []
 }
