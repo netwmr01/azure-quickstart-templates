@@ -2,9 +2,11 @@
 
 LOG_FILE="/var/log/cloudera-azure-initialize.log"
 
-EXECNAME=$0 # "./prepare-masternode-disks.sh"
+# manually set EXECNAME because this file is called from another script and it $0 contains a 
+# relevant path
+EXECNAME="prepare-masternode-disks.sh"
 
-# logs everything to the LOG_FILE
+# logs everything to the $LOG_FILE
 log() {
   echo "$(date) [${EXECNAME}]: $*" >> "${LOG_FILE}"
 }
@@ -152,9 +154,9 @@ END
 
 log "------- prepare-masternode-disks.sh starting -------"
 
-# use `source` to run this shell script in the current shell (so it keeps all of the current variables)
 sudo bash -c "source ./inputs2.sh; prepare_unmounted_volumes"
+
 log "------- prepare-masternode-disks.sh succeeded -------"
 
 # always `exit 0` on success
-exit 0 # xxx/jason - shouldn't this be relative to the success / failure of inputs2.sh?
+exit 0

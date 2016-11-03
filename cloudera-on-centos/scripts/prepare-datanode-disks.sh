@@ -2,13 +2,14 @@
 
 LOG_FILE="/var/log/cloudera-azure-initialize.log"
 
-EXECNAME=$0
+# manually set EXECNAME because this file is called from another script and it $0 contains a 
+# relevant path
+EXECNAME="prepare-datanode-disks.sh"
 
-# logs everything to the LOG_FILE
+# logs everything to the $LOG_FILE
 log() {
   echo "$(date) [${EXECNAME}]: $*" >> "${LOG_FILE}"
 }
-
 
 cat > inputs2.sh << 'END'
 
@@ -178,4 +179,4 @@ sudo bash -c "source ./inputs2.sh; prepare_unmounted_volumes"
 log "------- prepare-datanode-disks.sh succeeded -------"
  
 # always `exit 0` on success
-exit 0 # xxx/jason - shouldn't this be relative to the success / failure of inputs2.sh?
+exit 0

@@ -2,10 +2,11 @@
 
 LOG_FILE="/var/log/cloudera-azure-initialize.log"
 
-EXECNAME=$0 # xxx/jason - this might just be "bash", check it
+# manually set EXECNAME because this file is called from another script and it $0 is "bash"
+EXECNAME="install-postgresql.sh"
 CURRENT_VERSION_MARKER='Azure_1'
 
-# logs everything to the LOG_FILE
+# logs everything to the $LOG_FILE
 log() {
   echo "$(date) [${EXECNAME}]: $*" >> "${LOG_FILE}"
 }

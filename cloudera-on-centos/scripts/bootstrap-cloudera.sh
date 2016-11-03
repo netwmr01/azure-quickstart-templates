@@ -39,7 +39,7 @@ VMSIZE=${20}
 
 CLUSTERNAME=$NAMEPREFIX
 
-# logs everything to the LOG_FILE
+# logs everything to the $LOG_FILE
 log() {
   echo "$(date) [${EXECNAME}]: $*" >> "${LOG_FILE}"
 }
@@ -127,11 +127,11 @@ if [ "$INSTALLCDH" == "True" ]
 then
   if ! sh initialize-cloudera-server.sh "$CLUSTERNAME" "$key" "$mip" "$worker_ip" "$HA" "$ADMINUSER" "$PASSWORD" "$CMUSER" "$CMPASSWORD" "$EMAILADDRESS" "$BUSINESSPHONE" "$FIRSTNAME" "$LASTNAME" "$JOBROLE" "$JOBFUNCTION" "$COMPANY" "$VMSIZE">/dev/null 2>&1
   then
-    log "initialize-cloudera-server.sh failed."
+    log "initialize-cloudera-server.sh returned non-zero exit code"
     log "------- bootstrap-cloudera.sh failed -------"
     exit 1
   fi
-  log "initialize-cloudera-server.sh succeeded."
+  log "initialize-cloudera-server.sh returned exit code 0"
 fi
 log "END: Detached script to finalize initialization running. PID: $!"
 

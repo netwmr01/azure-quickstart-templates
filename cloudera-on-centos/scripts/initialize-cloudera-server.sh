@@ -4,7 +4,7 @@ LOG_FILE="/var/log/cloudera-azure-initialize.log"
 
 EXECNAME=$0
 
-# logs everything to the LOG_FILE
+# logs everything to the $LOG_FILE
 log() {
   echo "$(date) [${EXECNAME}]: $*" >> "${LOG_FILE}"
 }
@@ -42,8 +42,8 @@ log "Running as $(whoami) on $(hostname)"
 
 # Use the Cloudera-documentation-suggested workaround
 log "about to set setenforce to 0"
-set +e # xxx/jason - this looks like it should be `-e` and is duplicated above
-setenforce 0 >> /tmp/setenforce.out # xxx/jason - why is this being sent to a file? re: this is unnecessay as setenforce doesn't have output
+set +e
+setenforce 0
 
 exitcode=$?
 log "Done with settiing enforce. Its exit code was $exitcode"
@@ -52,7 +52,7 @@ log "Running setenforce inline as $(setenforce 0)"
 
 getenforce
 log "Running getenforce inline as $(getenforce)"
-getenforce >> /tmp/getenforce.out # xxx/jason - why is this being sent to a file? re: this is also redundant
+getenforce
 
 log "should be done logging things"
 
@@ -64,10 +64,10 @@ sed -i 's^SELINUX=enforcing^SELINUX=disabled^g' /etc/selinux/config || true
 cat /etc/selinux/config > /tmp/afterSeLinux.out
 log "Done disabling selinux"
 
-set +e # xxx/jason same as above, should be able to delete
+set +e
 
 log "Set cloudera-manager.repo to CM v5"
-yum clean all >> "${LOG_FILE}"
+yum clean all >> "${LOG_FILE}" 2>&1
 rpm --import http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera >> "${LOG_FILE}" 2>&1
 wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo -O /etc/yum.repos.d/cloudera-manager.repo >> "${LOG_FILE}" 2>&1
 # this often fails so adding retry logic
@@ -88,7 +88,7 @@ fi
 #######################################################################################################################
 log "installing external DB"
 sudo yum install postgresql-server -y
-bash install-postgresql.sh >> "${LOG_FILE}" 2>&1 # xxx/jason - this logs all stdout and stderr from install-postgresql.sh. Question: should i log here or within install-postgresql.sh? 
+bash install-postgresql.sh >> "${LOG_FILE}" 2>&1 
 #restart to make sure all configuration take effects
 sudo service postgresql restart
 
@@ -96,8 +96,8 @@ log "finished installing external DB"
 #######################################################################################################################
 
 log "start cloudera-scm-server services"
-#service cloudera-scm-server-db start >> "${LOG_FILE}"
-service cloudera-scm-server start >> "${LOG_FILE}"
+#service cloudera-scm-server-db start >> "${LOG_FILE}" 2>&1
+service cloudera-scm-server start >> "${LOG_FILE}" 2>&1
 
 #log "Create HIVE metastore DB Cloudera embedded PostgreSQL"
 #export PGPASSWORD=$(head -1 /var/lib/cloudera-scm-server-db/data/generated_password.txt)
@@ -112,8 +112,8 @@ log "END: master node deployments"
 
 # Set up python
 rpm -ivh http://dl.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm >> "${LOG_FILE}" 2>&1
-yum -y install python-pip >> "${LOG_FILE}"
-pip install cm_api >> "${LOG_FILE}"
+yum -y install python-pip >> "${LOG_FILE}" 2>&1
+pip install cm_api >> "${LOG_FILE}" 2>&1
 
 # trap file to indicate done
 log "creating file to indicate finished"
