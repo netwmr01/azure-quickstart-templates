@@ -169,9 +169,11 @@ def deploy_parcel(parcel_product, parcel_version):
                 break
            # if parcel.state.errors:
             #    raise Exception(str(parcel.state.errors))
-            msg = " [%s: %s / %s]" % (parcel.stage, parcel.state.progress, parcel.state.totalProgress)
-            sys.stdout.write(msg + " " * (78 - len(msg)) + "\r")
-            sys.stdout.flush()
+            # this causes a lot of spam in the log file as stdout doesn't get flushed correctly
+            # msg = " [%s: %s / %s]" % (parcel.stage, parcel.state.progress, parcel.state.totalProgress)
+            # sys.stdout.write(msg + " " * (78 - len(msg)) + "\r")
+            # sys.stdout.flush()
+            
 
         print ""
         print "1. Parcel Stage: %s" % parcel.stage
