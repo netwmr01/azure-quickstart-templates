@@ -106,7 +106,7 @@ def setInstanceParameters(conf, section, machineType, networkSecurityGroupResour
     conf.put(section + '.subnetName', subnetName)
     conf.put(section + '.computeResourceGroup', computeResourceGroup)
     conf.put(section + '.hostFqdnSuffix', hostFqdnSuffix)
-    #conf.put(section + '.availabilitySet', availabilitySet)
+    conf.put(section + '.availabilitySet', availabilitySet)
 
 
 def generateKeyToFile(keyFileName, username):
@@ -119,7 +119,12 @@ def generateKeyToFile(keyFileName, username):
 def prepareAndImportConf(options):
     logging.info('Parsing base config ...')
 
+    # The python package seems to have trouble expanding and replacing at the same time
+    # Therefore use a temp file to hold the expand the version
     conf = ConfigFactory.parse_file(DEFAULT_BASE_CONF_NAME)
+    with open("/tmp/"+DEFAULT_CONF_NAME, "w") as text_file:
+        text_file.write(tool.HOCONConverter.to_hocon(conf))
+    conf = ConfigFactory.parse_file("/tmp/"+DEFAULT_BASE_CONF_NAME)
 
     logging.info('Parsing base config ... Successful')
 
