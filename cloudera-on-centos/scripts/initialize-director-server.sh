@@ -35,6 +35,9 @@ LASTNAME=${10}
 JOBROLE=${11}
 JOBFUNCTION=${12}
 
+DIR_USER=${13}
+DIR_PASSWORD=${14}
+
 SLEEP_INTERVAL=10
 
 log() {
@@ -147,6 +150,9 @@ if [ ${n} -le 0 ]; then
 fi
 
 log "Starting cloudera-director-server ... Successful"
+
+log "Securing cloudera-director-server ..."
+python director_user_passwd.py "${DIR_USER}" "${DIR_PASSWORD}"
 
 #
 # Disable iptables so API calls to Director server works.

@@ -34,14 +34,9 @@ datefmt ='%a %b %d %H:%M:%S %Z %Y'
 logFileName = '/var/log/azure-template_initialize-server.log'
 logging.basicConfig(format=format, datefmt=datefmt, filename=logFileName, level=logging.INFO)
 
-DIRUSERNAME = 'admin'
-DIRPASSWORD = 'admin'
 DEFAULT_BASE_DIR = "/home"
 DEFAULT_BASE_CONF_NAME = "azure.simple.conf"
 DEFAULT_CONF_NAME = "azure.simple.expanded.conf"
-DEFAULT_ASMASTER = "asmaster"
-DEFAULT_ASEDGE = "asedge"
-DEFAULT_ASWORKER = "asworker"
 
 
 def execAndLog(command):
@@ -89,6 +84,8 @@ def parse_options():
     parser.add_option('--masterType', dest='masterType', type="string", help='Set masterType')
     parser.add_option('--workerType', dest='workerType', type="string", help='Set workerType')
     parser.add_option('--edgeType', dest='edgeType', type="string", help='Set edgeType')
+    parser.add_option('--dirUsername', dest='dirUsername', type="string", help='Set dirUsername')
+    parser.add_option('--dirPassword', dest='dirPassword', type="string", help='Set dirPassword')
 
     (options, args) = parser.parse_args()
 
@@ -97,7 +94,7 @@ def parse_options():
 
 def setInstanceParameters(conf, section, machineType, networkSecurityGroupResourceGroup,
                           networkSecurityGroup, virtualNetworkResourceGroup,
-                          virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix, availabilitySet):
+                          virtualNetwork, subnetName, computeResourceGroup, hostFqdnSuffix):
     conf.put(section + '.type', machineType)
     conf.put(section + '.networkSecurityGroupResourceGroup', networkSecurityGroupResourceGroup)
     conf.put(section + '.networkSecurityGroup', networkSecurityGroup)
@@ -106,7 +103,6 @@ def setInstanceParameters(conf, section, machineType, networkSecurityGroupResour
     conf.put(section + '.subnetName', subnetName)
     conf.put(section + '.computeResourceGroup', computeResourceGroup)
     conf.put(section + '.hostFqdnSuffix', hostFqdnSuffix)
-    conf.put(section + '.availabilitySet', availabilitySet)
 
 
 def generateKeyToFile(keyFileName, username):
@@ -119,12 +115,7 @@ def generateKeyToFile(keyFileName, username):
 def prepareAndImportConf(options):
     logging.info('Parsing base config ...')
 
-    # The python package seems to have trouble expanding and replacing at the same time
-    # Therefore use a temp file to hold the expand the version
     conf = ConfigFactory.parse_file(DEFAULT_BASE_CONF_NAME)
-    with open("/tmp/"+DEFAULT_CONF_NAME, "w") as text_file:
-        text_file.write(tool.HOCONConverter.to_hocon(conf))
-    conf = ConfigFactory.parse_file("/tmp/"+DEFAULT_CONF_NAME)
 
     logging.info('Parsing base config ... Successful')
 
@@ -157,6 +148,9 @@ def prepareAndImportConf(options):
     workerType = options.workerType.upper()
     edgeType = options.edgeType.upper()
 
+    dirUsername = options.dirUsername
+    dirPassword = options.dirPassword
+
     logging.info('Assigning parameters ... Successful')
 
     logging.info('Modifying config ...')
@@ -174,27 +168,27 @@ def prepareAndImportConf(options):
     setInstanceParameters(conf, 'instances.master', masterType, networkSecurityGroupResourceGroup,
                           networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASMASTER)
+                          computeResourceGroup, hostFqdnSuffix)
     setInstanceParameters(conf, 'instances.worker', workerType, networkSecurityGroupResourceGroup,
                           networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASWORKER)
+                          computeResourceGroup, hostFqdnSuffix)
     setInstanceParameters(conf, 'instances.edge', edgeType, networkSecurityGroupResourceGroup,
                           networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASEDGE)
+                          computeResourceGroup, hostFqdnSuffix)
     setInstanceParameters(conf, 'cloudera-manager.instance', edgeType,
                           networkSecurityGroupResourceGroup, networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASEDGE)
+                          computeResourceGroup, hostFqdnSuffix)
     setInstanceParameters(conf, 'cluster.masters.instance', masterType,
                           networkSecurityGroupResourceGroup, networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASMASTER)
+                          computeResourceGroup, hostFqdnSuffix)
     setInstanceParameters(conf, 'cluster.workers.instance', masterType,
                           networkSecurityGroupResourceGroup, networkSecurityGroup,
                           virtualNetworkResourceGroup, virtualNetwork, subnetName,
-                          computeResourceGroup, hostFqdnSuffix, DEFAULT_ASWORKER)
+                          computeResourceGroup, hostFqdnSuffix)
 
     conf.put('databaseServers.mysqlprod1.host', dbHostOrIP)
     conf.put('databaseServers.mysqlprod1.user', dbUsername)
@@ -214,7 +208,7 @@ def prepareAndImportConf(options):
     logging.info('Importing config to Cloudera Director server ...')
 
     command = "python setup-default.py --admin-username %s --admin-password %s %s" % (
-        DIRUSERNAME, DIRPASSWORD, confLocation)
+        dirUsername, dirPassword, confLocation)
     execAndLog(command)
 
     logging.info('Importing config to Cloudera Director server ... Successful')
