@@ -75,12 +75,12 @@ n=0
 until [ $n -ge 5 ]
 do
     yum install -y oracle-j2sdk* cloudera-manager-daemons cloudera-manager-server >> "${LOG_FILE}" 2>&1 && break
-    n=$[$n+1]
+    n=$((n+1))
     sleep 15s
 done
 if [ $n -ge 5 ]
 then 
-    log "scp error $remote, exiting..."
+    log "scp error, exiting..."
     log "------- initialize-cloudera-server.sh failed -------" 
     exit 1
 fi
@@ -105,7 +105,7 @@ service cloudera-scm-server start >> "${LOG_FILE}" 2>&1
 #for SQL in "${SQLCMD[@]}"; do
 #	psql -A -t -d scm -U cloudera-scm -h localhost -p 5432 -c "${SQL}" >> "${LOG_FILE}"
 #done
-while ! (exec 6<>/dev/tcp/$(hostname)/7180) ; do log 'Waiting for cloudera-scm-server to start...'; sleep 15; done
+while ! (exec 6<>/dev/tcp/"$(hostname)"/7180) ; do log 'Waiting for cloudera-scm-server to start...'; sleep 15; done
 log "END: master node deployments"
 
 
@@ -123,9 +123,9 @@ touch /tmp/readyFile
 log "BEGIN: CM deployment - starting"
 log "Parameters: $ClusterName $mip $worker_ip $EMAILADDRESS $BUSINESSPHONE $FIRSTNAME $LASTNAME $JOBROLE $JOBFUNCTION $COMPANY $VMSIZE"
 if $HA; then
-    python cmxDeployOnIbiza.py -n "$ClusterName" -u $User -p $Password  -m "$mip" -w "$worker_ip" -a -c $cmUser -s $cmPassword -e -r "$EMAILADDRESS" -b "$BUSINESSPHONE" -f "$FIRSTNAME" -t "$LASTNAME" -o "$JOBROLE" -i "$JOBFUNCTION" -y "$COMPANY" -v "$VMSIZE" >> "${LOG_FILE}" 2>&1
+    python cmxDeployOnIbiza.py -n "$ClusterName" -u "$User" -p "$Password" -m "$mip" -w "$worker_ip" -a -c "$cmUser" -s "$cmPassword" -e -r "$EMAILADDRESS" -b "$BUSINESSPHONE" -f "$FIRSTNAME" -t "$LASTNAME" -o "$JOBROLE" -i "$JOBFUNCTION" -y "$COMPANY" -v "$VMSIZE" >> "${LOG_FILE}" 2>&1
 else
-    python cmxDeployOnIbiza.py -n "$ClusterName" -u $User -p $Password  -m "$mip" -w "$worker_ip" -c $cmUser -s $cmPassword -e -r "$EMAILADDRESS" -b "$BUSINESSPHONE" -f "$FIRSTNAME" -t "$LASTNAME" -o "$JOBROLE" -i "$JOBFUNCTION" -y "$COMPANY" -v "$VMSIZE" >> "${LOG_FILE}" 2>&1
+    python cmxDeployOnIbiza.py -n "$ClusterName" -u "$User" -p "$Password" -m "$mip" -w "$worker_ip" -c "$cmUser" -s "$cmPassword" -e -r "$EMAILADDRESS" -b "$BUSINESSPHONE" -f "$FIRSTNAME" -t "$LASTNAME" -o "$JOBROLE" -i "$JOBFUNCTION" -y "$COMPANY" -v "$VMSIZE" >> "${LOG_FILE}" 2>&1
 fi
 log "END: CM deployment ended"
 
