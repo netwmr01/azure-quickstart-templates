@@ -80,7 +80,7 @@ do
 done
 if [ $n -ge 5 ]
 then 
-    log "scp error, exiting..."
+    log "yum install error, exiting..."
     log "------- initialize-cloudera-server.sh failed -------" 
     exit 1
 fi

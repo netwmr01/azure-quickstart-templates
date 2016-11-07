@@ -104,16 +104,7 @@ fi
 echo "Done preparing disks.  Now ls -la looks like this:"
 ls -la /
 # Create Impala scratch directory
-# calculate numDataDirs with a glob to avoid parsing the output of `ls` as there can be non-alphanumeric filenames
-numDataDirs=0
-for f in /*
-do
-    if echo "$f" | grep "data"
-    then
-        numDataDirs=$((numDataDirs + 1))
-    fi
-done
-
+numDataDirs=$(ls -la / | grep data | wc -l)
 log "numDataDirs: $numDataDirs"
 let endLoopIter=$((numDataDirs - 1))
 for x in $(seq 0 $endLoopIter)
