@@ -50,6 +50,16 @@ echo $((${1}%256))
 
 log "------- initialize-node.sh starting -------"
 
+log "EXECNAME: $EXECNAME"
+log "MASTERIP: $MASTERIP"
+log "WORKERIP: $WORKERIP"
+log "NAMEPREFIX: $NAMEPREFIX"
+log "NAMESUFFIX: $NAMESUFFIX"
+log "MASTERNODES: $MASTERNODES"
+log "DATANODES: $DATANODES"
+log "ADMINUSER: $ADMINUSER"
+log "NODETYPE: $NODETYPE"
+
 # Converts a domain like machine.domain.com to domain.com by removing the machine name
 NAMESUFFIX=`echo $NAMESUFFIX | sed 's/^[^.]*\.//'`
 
