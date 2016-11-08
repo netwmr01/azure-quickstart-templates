@@ -257,7 +257,7 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[concat(parameters('dnsNamePrefix'), '-mn', copyIndex())]"
+          "domainNameLabel": "[concat(parameters('dnsNamePrefix'), uniquestring(resourceGroup().id), '-mn', copyIndex())]"          
         }
       }
     },
@@ -422,6 +422,10 @@
     "fqdn": {
       "type": "string",
       "value": "[reference(concat(variables('publicIPAddressName'), '0')).dnsSettings.fqdn]"
+    },
+    "ipaddress": {
+      "type": "string",
+      "value": "[reference(concat(variables('publicIPAddressName'), '0')).ipAddress]"
     }
   }
 }

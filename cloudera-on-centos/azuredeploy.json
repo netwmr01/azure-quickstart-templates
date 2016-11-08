@@ -30,14 +30,16 @@
     },
     "storageAccountSuffix": {
       "type": "string",
+      "defaultValue": "cdh",
       "metadata": {
         "description": "A label between 3 and 11 alphanumeric characters, inclusive. The final Storage Account name will be [13 random characters][suffix]. Only new storage accounts are supported."
       }
     },
     "dnsNamePrefix": {
       "type": "string",
+      "maxLength": 50,
       "metadata": {
-        "description": "Unique public DNS name where the VMs will be exposed"
+        "description": "DNS Label prefix for the VMs. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error."
       }
     },
     "masterStorageAccountType": {
@@ -109,7 +111,7 @@
     },
     "dataNodeIPOffSetFromMaster": {
       "type": "int",
-      "defaultValue": 5,
+      "defaultValue": 10,
       "metadata": {
         "description": "IP address from the master node, for example if the first master is 10.1.1.1, then the first dataNode would be 10.1.1.11"
       }

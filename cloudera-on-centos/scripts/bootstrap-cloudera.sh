@@ -49,7 +49,7 @@ function atoi
 #Returns the integer representation of an IP arg, passed in ascii dotted-decimal notation (x.x.x.x)
 IP=$1; IPNUM=0
 for (( i=0 ; i<4 ; ++i )); do
-((IPNUM+=${IP%%.*}*$((256**$((3-i))))))
+((IPNUM+=${IP%%.*}*$((256**$((3-${i}))))))
 IP=${IP#*.}
 done
 echo $IPNUM
@@ -68,24 +68,23 @@ log "------- bootstrap-cloudera.sh starting -------"
 
 log "my vmsize: $VMSIZE"
 # Converts a domain like machine.domain.com to domain.com by removing the machine name
-NAMESUFFIX=$(echo "$NAMESUFFIX" | sed 's/^[^.]*\.//')
+NAMESUFFIX=`echo $NAMESUFFIX | sed 's/^[^.]*\.//'`
 
 log "master ip: $MASTERIP"
 HOSTIP=${MASTERIP}
 ManagementNode="$HOSTIP:${NAMEPREFIX}-mn0.$NAMESUFFIX:${NAMEPREFIX}-mn0"
-log "Management Node: $ManagementNode" 
 
 mip=${MASTERIP}
 
 log "set private key"
 #use the key from the key vault as the SSH private key
-openssl rsa -in /var/lib/waagent/*.prv -out /home/"${ADMINUSER}"/.ssh/id_rsa
-chmod 600 /home/"$ADMINUSER"/.ssh/id_rsa
-chown "$ADMINUSER" /home/"$ADMINUSER"/.ssh/id_rsa
+openssl rsa -in /var/lib/waagent/*.prv -out /home/$ADMINUSER/.ssh/id_rsa
+chmod 600 /home/$ADMINUSER/.ssh/id_rsa
+chown $ADMINUSER /home/$ADMINUSER/.ssh/id_rsa
 
 file="/home/$ADMINUSER/.ssh/id_rsa"
 key="/tmp/id_rsa.pem"
-openssl rsa -in "$file" -outform PEM > $key
+openssl rsa -in $file -outform PEM > $key
 
 #Generate IP Addresses for the cloudera setup
 NODES=()
@@ -93,18 +92,18 @@ NODES=()
 let "NAMEEND=MASTERNODES-1"
 for i in $(seq 1 $NAMEEND)
 do
-  IP=$(atoi "${MASTERIP}")
+  IP=`atoi ${MASTERIP}`
   let "IP=i+IP"
-  HOSTIP=$(itoa "${IP}")
+  HOSTIP=`itoa ${IP}`
   NODES+=("$HOSTIP:${NAMEPREFIX}-mn$i.$NAMESUFFIX:${NAMEPREFIX}-mn$i")
 done
 
 let "DATAEND=DATANODES-1"
 for i in $(seq 0 $DATAEND)
 do 
-  IP=$(atoi "${WORKERIP}")
+  IP=`atoi ${WORKERIP}`
   let "IP=i+IP"
-  HOSTIP=$(itoa "${IP}")
+  HOSTIP=`itoa ${IP}`
   NODES+=("$HOSTIP:${NAMEPREFIX}-dn$i.$NAMESUFFIX:${NAMEPREFIX}-dn$i")
 done
 
@@ -121,7 +120,7 @@ do
   log "current wip_string is: $wip_string"
 done
 IFS=${OIFS}
-worker_ip="${wip_string%?}"
+worker_ip=$(echo "${wip_string%?}")
 log "Worker ip to be supplied to next script: $worker_ip"
 log "BEGIN: Starting detached script to finalize initialization"
 if [ "$INSTALLCDH" == "True" ]
