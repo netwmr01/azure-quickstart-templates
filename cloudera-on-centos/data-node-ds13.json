@@ -187,7 +187,7 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[concat(parameters('dnsNamePrefix'), uniquestring(resourceGroup().id), '-dn', copyIndex())]"
+          "domainNameLabel": "[concat(parameters('dnsNamePrefix'), '-', uniquestring(resourceGroup().id), '-dn', copyIndex())]"
         }
       }
     },
