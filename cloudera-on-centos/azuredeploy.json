@@ -328,7 +328,7 @@
             "value":"[variables('resourceAPIVersion')]"
           },
           "dnsNamePrefix": {
-            "value": "[concat(parameters('dnsNamePrefix'), '-', uniquestring(resourceGroup().id))]"
+            "value": "[parameters('dnsNamePrefix')]"
           },
           "scriptsUri": {
             "value": "[variables('scriptsUri')]"
