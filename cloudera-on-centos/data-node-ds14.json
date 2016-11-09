@@ -37,7 +37,8 @@
     "nicName": "[concat(variables('vmName'), '-nic')]",
     "storageAccountName": "[parameters('storageAccount').prefix]",
     "publicIPAddressName": "[concat(variables('vmName'), '-publicIP')]",
-    "securityGroupName": "[concat(parameters('dnsNamePrefix'), '-dn-sg')]"
+    "securityGroupName": "[concat(parameters('dnsNamePrefix'), '-dn-sg')]",
+    "partialfqdn": "[concat(parameters('dnsNamePrefix'), '-', uniquestring(resourceGroup().id))]"
   },
   "resources": [
     {
