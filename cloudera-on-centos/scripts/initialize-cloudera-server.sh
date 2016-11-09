@@ -133,8 +133,7 @@ fi
 
 log "END: CM deployment ended with status '$status'"
 
-
-if [status -eq 0]
+if [ $status -eq 0 ]
 then
     log "------- initialize-cloudera-server.sh succeeded -------" 
     # always `exit 0` on success
