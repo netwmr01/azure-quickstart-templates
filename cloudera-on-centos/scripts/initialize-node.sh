@@ -16,8 +16,8 @@ LOG_FILE="/var/log/cloudera-azure-initialize.log"
 EXECNAME=$0
 MASTERIP=$1
 WORKERIP=$2
-NAMEPREFIX=$3
-NAMESUFFIX=$4
+NAMEPREFIX=$3 # dns name prefix
+NAMESUFFIX=$4 # this is actually fqdn: cloudera-hd723vjm6kkoi-mn0.westus.cloudapp.azure.com
 MASTERNODES=$5
 DATANODES=$6
 ADMINUSER=$7
@@ -61,7 +61,7 @@ log "ADMINUSER: $ADMINUSER"
 log "NODETYPE: $NODETYPE"
 
 # Converts a domain like machine.domain.com to domain.com by removing the machine name
-NAMESUFFIX=`echo $NAMESUFFIX | sed 's/^[^.]*\.//'`
+NAMESUFFIX=`echo $NAMESUFFIX | sed 's/^[^.]*\.//'` # westus.cloudapp.azure.com
 
 #Generate IP Addresses for the cloudera setup
 NODES=()

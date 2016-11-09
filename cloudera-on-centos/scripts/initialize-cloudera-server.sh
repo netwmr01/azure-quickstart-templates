@@ -122,14 +122,26 @@ touch /tmp/readyFile
 # Execute script to deploy Cloudera cluster
 log "BEGIN: CM deployment - starting"
 log "Parameters: $ClusterName $mip $worker_ip $EMAILADDRESS $BUSINESSPHONE $FIRSTNAME $LASTNAME $JOBROLE $JOBFUNCTION $COMPANY $VMSIZE"
+status=0
 if $HA; then
     python cmxDeployOnIbiza.py -n "$ClusterName" -u $User -p $Password  -m "$mip" -w "$worker_ip" -a -c $cmUser -s $cmPassword -e -r "$EMAILADDRESS" -b "$BUSINESSPHONE" -f "$FIRSTNAME" -t "$LASTNAME" -o "$JOBROLE" -i "$JOBFUNCTION" -y "$COMPANY" -v "$VMSIZE" >> "${LOG_FILE}" 2>&1
+    status=$?
 else
     python cmxDeployOnIbiza.py -n "$ClusterName" -u $User -p $Password  -m "$mip" -w "$worker_ip" -c $cmUser -s $cmPassword -e -r "$EMAILADDRESS" -b "$BUSINESSPHONE" -f "$FIRSTNAME" -t "$LASTNAME" -o "$JOBROLE" -i "$JOBFUNCTION" -y "$COMPANY" -v "$VMSIZE" >> "${LOG_FILE}" 2>&1
+    status=$?
 fi
-log "END: CM deployment ended"
 
-log "------- initialize-cloudera-server.sh succeeded -------" 
+log "END: CM deployment ended with status '$status'"
 
-# always `exit 0` on success
-exit 0
+
+if [status -eq 0]
+then
+    log "------- initialize-cloudera-server.sh succeeded -------" 
+    # always `exit 0` on success
+    exit 0
+
+else
+    log "------- initialize-cloudera-server.sh failed -------" 
+    exit 1
+fi
+
