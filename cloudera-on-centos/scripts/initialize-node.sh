@@ -16,8 +16,8 @@ LOG_FILE="/var/log/cloudera-azure-initialize.log"
 EXECNAME=$0
 MASTERIP=$1
 WORKERIP=$2
-NAMEPREFIX=$3 # dns name prefix
-NAMESUFFIX=$4 # this is actually fqdn: cloudera-hd723vjm6kkoi-mn0.westus.cloudapp.azure.com
+NAMEPREFIX=$3
+NAMESUFFIX=$4
 MASTERNODES=$5
 DATANODES=$6
 ADMINUSER=$7
@@ -25,7 +25,7 @@ NODETYPE=$8
 
 # logs everything to the LOG_FILE
 log() {
-  echo "$(date) [${EXECNAME}]: $@" >> ${LOG_FILE}
+  echo "$(date) [${EXECNAME}]: $*" >> ${LOG_FILE}
 }
 
 function atoi
@@ -33,7 +33,7 @@ function atoi
 #Returns the integer representation of an IP arg, passed in ascii dotted-decimal notation (x.x.x.x)
 IP=$1; IPNUM=0
 for (( i=0 ; i<4 ; ++i )); do
-((IPNUM+=${IP%%.*}*$((256**$((3-${i}))))))
+((IPNUM+=${IP%%.*}*$((256**$((3-i))))))
 IP=${IP#*.}
 done
 echo $IPNUM
@@ -61,7 +61,7 @@ log "ADMINUSER: $ADMINUSER"
 log "NODETYPE: $NODETYPE"
 
 # Converts a domain like machine.domain.com to domain.com by removing the machine name
-NAMESUFFIX=`echo $NAMESUFFIX | sed 's/^[^.]*\.//'` # westus.cloudapp.azure.com
+NAMESUFFIX=$(echo "$NAMESUFFIX" | sed 's/^[^.]*\.//')
 
 #Generate IP Addresses for the cloudera setup
 NODES=()
@@ -69,18 +69,18 @@ NODES=()
 let "NAMEEND=MASTERNODES-1"
 for i in $(seq 0 $NAMEEND)
 do 
-  IP=`atoi ${MASTERIP}`
+  IP=$(atoi "${MASTERIP}")
   let "IP=i+IP"
-  HOSTIP=`itoa ${IP}`
+  HOSTIP=$(itoa "${IP}")
   NODES+=("$HOSTIP:${NAMEPREFIX}-mn$i.$NAMESUFFIX:${NAMEPREFIX}-mn$i")
 done
 
 let "DATAEND=DATANODES-1"
 for i in $(seq 0 $DATAEND)
 do 
-  IP=`atoi ${WORKERIP}`
+  IP=$(atoi "${WORKERIP}")
   let "IP=i+IP"
-  HOSTIP=`itoa ${IP}`
+  HOSTIP=$(itoa "${IP}")
   NODES+=("$HOSTIP:${NAMEPREFIX}-dn$i.$NAMESUFFIX:${NAMEPREFIX}-dn$i")
 done
 
@@ -115,13 +115,13 @@ echo "Done preparing disks.  Now ls -la looks like this:"
 ls -la /
 # Create Impala scratch directory
 numDataDirs=$(ls -la / | grep data | wc -l)
-echo "numDataDirs:" $numDataDirs
-let endLoopIter=(numDataDirs - 1)
+log "numDataDirs: $numDataDirs"
+let endLoopIter=$((numDataDirs - 1))
 for x in $(seq 0 $endLoopIter)
 do 
-  echo mkdir -p /data${x}/impala/scratch 
-  mkdir -p /data${x}/impala/scratch
-  chmod 777 /data${x}/impala/scratch
+  echo mkdir -p /"data${x}"/impala/scratch 
+  mkdir -p /"data${x}"/impala/scratch
+  chmod 777 /"data${x}"/impala/scratch
 done
 
 setenforce 0 >> /tmp/setenforce.out
@@ -157,16 +157,16 @@ echo net.ipv4.tcp_low_latency=1 >> /etc/sysctl.conf
 sed -i "s/defaults        1 1/defaults,noatime        0 0/" /etc/fstab
 
 #use the key from the key vault as the SSH authorized key
-mkdir /home/$ADMINUSER/.ssh
-chown $ADMINUSER /home/$ADMINUSER/.ssh
-chmod 700 /home/$ADMINUSER/.ssh
+mkdir /home/"$ADMINUSER"/.ssh
+chown "$ADMINUSER" /home/"$ADMINUSER"/.ssh
+chmod 700 /home/"$ADMINUSER"/.ssh
 
-ssh-keygen -y -f /var/lib/waagent/*.prv > /home/$ADMINUSER/.ssh/authorized_keys
-chown $ADMINUSER /home/$ADMINUSER/.ssh/authorized_keys
-chmod 600 /home/$ADMINUSER/.ssh/authorized_keys
+ssh-keygen -y -f /var/lib/waagent/*.prv > /home/"$ADMINUSER"/.ssh/authorized_keys
+chown "$ADMINUSER" /home/"$ADMINUSER"/.ssh/authorized_keys
+chmod 600 /home/"$ADMINUSER"/.ssh/authorized_keys
 
-myhostname=`hostname`
-fqdnstring=`python -c "import socket; print socket.getfqdn('$myhostname')"`
+myhostname=$(hostname)
+fqdnstring=$(python -c "import socket; print socket.getfqdn('$myhostname')")
 sed -i "s/.*HOSTNAME.*/HOSTNAME=${fqdnstring}/g" /etc/sysconfig/network
 /etc/init.d/network restart
 
