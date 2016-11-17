@@ -1,63 +1,27 @@
 #!/bin/bash
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-LOG_FILE="/var/log/cloudera-azure-initialize.log"
+#
+# This script prepares a premium storage drive for MySQL server
+# IMPORTANT the mount point of the premium storage drive is /var/lib/mysql/
+#
 
-# manually set EXECNAME because this file is called from another script and it $0 contains a 
-# relevant path
-EXECNAME="prepare-masternode-disks.sh"
-
-# logs everything to the $LOG_FILE
-log() {
-  echo "$(date) [${EXECNAME}]: $*" >> "${LOG_FILE}"
-}
-
-# ok this is the fun part. Let's create a file here
-# use temp file to use sudo
-cat > inputs2.sh << 'END'
-
-
-
-mountDriveForLogCloudera()
+# Create a helper script to drive disk preparation
+cat > /tmp/mount_drive_helper.sh << 'END'
+# Helper script to drive disk preparation for MySQL server
+mountDriveForMySQL()
 {
-  dirname=/log
-  drivename=$1
-  mke2fs -F -t ext4 -b 4096 -E lazy_itable_init=1 -O sparse_super,dir_index,extent,has_journal,uninit_bg -m1 $drivename
-  mkdir $dirname
-  mount -o noatime,barrier=1 -t ext4 $drivename $dirname
-  UUID=`sudo lsblk -no UUID $drivename`
-  echo "UUID=$UUID   $dirname    ext4   defaults,noatime,discard,barrier=0 0 1" | sudo tee -a /etc/fstab
-  mkdir /log/cloudera
-  ln -s /log/cloudera /opt/cloudera
-}
-
-mountDriveForZookeeper()
-{
-  dirname=/log/cloudera/zookeeper
-  drivename=$1
-  mke2fs -F -t ext4 -b 4096 -E lazy_itable_init=1 -O sparse_super,dir_index,extent,has_journal,uninit_bg -m1 $drivename
-  mkdir $dirname
-  mount -o noatime,barrier=1 -t ext4 $drivename $dirname
-  UUID=`sudo lsblk -no UUID $drivename`
-  echo "UUID=$UUID   $dirname    ext4   defaults,noatime,discard,barrier=0 0 1" | sudo tee -a /etc/fstab
-}
-
-
-
-mountDriveForQJN()
-{
-  dirname=/data/dfs/
-  drivename=$1
-  mke2fs -F -t ext4 -b 4096 -E lazy_itable_init=1 -O sparse_super,dir_index,extent,has_journal,uninit_bg -m1 $drivename
-  mkdir /data
-  mkdir $dirname
-  mount -o noatime,barrier=1 -t ext4 $drivename $dirname
-  UUID=`sudo lsblk -no UUID $drivename`
-  echo "UUID=$UUID   $dirname    ext4   defaults,noatime,discard,barrier=0 0 1" | sudo tee -a /etc/fstab
-}
-
-mountDriveForPostgres()
-{
-  dirname=/var/lib/pgsql
+  dirname=/var/lib/mysql/
   drivename=$1
   mke2fs -F -t ext4 -b 4096 -E lazy_itable_init=1 -O sparse_super,dir_index,extent,has_journal,uninit_bg -m1 $drivename
   mkdir $dirname
@@ -84,13 +48,7 @@ prepare_unmounted_volumes()
     if [[ ! ${part} =~ [0-9]$ && ! ${ALL_PARTITIONS} =~ $part[0-9] && $MOUNTED_VOLUMES != *$part* ]];then
       echo ${part}
       if [[ ${COUNTER} == 0 ]]; then
-        mountDriveForLogCloudera "/dev/$part"
-      elif [[ ${COUNTER} == 1 ]]; then
-        mountDriveForZookeeper "/dev/$part"
-      elif [[ ${COUNTER} == 2 ]]; then
-        mountDriveForQJN "/dev/$part"
-      elif [[ ${COUNTER} == 3 ]]; then
-        mountDriveForPostgres "/dev/$part"
+        mountDriveForMySQL "/dev/$part"
       else prepare_disk "/data$COUNTER" "/dev/$part"
       fi
       COUNTER=$(($COUNTER+1))
@@ -152,11 +110,6 @@ prepare_disk()
 
 END
 
-log "------- prepare-masternode-disks.sh starting -------"
+sudo bash -c "source /tmp/mount_drive_helper.sh; prepare_unmounted_volumes"
 
-sudo bash -c "source ./inputs2.sh; prepare_unmounted_volumes"
-
-log "------- prepare-masternode-disks.sh succeeded -------"
-
-# always `exit 0` on success
 exit 0
