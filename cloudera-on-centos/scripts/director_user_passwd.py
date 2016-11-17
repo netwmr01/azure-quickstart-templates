@@ -25,7 +25,7 @@ import sys
 import logging
 
 # logging starts
-logging.basicConfig(filename='/tmp/prepare-director-user.log', level=logging.DEBUG)
+logging.basicConfig(filename='/var/log/azure-template_initialize-server.log', level=logging.DEBUG)
 logging.info('started')
 
 

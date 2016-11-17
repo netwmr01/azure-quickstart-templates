@@ -106,7 +106,7 @@ sudo wget -t 5 http://archive.cloudera.com/director/redhat/6/x86_64/director/clo
 n=0
 until [ ${n} -ge 5 ]
 do
-    sudo yum install -y bind bind-utils python-pip oracle-j2sdk* cloudera-director-server-2.1.* cloudera-director-client-2.1.* >> ${LOG_FILE} 2>&1 && break
+    sudo yum install -y bind bind-utils python-pip oracle-j2sdk* cloudera-director-server-2.* cloudera-director-client-2.* >> ${LOG_FILE} 2>&1 && break
     n=$((n+1))
     sleep ${SLEEP_INTERVAL}
 done
@@ -116,12 +116,6 @@ if [ ${n} -ge 5 ]; then
 fi
 
 log "Installing Cloudera Director Server, Client, Plugins and dependencies ... Successful"
-
-log "Updating director plugin conf"
-cp ./azure-plugin.conf /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc
-chmod 644 /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc/azure-plugin.conf
-cp ./images.conf /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc
-chmod 644 /var/lib/cloudera-director-plugins/azure-provider-1.0.1/etc/images.conf
 
 log "Starting cloudera-director-server ..."
 
@@ -153,6 +147,10 @@ log "Starting cloudera-director-server ... Successful"
 
 log "Securing cloudera-director-server ..."
 python director_user_passwd.py "${DIR_USER}" "${DIR_PASSWORD}"
+status=$?
+if [ ${status} -ne 0 ]; then
+  log "Securing cloudera-director-server ... Failed" & exit status;
+fi
 
 #
 # Disable iptables so API calls to Director server works.

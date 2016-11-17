@@ -286,7 +286,6 @@
       "edgeType":"[parameters('edgeType')]",
       "dirUsername":"[parameters('dirUsername')]",
       "dirPassword":"[parameters('dirPassword')]"
-
     },
     "userInfo":{
       "company":"[parameters('company')]",
