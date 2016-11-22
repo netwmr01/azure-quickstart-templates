@@ -138,7 +138,7 @@
       ],
       "properties": {
         "availabilitySet": {
-          "id": "/subscriptions/38ff619b-c7ac-42d7-b914-f5ec88910d07/resourceGroups/AzureTesting/providers/Microsoft.Compute/availabilitySets/testas"
+          "id": "/subscriptions/38ff619b-c7ac-42d7-b914-f5ec88910d07/resourceGroups/AzureTesting/providers/Microsoft.Compute/availabilitySets/anothertest"
         },
         "hardwareProfile": {
           "vmSize": "[variables('vmSize')]"
