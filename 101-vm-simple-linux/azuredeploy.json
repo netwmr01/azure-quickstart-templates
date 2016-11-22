@@ -138,7 +138,7 @@
       ],
       "properties": {
         "availabilitySet": {
-          "id": "[resourceId(variables('asRG'), concat('Microsoft.Compute/availabilitySets/', variables('asName')))]"
+          "id": "[resourceId(variables('asRG'), 'Microsoft.Compute/availabilitySets', variables('asName'))]"
         },
         "hardwareProfile": {
           "vmSize": "[variables('vmSize')]"
