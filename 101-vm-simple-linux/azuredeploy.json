@@ -35,8 +35,8 @@
     }
   },
   "variables": {
-    "asRG": "werdfvjiol",
-    "asName": "testas",
+    "asRG": "AzureTesting",
+    "asName": "anothertest",
     "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
     "dataDisk1VhdName": "datadisk1",
     "imagePublisher": "Canonical",
