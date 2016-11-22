@@ -35,7 +35,8 @@
     }
   },
   "variables": {
-    "availabilitySetId": "/subscriptions/38ff619b-c7ac-42d7-b914-f5ec88910d07/resourceGroups/AzureTesting/providers/Microsoft.Compute/availabilitySets/ASMASTER",
+    "asRG": "AzureTesting",
+    "asName": "ASMASTER",
     "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
     "dataDisk1VhdName": "datadisk1",
     "imagePublisher": "Canonical",
@@ -137,7 +138,8 @@
       ],
       "properties": {
         "availabilitySet": {
-          "id": "[variables('availabilitySetId')]"},
+          "id": "[resourceId(variables('asRG'), concat('Microsoft.Compute/availabilitySets/', variables('asName')))]"
+        },
         "hardwareProfile": {
           "vmSize": "[variables('vmSize')]"
         },
