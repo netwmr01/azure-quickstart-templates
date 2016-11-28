@@ -4,6 +4,7 @@
   "parameters": {
     "adminUsername": {
       "type": "string",
+      "defaultValue": "azureuser",
       "metadata": {
         "description": "User name for the Virtual Machine."
       }
@@ -14,10 +15,77 @@
         "description": "Password for the Virtual Machine."
       }
     },
+    "availabilitySetName":{
+      "type": "string",
+      "defaultValue": "defaultas",
+      "metadata": {
+        "description": "Name of the Availability Set."
+      }
+    },
+    "virtualMachineSize":{
+      "type": "string",
+      "defaultValue": "Standard_DS2",
+      "metadata": {
+        "description": "Size of the Virtual Machines."
+      }
+    },
+    "virtualMachineCount":{
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "The number of Virtual Machines."
+      }
+    },
+    "networkSecurityGroupName":{
+      "type": "string",
+      "defaultValue": "workernsg",
+      "metadata": {
+        "description": "Name of the Network Security Group."
+      }
+    },
+    "networkSecurityGroupResourceGroupName":{
+      "type": "string",
+      "defaultValue": "atestworkernode",
+      "metadata": {
+        "description": "Resource Group Name of the Network Security Group."
+      }
+    },
+    "virtualNetworkName":{
+      "type": "string",
+      "defaultValue": "workervnet",
+      "metadata": {
+        "description": "Name of the Network Security Group."
+      }
+    },
+    "subnetName":{
+      "type": "string",
+      "defaultValue": "default",
+      "metadata": {
+        "description": "Name of the Network Security Group."
+      }
+    },
+    "virtualNetworkResourceGroupName":{
+      "type": "string",
+      "metadata": {
+        "description": "Resource Group Name of the Network Security Group."
+      }
+    },
+    "storageAccountType":{
+      "type": "string",
+      "metadata": {
+        "description": "Type of the Virtual Machines."
+      }
+    },
     "dnsLabelPrefix": {
       "type": "string",
       "metadata": {
-        "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+        "description": "Unique Virtual Machine Name for the Virtual Machine."
+      }
+    },
+    "dnsLabelSuffix": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique Virtual Machine Name for the Virtual Machine."
       }
     },
     "ubuntuOSVersion": {
@@ -35,6 +103,7 @@
     }
   },
   "variables": {
+    "resourceAPIVersion":"2016-09-01",
     "asRG": "AzureTesting",
     "asName": "anothertest",
     "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
@@ -43,105 +112,69 @@
     "imageOffer": "UbuntuServer",
     "OSDiskName": "osdiskforlinuxsimple",
     "nicName": "myVMNic",
-    "addressPrefix": "10.0.0.0/16",
-    "subnetName": "Subnet",
-    "subnetPrefix": "10.0.0.0/24",
     "storageAccountType": "Standard_LRS",
     "publicIPAddressName": "myPublicIP",
     "publicIPAddressType": "Dynamic",
     "vmStorageAccountContainerName": "vhds",
     "vmName": "MyUbuntuVM",
-    "vmSize": "Standard_D1",
-    "virtualNetworkName": "MyVNET",
-    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
-    "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]"
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('virtualNetworkName'))]",
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('subnetName'))]"
   },
   "resources": [
-    {
+   {
       "type": "Microsoft.Storage/storageAccounts",
-      "name": "[variables('storageAccountName')]",
-      "apiVersion": "2016-01-01",
+      "name": "[concat(copyIndex(), variables('storageAccountName'))]",
+      "apiVersion": "[variables('resourceAPIVersion')]",
       "location": "[resourceGroup().location]",
-      "sku": {
-        "name": "[variables('storageAccountType')]"
+      "copy": {
+        "name": "storageAccountLoop",
+        "count": "[parameters('virtualMachineCount')]"
       },
-      "kind": "Storage",
-      "properties": {}
-    },
-    {
-      "apiVersion": "2016-09-01",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddressName')]",
-      "location": "[resourceGroup().location]",
       "properties": {
-        "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
-        "dnsSettings": {
-          "domainNameLabel": "[parameters('dnsLabelPrefix')]"
-        }
+        "accountType": "[variables('storageAccountType')]"
       }
     },
     {
-      "apiVersion": "2016-09-01",
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "[variables('virtualNetworkName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[variables('addressPrefix')]"
-          ]
-        },
-        "subnets": [
-          {
-            "name": "[variables('subnetName')]",
-            "properties": {
-              "addressPrefix": "[variables('subnetPrefix')]"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "2016-09-01",
+      "apiVersion": "[variables('resourceAPIVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nicName')]",
+      "name": "[concat(variables('nicName'), copyIndex())]",
       "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
-      ],
+      "copy": {
+        "name": "dataNodeNicLoop",
+        "count": "[parameters('virtualMachineCount')]"
+      },
       "properties": {
         "ipConfigurations": [
           {
             "name": "ipconfig1",
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-              },
               "subnet": {
                 "id": "[variables('subnetRef')]"
               }
             }
           }
-        ]
+        ],
+        "networkSecurityGroup": {
+          "id": "[resourceId(parameters('networkSecurityGroupResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+        }
       }
     },
     {
-      "apiVersion": "2016-03-30",
+      "apiVersion": "[variables('resourceAPIVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[variables('vmName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-        "[resourceId('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
+        "[concat('Microsoft.Storage/storageAccounts/', copyIndex(), variables('storageAccountName'))]"
       ],
       "properties": {
         "availabilitySet": {
-          "id": "/subscriptions/38ff619b-c7ac-42d7-b914-f5ec88910d07/resourceGroups/AzureTesting/providers/Microsoft.Compute/availabilitySets/anothertest"
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('asName'))]"
         },
         "hardwareProfile": {
-          "vmSize": "[variables('vmSize')]"
+          "vmSize": "[parameters('virtualMachineSize')]"
         },
         "osProfile": {
           "computerName": "[variables('vmName')]",
@@ -178,15 +211,9 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), copyIndex()))]"
             }
           ]
-        },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": "true",
-            "storageUri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob)]"
-          }
         }
       }
     }
