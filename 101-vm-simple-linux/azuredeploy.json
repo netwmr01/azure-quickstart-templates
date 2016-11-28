@@ -131,9 +131,11 @@
         "name": "storageAccountLoop",
         "count": "[parameters('virtualMachineCount')]"
       },
-      "properties": {
-        "accountType": "[parameters('storageAccountType')]"
-      }
+      "sku": {
+        "name": "[parameters('storageAccountType')]"
+      },
+      "kind": "Storage",
+      "properties": {}
     },
     {
       "apiVersion": "[variables('resourceAPIVersion')]",
