@@ -91,19 +91,6 @@
       "metadata": {
         "description": "Unique Virtual Machine Name for the Virtual Machine."
       }
-    },
-    "ubuntuOSVersion": {
-      "type": "string",
-      "defaultValue": "16.04.0-LTS",
-      "allowedValues": [
-        "12.04.5-LTS",
-        "14.04.5-LTS",
-        "15.10",
-        "16.04.0-LTS"
-      ],
-      "metadata": {
-        "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
-      }
     }
   },
   "variables": {
@@ -111,8 +98,9 @@
     "asName": "defaultas",
     "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
     "dataDisk1VhdName": "datadisk1",
-    "imagePublisher": "Canonical",
-    "imageOffer": "UbuntuServer",
+    "imagePublisher": "cloudera",
+    "imageOffer": "cloudera-centos-6",
+    "imageSku": "CLOUDERA-CENTOS-6",
     "OSDiskName": "osdiskforlinuxsimple",
     "nicName": "myVMNic",
     "vmStorageAccountContainerName": "vhds",
@@ -167,6 +155,11 @@
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat(variables('vmName'), copyIndex())]",
       "location": "[resourceGroup().location]",
+      "plan": {
+        "name": "cloudera-centos-6",
+        "publisher": "cloudera",
+        "product": "cloudera-centos-6"
+      },
       "copy": {
         "name": "dataNodeLoop",
         "count": "[parameters('virtualMachineCount')]"
@@ -191,7 +184,7 @@
           "imageReference": {
             "publisher": "[variables('imagePublisher')]",
             "offer": "[variables('imageOffer')]",
-            "sku": "[parameters('ubuntuOSVersion')]",
+            "sku": "[variables('imageSku')]",
             "version": "latest"
           },
           "osDisk": {
