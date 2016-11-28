@@ -108,8 +108,7 @@
   },
   "variables": {
     "resourceAPIVersion":"2016-05-01",
-    "asRG": "AzureTesting",
-    "asName": "anothertest",
+    "asName": "defaultas",
     "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
     "dataDisk1VhdName": "datadisk1",
     "imagePublisher": "Canonical",
