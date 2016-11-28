@@ -169,6 +169,10 @@
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat(variables('vmName'), copyIndex())]",
       "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "dataNodeLoop",
+        "count": "[parameters('virtualMachineCount')]"
+      },
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
         "[concat('Microsoft.Storage/storageAccounts/', copyIndex(), variables('storageAccountName'))]"
