@@ -73,18 +73,21 @@
     },
     "storageAccountType":{
       "type": "string",
+      "defaultValue":"Standard_LRS",
       "metadata": {
         "description": "Type of the Virtual Machines."
       }
     },
     "dnsLabelPrefix": {
       "type": "string",
+      "defaultValue":"prefix_stuff",
       "metadata": {
         "description": "Unique Virtual Machine Name for the Virtual Machine."
       }
     },
     "dnsLabelSuffix": {
       "type": "string",
+      "defaultValue":"suffix_stuff",
       "metadata": {
         "description": "Unique Virtual Machine Name for the Virtual Machine."
       }
