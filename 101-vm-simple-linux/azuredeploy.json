@@ -197,7 +197,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', concat(copyIndex(), variables('storageAccountName'))), '2016-01-01').primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'),'.vhd')]"
+              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'),'.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
@@ -208,7 +208,7 @@
               "diskSizeGB": "100",
               "lun": 0,
               "vhd": {
-                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', concat(copyIndex(), variables('storageAccountName'))), '2016-01-01').primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/',variables('dataDisk1VhdName'),'.vhd')]"
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2016-01-01').primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/',variables('dataDisk1VhdName'),'.vhd')]"
               },
               "createOption": "Empty"
             }
