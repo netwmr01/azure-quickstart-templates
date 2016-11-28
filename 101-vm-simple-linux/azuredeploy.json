@@ -66,6 +66,7 @@
     },
     "virtualNetworkResourceGroupName":{
       "type": "string",
+      "defaultValue": "atestworkernode",
       "metadata": {
         "description": "Resource Group Name of the Network Security Group."
       }
@@ -163,7 +164,7 @@
     {
       "apiVersion": "[variables('resourceAPIVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vmName')]",
+      "name": "[concat(variables('vmName'), copyIndex())]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex())]",
