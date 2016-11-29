@@ -11,9 +11,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo "initializing nodes..."
+LOG_FILE="/var/log/initialize-node.log"
 
 ADMINUSER=$1
+
+# logs everything to the LOG_FILE
+log() {
+  echo "$(date) [${EXECNAME}]: $*" >> ${LOG_FILE}
+}
+
+log "------- initialize-node.sh starting -------"
 
 # Disable the need for a tty when running sudo and allow passwordless sudo for the admin user
 sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
@@ -26,13 +33,13 @@ echo "Done preparing disks.  Now ls -la looks like this:"
 ls -la /
 # Create Impala scratch directory
 numDataDirs=$(ls -la / | grep data | wc -l)
-echo "numDataDirs:" $numDataDirs
-let endLoopIter=(numDataDirs - 1)
+log "numDataDirs: $numDataDirs"
+let endLoopIter=$((numDataDirs - 1))
 for x in $(seq 0 $endLoopIter)
-do 
-  echo mkdir -p /data${x}/impala/scratch 
-  mkdir -p /data${x}/impala/scratch
-  chmod 777 /data${x}/impala/scratch
+do
+  echo mkdir -p /"data${x}"/impala/scratch
+  mkdir -p /"data${x}"/impala/scratch
+  chmod 777 /"data${x}"/impala/scratch
 done
 
 # Disable selinux
@@ -70,3 +77,8 @@ echo net.ipv4.tcp_rmem="4096 87380 4194304" >> /etc/sysctl.conf
 echo net.ipv4.tcp_wmem="4096 65536 4194304" >> /etc/sysctl.conf
 echo net.ipv4.tcp_low_latency=1 >> /etc/sysctl.conf
 sed -i "s/defaults        1 1/defaults,noatime        0 0/" /etc/fstab
+
+log "------- initialize-node.sh succeeded -------"
+
+# always `exit 0` on success
+exit 0

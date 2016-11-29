@@ -103,7 +103,7 @@
     "nicName": "myVMNic",
     "vmStorageAccountContainerName": "vhds",
     "vmName": "[concat(parameters('dnsLabelPrefix'), parameters('dnsLabelSuffix'))]",
-    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('virtualNetworkName'))]",
+    "vnetID": "[resourceId(parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('subnetName'))]",
     "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/test-bed/101-vm-simple-linux"
   },
@@ -255,7 +255,7 @@
             "[concat(variables('scriptsUri'), '/scripts/prepare-datanode-disks.sh')]",
             "[concat(variables('scriptsUri'), '/scripts/initialize-node.sh')]"
           ],
-          "commandToExecute": "[concat('sh initialize-node.sh \"', parameters('adminUsername'),'\" >> /home/$ADMINUSER/initialize-datanode.log 2>&1')]"
+          "commandToExecute": "[concat('sh initialize-node.sh \"', parameters('adminUsername'),'\" >> /var/log/initialize-node.log 2>&1')]"
         }
       }
     }
