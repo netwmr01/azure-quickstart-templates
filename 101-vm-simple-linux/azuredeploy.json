@@ -94,7 +94,6 @@
     }
   },
   "variables": {
-    "resourceAPIVersion":"2016-05-01",
     "asName": "defaultas",
     "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
     "dataDisk1VhdName": "datadisk1",
@@ -112,7 +111,7 @@
    {
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[concat(copyIndex(), variables('storageAccountName'))]",
-      "apiVersion": "[variables('resourceAPIVersion')]",
+      "apiVersion": "2016-05-01",
       "location": "[resourceGroup().location]",
       "copy": {
         "name": "storageAccountLoop",
