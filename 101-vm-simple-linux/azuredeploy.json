@@ -80,14 +80,14 @@
     },
     "dnsLabelPrefix": {
       "type": "string",
-      "defaultValue":"prefix_stuff",
+      "defaultValue":"prefixstuff",
       "metadata": {
         "description": "Unique Virtual Machine Name for the Virtual Machine."
       }
     },
     "dnsLabelSuffix": {
       "type": "string",
-      "defaultValue":"suffix_stuff",
+      "defaultValue":"suffixstuff",
       "metadata": {
         "description": "Unique Virtual Machine Name for the Virtual Machine."
       }
@@ -103,7 +103,7 @@
     "OSDiskName": "osdiskforlinuxsimple",
     "nicName": "myVMNic",
     "vmStorageAccountContainerName": "vhds",
-    "vmName": "[concat(parameters('dnsLabelPrefix'), '.', parameters('dnsLabelSuffix'))]",
+    "vmName": "[concat(parameters('dnsLabelPrefix'), parameters('dnsLabelSuffix'))]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('subnetName'))]"
   },
@@ -175,7 +175,7 @@
           "vmSize": "[parameters('virtualMachineSize')]"
         },
         "osProfile": {
-          "computerName": "[variables('vmName')]",
+          "computerName": "[concat(parameters('dnsLabelPrefix'), copyIndex(), '.', parameters('dnsLabelSuffix'))]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
