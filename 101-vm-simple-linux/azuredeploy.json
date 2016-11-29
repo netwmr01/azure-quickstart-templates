@@ -105,7 +105,7 @@
     "vmName": "[concat(parameters('dnsLabelPrefix'), parameters('dnsLabelSuffix'))]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('subnetName'))]",
-    "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/test-bed/101-vm-simple-linux/scripts"
+    "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/test-bed/101-vm-simple-linux"
   },
   "resources": [
    {
