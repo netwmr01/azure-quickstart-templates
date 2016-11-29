@@ -96,7 +96,6 @@
   "variables": {
     "asName": "defaultas",
     "storageAccountName": "[concat(uniquestring(resourceGroup().id), 'salinuxvm')]",
-    "dataDisk1VhdName": "datadisk1",
     "imagePublisher": "cloudera",
     "imageOffer": "cloudera-centos-6",
     "imageSku": "CLOUDERA-CENTOS-6",
@@ -105,7 +104,8 @@
     "vmStorageAccountContainerName": "vhds",
     "vmName": "[concat(parameters('dnsLabelPrefix'), parameters('dnsLabelSuffix'))]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('virtualNetworkName'))]",
-    "subnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('subnetName'))]"
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('subnetName'))]",
+    "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/test-bed/101-vm-simple-linux/scripts"
   },
   "resources": [
    {
@@ -197,10 +197,28 @@
           "dataDisks": [
             {
               "name": "datadisk1",
-              "diskSizeGB": "100",
+              "diskSizeGB": "500",
               "lun": 0,
               "vhd": {
-                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', concat(copyIndex(), variables('storageAccountName'))), '2016-01-01').primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/',variables('dataDisk1VhdName'),'.vhd')]"
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', concat(copyIndex(), variables('storageAccountName'))), '2016-01-01').primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/','datadisk1.vhd')]"
+              },
+              "createOption": "Empty"
+            },
+             {
+              "name": "datadisk2",
+              "diskSizeGB": "500",
+              "lun": 1,
+              "vhd": {
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', concat(copyIndex(), variables('storageAccountName'))), '2016-01-01').primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/','datadisk2.vhd')]"
+              },
+              "createOption": "Empty"
+            },
+             {
+              "name": "datadisk3",
+              "diskSizeGB": "500",
+              "lun": 2,
+              "vhd": {
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', concat(copyIndex(), variables('storageAccountName'))), '2016-01-01').primaryEndpoints.blob, variables('vmStorageAccountContainerName'),'/','datadisk3.vhd')]"
               },
               "createOption": "Empty"
             }
@@ -232,8 +250,12 @@
         "type": "CustomScript",
         "typeHandlerVersion": "2.0",
         "autoUpgradeMinorVersion": true,
+         "fileUris": [
+            "[concat(variables('scriptsUri'), '/scripts/prepare-datanode-disks.sh')]",
+            "[concat(variables('scriptsUri'), '/scripts/initialize-node.sh')]"
+          ],
         "settings": {
-          "commandToExecute": "echo 'Hello'"
+          "commandToExecute": "[concat('sh initialize-node.sh \"', parameters('adminUsername'),'\" >> /home/$ADMINUSER/initialize-datanode.log 2>&1')]"
         }
       }
     }
