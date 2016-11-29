@@ -236,7 +236,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmName'), copyIndex(), '/bootstrap')]",
-      "apiVersion": "2016-03-30",
+      "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
       "copy": {
         "name": "dataNodeExeLoop",
@@ -250,7 +250,7 @@
         "type": "CustomScript",
         "typeHandlerVersion": "2.0",
         "autoUpgradeMinorVersion": true,
-         "fileUris": [
+        "fileUris": [
             "[concat(variables('scriptsUri'), '/scripts/prepare-datanode-disks.sh')]",
             "[concat(variables('scriptsUri'), '/scripts/initialize-node.sh')]"
           ],
