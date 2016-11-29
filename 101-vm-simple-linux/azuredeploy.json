@@ -218,7 +218,7 @@
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmName'), copyIndex(), '/bootstrap')]",
-      "apiVersion": "2016-09-01",
+      "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "copy": {
         "name": "dataNodeExeLoop",
