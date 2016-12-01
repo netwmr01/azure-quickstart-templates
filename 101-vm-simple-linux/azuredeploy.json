@@ -95,7 +95,7 @@
   },
   "variables": {
     "asName": "defaultas",
-    "resourceSeed": "uniquestring(concat(resourceGroup().id, parameters('dnsLabelPrefix')))",
+    "resourceSeed": "[uniquestring(concat(resourceGroup().id, parameters('dnsLabelPrefix')))]",
     "imagePublisher": "cloudera",
     "imageOffer": "cloudera-centos-6",
     "imageSku": "CLOUDERA-CENTOS-6",
