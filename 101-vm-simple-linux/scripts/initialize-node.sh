@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-LOG_FILE="/var/log/initialize-node.log"
+LOG_FILE="/var/log/cloudera-azure-add-node-initialize.log"
 
 ADMINUSER=$1
 
@@ -27,7 +27,7 @@ sed -i '/Defaults[[:space:]]\+!*requiretty/s/^/#/' /etc/sudoers
 echo "$ADMINUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Mount and format the attached datanode disks
-bash ./prepare-datanode-disks.sh
+bash ./prepare-datanode-disks.sh >> "${LOG_FILE}" 2>&1
 
 echo "Done preparing disks.  Now ls -la looks like this:"
 ls -la /
@@ -44,9 +44,11 @@ done
 
 # Disable selinux
 setenforce 0 >> /tmp/setenforce.out
-cat /etc/selinux/config > /tmp/beforeSelinux.out
+log "------- before disable selinux -------"
+cat /etc/selinux/config >> ${LOG_FILE}
 sed -i 's^SELINUX=enforcing^SELINUX=disabled^g' /etc/selinux/config || true
-cat /etc/selinux/config > /tmp/afterSeLinux.out
+log "------- after disable selinux -------"
+cat /etc/selinux/config >> ${LOG_FILE}
 
 # Disable firewall
 /etc/init.d/iptables save
