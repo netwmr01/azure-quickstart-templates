@@ -105,7 +105,6 @@
     "imageSku": "CLOUDERA-CENTOS-6",
     "OSDiskName": "osdisk",
     "vmStorageAccountContainerName": "vhds",
-    "vmName": "[concat(parameters('dnsLabelPrefix'), parameters('dnsLabelSuffix'))]",
     "vnetID": "[resourceId(parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetID'),'/subnets/',parameters('subnetName'))]",
     "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/test-bed/101-vm-simple-linux"
@@ -155,7 +154,7 @@
     {
       "apiVersion": "2016-03-30",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('vmName'), copyIndex())]",
+      "name": "[concat(parameters('dnsLabelPrefix'), '-', copyIndex(), '-', parameters('dnsLabelSuffix'))]",
       "location": "[resourceGroup().location]",
       "plan": {
         "name": "cloudera-centos-6",
@@ -238,7 +237,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'), copyIndex(), '/bootstrap')]",
+      "name": "[concat(concat(parameters('dnsLabelPrefix'), '-', copyIndex(), '-', parameters('dnsLabelSuffix')), '/bootstrap')]",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "copy": {
@@ -246,7 +245,7 @@
         "count": "[parameters('virtualMachineCount')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), copyIndex())]"
+        "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelPrefix'), '-', copyIndex(), '-', parameters('dnsLabelSuffix')))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
