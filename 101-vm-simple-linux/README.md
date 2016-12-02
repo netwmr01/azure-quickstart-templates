@@ -10,4 +10,17 @@ existing CDH cluster using CM.
 </a>
 
 
-This template allows you to deploy a simple Linux VM using a few different options for the Ubuntu Linux version, using the latest patched version. This will deploy a D1 size VM in the resource group location and return the FQDN of the VM.
+The template assumes the Virtual Network, Availability Set and Network
+Security Group have been created before hand. 
+
+**Resource Naming Pattern**
+DNS prefix + copyIndex() is use to create a unique seed for naming
+resources to avoid name collisions. 
+VirtualMachine name will be prefix-copyIndex()-suffix
+StorageAccount will be uniqueString(seed+copyIndex())+"sa"
+NetworkInterface will be uniqueString(seed+copyIndex())+"nic"
+
+**Caveat**
+1) dns prefix must be unique.
+2) dns prefix can be slight different from each other per deployment, 
+such as uniquestring1, uniquestring2...
