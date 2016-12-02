@@ -237,7 +237,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(concat(parameters('dnsLabelPrefix'), '-', copyIndex(), '-', parameters('dnsLabelSuffix')), copyIndex(), '/bootstrap')]",
+      "name": "[concat(concat(parameters('dnsLabelPrefix'), '-', copyIndex(), '-', parameters('dnsLabelSuffix')), '/bootstrap')]",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "copy": {
@@ -245,7 +245,7 @@
         "count": "[parameters('virtualMachineCount')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelPrefix'), '-', copyIndex(), '-', parameters('dnsLabelSuffix')), copyIndex())]"
+        "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelPrefix'), '-', copyIndex(), '-', parameters('dnsLabelSuffix')))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
