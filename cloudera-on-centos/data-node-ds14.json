@@ -5,6 +5,9 @@
     "vnetID": {
       "type":"string"
     },
+    "templateAPIVersion": {
+      "type":"string"
+    },
     "resourceAPIVersion":{
       "type":"string"
     },
@@ -30,14 +33,14 @@
       "type": "object"
     }
   },
-"variables": {
+  "variables": {
     "vmUri":"[concat(parameters('scriptsUri'),'/vm-10-datadisks.json')]"
   },
   "resources": [
     {
       "name": "vm-with-datadisks",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('templateAPIVersion')]",
+      "apiVersion": "[parameters('templateAPIVersion')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {

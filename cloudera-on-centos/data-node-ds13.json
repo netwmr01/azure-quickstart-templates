@@ -5,6 +5,9 @@
     "vnetID": {
       "type":"string"
     },
+    "templateAPIVersion": {
+      "type":"string"
+    },
     "resourceAPIVersion":{
       "type":"string"
     },
@@ -37,7 +40,7 @@
     {
       "name": "vm-with-datadisks",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('templateAPIVersion')]",
+      "apiVersion": "[parameters('templateAPIVersion')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
