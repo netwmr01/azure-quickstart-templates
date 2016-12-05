@@ -31,7 +31,7 @@
     }
   },
   "variables": {
-    "vmUri":"[contact(parameters('scriptsUri'),'/vm-5-datadisks.json')]"
+    "vmUri":"[concat(parameters('scriptsUri'),'/vm-5-datadisks.json')]"
   },
   "resources": [
     {
