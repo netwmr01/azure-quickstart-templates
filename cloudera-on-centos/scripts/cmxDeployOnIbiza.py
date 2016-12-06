@@ -232,7 +232,7 @@ def setup_zookeeper(HA):
         # Role Config Group equivalent to Service Default Group
         for rcg in [x for x in service.get_all_role_config_groups()]:
             if rcg.roleType == "SERVER":
-                rcg.update_config({"maxClientCnxns": "1024",
+                rcg.update_config({
                                    "dataLogDir": LOG_DIR+"/zookeeper",
                                    "dataDir": LOG_DIR+"/zookeeper",
                                    "zk_server_log_dir": LOG_DIR+"/zookeeper"})
@@ -277,7 +277,7 @@ def setup_hdfs(HA):
 
         # Service-Wide
         service_config = cdh.dependencies_for(service)
-        service_config.update({"dfs_replication": "3",
+        service_config.update({
                                "dfs_block_local_path_access_user": "impala,hbase,mapred,spark"})
         service.update_config(service_config)
 
@@ -313,16 +313,11 @@ def setup_hdfs(HA):
             if rcg.roleType == "NAMENODE":
                 # hdfs-NAMENODE - Default Group
                 rcg.update_config({"dfs_name_dir_list": dfs_name_dir_list,
-                                   "namenode_java_heapsize": "1677058304",
-                                   "dfs_namenode_handler_count": "70",
-                                   "dfs_namenode_service_handler_count": "70",
-                                   "dfs_namenode_servicerpc_address": "8022",
                                    "namenode_log_dir": LOG_DIR+"/hadoop-hdfs"})
                 cdh.create_service_role(service, rcg.roleType, nn_host_id)
             if rcg.roleType == "SECONDARYNAMENODE":
                 # hdfs-SECONDARYNAMENODE - Default Group
                 rcg.update_config({"fs_checkpoint_dir_list": dfs_snn_dir_list,
-                                   "secondary_namenode_java_heapsize": "1677058304",
                                    "secondarynamenode_log_dir": LOG_DIR+"/hadoop-hdfs"})
                 # chose a server that it's not NN, easier to enable HDFS-HA later
 
@@ -330,12 +325,8 @@ def setup_hdfs(HA):
 
             if rcg.roleType == "DATANODE":
                 # hdfs-DATANODE - Default Group
-                rcg.update_config({"datanode_java_heapsize": "351272960",
+                rcg.update_config({
                                    "dfs_data_dir_list": dfs_data_dir_list,
-                                   "dfs_datanode_data_dir_perm": "755",
-                                   "dfs_datanode_du_reserved": "3508717158",
-                                   "dfs_datanode_failed_volumes_tolerated": "0",
-                                   "dfs_datanode_max_locked_memory": "1257242624",
                                    "datanode_log_dir": LOG_DIR+"/hadoop-hdfs"})
             if rcg.roleType == "FAILOVERCONTROLLER":
                 rcg.update_config({"failover_controller_log_dir": LOG_DIR+"/hadoop-hdfs"})
@@ -579,25 +570,20 @@ def setup_yarn(HA):
         for rcg in [x for x in service.get_all_role_config_groups()]:
             if rcg.roleType == "RESOURCEMANAGER":
                 # yarn-RESOURCEMANAGER - Default Group
-                rcg.update_config({"resource_manager_java_heapsize": "2000000000",
-                                   "yarn_scheduler_maximum_allocation_mb": "2568",
-                                   "yarn_scheduler_maximum_allocation_vcores": "2",
+                rcg.update_config({
                                    "resource_manager_log_dir": LOG_DIR+"/hadoop-yarn"})
                 cdh.create_service_role(service, rcg.roleType, rm_host_id)
             if rcg.roleType == "JOBHISTORY":
                 # yarn-JOBHISTORY - Default Group
-                rcg.update_config({"mr2_jobhistory_java_heapsize": "1000000000",
+                rcg.update_config({
                                    "mr2_jobhistory_log_dir": LOG_DIR+"/hadoop-mapreduce"})
 
                 cdh.create_service_role(service, rcg.roleType, cmhost)
                 
             if rcg.roleType == "NODEMANAGER":
                 # yarn-NODEMANAGER - Default Group
-                rcg.update_config({"yarn_nodemanager_heartbeat_interval_ms": "100",
-                                   "node_manager_java_heapsize": "2000000000",
+                rcg.update_config({
                                    "yarn_nodemanager_local_dirs": yarn_dir_list,
-                                   "yarn_nodemanager_resource_cpu_vcores": getParameterValue(cmx.vmsize, "yarn_nodemanager_resource_cpu_vcores"),
-                                   "yarn_nodemanager_resource_memory_mb": getParameterValue(cmx.vmsize,"yarn_nodemanager_resource_memory_mb"),
                                    "node_manager_log_dir": LOG_DIR+"/hadoop-yarn",
                                    "yarn_nodemanager_log_dirs": LOG_DIR+"/hadoop-yarn/container"})
 #                for host in hosts:
@@ -662,12 +648,10 @@ def setup_mapreduce(HA):
                 cdh.create_service_role(service, rcg.roleType, jk)
             if rcg.roleType == "TASKTRACKER":
                 # mapreduce-TASKTRACKER - Default Group
-                rcg.update_config({"tasktracker_mapred_local_dir_list": "/mapred/local",
-                                   "mapred_tasktracker_map_tasks_maximum": "1",
-                                   "mapred_tasktracker_reduce_tasks_maximum": "1", })
+                rcg.update_config({"tasktracker_mapred_local_dir_list": "/mapred/local"})
             if rcg.roleType == "GATEWAY":
                 # mapreduce-GATEWAY - Default Group
-                rcg.update_config({"mapred_reduce_tasks": "1", "mapred_submit_replication": "1"})
+                rcg.update_config({})
 
         for role_type in ['GATEWAY', 'TASKTRACKER']:
             for host in management.get_hosts(include_cm_host=(role_type == 'GATEWAY')):
@@ -832,8 +816,7 @@ def setup_impala(HA):
         service.update_config(cdh.dependencies_for(service))
 
         impalad=service.get_role_config_group("{0}-IMPALAD-BASE".format(service_name))
-        impalad.update_config({"log_dir": LOG_DIR+"/impalad",
-                               "impalad_memory_limit": getParameterValue(cmx.vmsize, "impalad_memory_limit")})
+        impalad.update_config({"log_dir": LOG_DIR+"/impalad"})
         #llama=service.get_role_config_group("{0}-LLAMMA-BASE".format(service_name))
         #llama.update_config({"log_dir": LOG_DIR+"impala-llama"})
         ss = service.get_role_config_group("{0}-STATESTORE-BASE".format(service_name))
@@ -1275,11 +1258,11 @@ class ManagementActions:
                                      "firehose_database_type": "postgresql",
                                      "firehose_database_name": "amon",
                                      "mgmt_log_dir": LOG_DIR+"/cloudera-scm-firehose",
-                                     "firehose_heapsize": "215964392"})
+                                     })
             elif group.roleType == "ALERTPUBLISHER":
                 group.update_config({"mgmt_log_dir": LOG_DIR+"/cloudera-scm-alertpublisher"})
             elif group.roleType == "EVENTSERVER":
-                group.update_config({"event_server_heapsize": "215964392",
+                group.update_config({
                                      "mgmt_log_dir": LOG_DIR+"/cloudera-scm-eventserver",
                                      "eventserver_index_dir": LOG_DIR+"/lib/cloudera-scm-eventserver"})
             elif group.roleType == "HOSTMONITOR":
