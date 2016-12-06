@@ -228,7 +228,7 @@
     "subnetPrefix":"[parameters('subnetPrefix')]",
     "scriptsUri": "https://raw.githubusercontent.com/netwmr01/azure-quickstart-templates/deploy-dev/cloudera-on-centos",
     "share-resourcesUri": "[concat(variables('scriptsUri'), '/shared-resources-', parameters('vnetNewOrExisting'), '-vnet.json')]",
-    "data-nodeUri":"[concat(variables('scriptsUri'), '/data-node-', toLower(subString(parameters('vmSize'), 9, 4)), '.json')]",
+    "data-nodeUri":"[concat(variables('scriptsUri'), '/data-node-', toLower(parameters('vmSize')), '.json')]",
     "sa": "[parameters('masterNodeIPAddress')]",
     "ipOctet01": "[concat(split(variables('sa'), '.')[0], '.', split(variables('sa'), '.')[1], '.')]",
     "ipOctet2": "[int(split(variables('sa'), '.')[2])]",
