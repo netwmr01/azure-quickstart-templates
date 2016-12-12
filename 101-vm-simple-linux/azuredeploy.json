@@ -177,7 +177,7 @@
           "vmSize": "[parameters('virtualMachineSize')]"
         },
         "osProfile": {
-          "computerName": "[concat(parameters('dnsLabelPrefix'), copyIndex())]",
+          "computerName": "[concat(parameters('dnsLabelPrefix'), copyIndex(), '.', parameters('dnsLabelSuffix'))]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
