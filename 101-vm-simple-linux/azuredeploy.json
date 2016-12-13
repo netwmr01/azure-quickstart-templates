@@ -154,7 +154,7 @@
     {
       "apiVersion": "2016-03-30",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(parameters('dnsLabelPrefix'), '-', copyIndex(), '-', parameters('dnsLabelSuffix'))]",
+      "name": "[concat(parameters('dnsLabelPrefix'), '-', copyIndex())]",
       "location": "[resourceGroup().location]",
       "plan": {
         "name": "cloudera-centos-6",
@@ -237,7 +237,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(concat(parameters('dnsLabelPrefix'), '-', copyIndex(), '-', parameters('dnsLabelSuffix')), '/bootstrap')]",
+      "name": "[concat(concat(parameters('dnsLabelPrefix'), '-', copyIndex()), '/bootstrap')]",
       "apiVersion": "2016-03-30",
       "location": "[resourceGroup().location]",
       "copy": {
@@ -245,7 +245,7 @@
         "count": "[parameters('virtualMachineCount')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelPrefix'), '-', copyIndex(), '-', parameters('dnsLabelSuffix')))]"
+        "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('dnsLabelPrefix'), '-', copyIndex()))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
