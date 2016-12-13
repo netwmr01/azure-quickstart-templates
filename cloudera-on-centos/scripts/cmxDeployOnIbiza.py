@@ -1928,6 +1928,9 @@ def main():
 
     # Deploy GPL Extra Parcel
     # deploy_parcel(parcel_product=cmx.parcel[1]['product'],parcel_version=cmx.parcel[1]['version'])
+    
+    cluster = api.get_cluster(cmx.cluster_name)
+    cluster.auto_configure()
 
     # Restart Cluster and Deploy Cluster wide client config
     log("restart_cluster")
