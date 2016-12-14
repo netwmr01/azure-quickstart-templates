@@ -1928,7 +1928,7 @@ def main():
 
     # Deploy GPL Extra Parcel
     # deploy_parcel(parcel_product=cmx.parcel[1]['product'],parcel_version=cmx.parcel[1]['version'])
-    
+    api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     cluster.auto_configure()
 
