@@ -1947,7 +1947,14 @@ def main():
     # deploy_parcel(parcel_product=cmx.parcel[1]['product'],parcel_version=cmx.parcel[1]['version'])
 
     # Restart Cluster and Deploy Cluster wide client config
-    log("restart_cluster")
+    log("before auto tune, restart_cluster")
+    cdh.restart_cluster()
+
+    api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
+    cluster = api.get_cluster(cmx.cluster_name)
+    cluster.auto_configure()
+
+    log("auto tune then restart_cluster")
     cdh.restart_cluster()
 
     # Other examples of CM API
