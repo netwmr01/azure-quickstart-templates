@@ -356,7 +356,7 @@ def setup_hdfs(HA):
             for host in management.get_hosts(include_cm_host=(role_type == 'GATEWAY')):
                 cdh.create_service_role(service, role_type, host)
 
-        cluster.auto_configure()
+        #cluster.auto_configure()
                 
         nn_role_type = service.get_roles_by_type("NAMENODE")[0]
         commands = service.format_hdfs(nn_role_type.name)
@@ -1942,12 +1942,19 @@ def main():
     log("before auto tune, restart_cluster")
     cdh.restart_cluster()
 
-    #api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
-    #cluster = api.get_cluster(cmx.cluster_name)
-    #cluster.auto_configure()
+    api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
+    cluster = api.get_cluster(cmx.cluster_name)
+    cluster.auto_configure()
 
-    #log("auto tune then restart_cluster")
-    #cdh.restart_cluster()
+    # Make sure namenode is formatted
+    service = cluster.get_service("hdfs")
+    nn_role_type = service.get_roles_by_type("NAMENODE")[0]
+    commands = service.format_hdfs(nn_role_type.name)
+    for cmd in commands:
+        check.status_for_command("Format NameNode", cmd)
+
+    log("auto tuned then restart_cluster")
+    cdh.restart_cluster()
 
     # Other examples of CM API
     # eg: "STOP" Services or "START"
