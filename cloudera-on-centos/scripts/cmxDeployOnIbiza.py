@@ -313,7 +313,6 @@ def setup_hdfs(HA):
             if rcg.roleType == "NAMENODE":
                 # hdfs-NAMENODE - Default Group
                 rcg.update_config({"dfs_name_dir_list": dfs_name_dir_list,
-                                   "namenode_java_heapsize": "1677058304",
                                    "dfs_namenode_handler_count": "70",
                                    "dfs_namenode_service_handler_count": "70",
                                    "dfs_namenode_servicerpc_address": "8022",
@@ -322,7 +321,6 @@ def setup_hdfs(HA):
             if rcg.roleType == "SECONDARYNAMENODE":
                 # hdfs-SECONDARYNAMENODE - Default Group
                 rcg.update_config({"fs_checkpoint_dir_list": dfs_snn_dir_list,
-                                   "secondary_namenode_java_heapsize": "1677058304",
                                    "secondarynamenode_log_dir": LOG_DIR+"/hadoop-hdfs"})
                 # chose a server that it's not NN, easier to enable HDFS-HA later
 
@@ -330,12 +328,10 @@ def setup_hdfs(HA):
 
             if rcg.roleType == "DATANODE":
                 # hdfs-DATANODE - Default Group
-                rcg.update_config({"datanode_java_heapsize": "351272960",
+                rcg.update_config({
                                    "dfs_data_dir_list": dfs_data_dir_list,
                                    "dfs_datanode_data_dir_perm": "755",
-                                   "dfs_datanode_du_reserved": "3508717158",
                                    "dfs_datanode_failed_volumes_tolerated": "0",
-                                   "dfs_datanode_max_locked_memory": "1257242624",
                                    "datanode_log_dir": LOG_DIR+"/hadoop-hdfs"})
             if rcg.roleType == "FAILOVERCONTROLLER":
                 rcg.update_config({"failover_controller_log_dir": LOG_DIR+"/hadoop-hdfs"})
@@ -359,6 +355,8 @@ def setup_hdfs(HA):
         for role_type in ['GATEWAY']:
             for host in management.get_hosts(include_cm_host=(role_type == 'GATEWAY')):
                 cdh.create_service_role(service, role_type, host)
+
+        cluster.auto_configure()
                 
         nn_role_type = service.get_roles_by_type("NAMENODE")[0]
         commands = service.format_hdfs(nn_role_type.name)
@@ -579,14 +577,12 @@ def setup_yarn(HA):
         for rcg in [x for x in service.get_all_role_config_groups()]:
             if rcg.roleType == "RESOURCEMANAGER":
                 # yarn-RESOURCEMANAGER - Default Group
-                rcg.update_config({"resource_manager_java_heapsize": "2000000000",
-                                   "yarn_scheduler_maximum_allocation_mb": "2568",
-                                   "yarn_scheduler_maximum_allocation_vcores": "2",
+                rcg.update_config({
                                    "resource_manager_log_dir": LOG_DIR+"/hadoop-yarn"})
                 cdh.create_service_role(service, rcg.roleType, rm_host_id)
             if rcg.roleType == "JOBHISTORY":
                 # yarn-JOBHISTORY - Default Group
-                rcg.update_config({"mr2_jobhistory_java_heapsize": "1000000000",
+                rcg.update_config({
                                    "mr2_jobhistory_log_dir": LOG_DIR+"/hadoop-mapreduce"})
 
                 cdh.create_service_role(service, rcg.roleType, cmhost)
@@ -594,10 +590,7 @@ def setup_yarn(HA):
             if rcg.roleType == "NODEMANAGER":
                 # yarn-NODEMANAGER - Default Group
                 rcg.update_config({"yarn_nodemanager_heartbeat_interval_ms": "100",
-                                   "node_manager_java_heapsize": "2000000000",
                                    "yarn_nodemanager_local_dirs": yarn_dir_list,
-                                   "yarn_nodemanager_resource_cpu_vcores": getParameterValue(cmx.vmsize, "yarn_nodemanager_resource_cpu_vcores"),
-                                   "yarn_nodemanager_resource_memory_mb": getParameterValue(cmx.vmsize,"yarn_nodemanager_resource_memory_mb"),
                                    "node_manager_log_dir": LOG_DIR+"/hadoop-yarn",
                                    "yarn_nodemanager_log_dirs": LOG_DIR+"/hadoop-yarn/container"})
 #                for host in hosts:
@@ -832,8 +825,7 @@ def setup_impala(HA):
         service.update_config(cdh.dependencies_for(service))
 
         impalad=service.get_role_config_group("{0}-IMPALAD-BASE".format(service_name))
-        impalad.update_config({"log_dir": LOG_DIR+"/impalad",
-                               "impalad_memory_limit": getParameterValue(cmx.vmsize, "impalad_memory_limit")})
+        impalad.update_config({"log_dir": LOG_DIR+"/impalad"})
         #llama=service.get_role_config_group("{0}-LLAMMA-BASE".format(service_name))
         #llama.update_config({"log_dir": LOG_DIR+"impala-llama"})
         ss = service.get_role_config_group("{0}-STATESTORE-BASE".format(service_name))
@@ -1950,12 +1942,12 @@ def main():
     log("before auto tune, restart_cluster")
     cdh.restart_cluster()
 
-    api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
-    cluster = api.get_cluster(cmx.cluster_name)
-    cluster.auto_configure()
+    #api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
+    #cluster = api.get_cluster(cmx.cluster_name)
+    #cluster.auto_configure()
 
-    log("auto tune then restart_cluster")
-    cdh.restart_cluster()
+    #log("auto tune then restart_cluster")
+    #cdh.restart_cluster()
 
     # Other examples of CM API
     # eg: "STOP" Services or "START"
