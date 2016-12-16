@@ -708,7 +708,8 @@ def setup_hive():
         hcat = service.get_role_config_group("{0}-WEBHCAT-BASE".format(service_name))
         hcat.update_config({"hcatalog_log_dir": LOG_DIR+"/hcatalog"})
         hs2 = service.get_role_config_group("{0}-HIVESERVER2-BASE".format(service_name))
-        hs2.update_config({"hive_log_dir": LOG_DIR+"/hive"}
+        hs2.update_config({"hive_log_dir": LOG_DIR+"/hive",
+                           "hiveserver2_spark_executor_cores": "4"}
                           )
         hms = service.get_role_config_group("{0}-HIVEMETASTORE-BASE".format(service_name))
         hms.update_config({"hive_log_dir": LOG_DIR+"/hive"})
@@ -1993,11 +1994,11 @@ def main():
     #log("before auto tune, restart_cluster")
     cdh.restart_cluster()
 
-    #log("begin auto tune")
-    #autotune()
+    log("begin auto tune")
+    autotune()
 
-    #log("auto tuned then restart_cluster")
-    #cdh.restart_cluster()
+    log("auto tuned then restart_cluster")
+    cdh.restart_cluster()
 
     # Other examples of CM API
     # eg: "STOP" Services or "START"
