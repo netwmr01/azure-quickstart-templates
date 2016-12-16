@@ -214,11 +214,11 @@ def setup_zookeeper(HA):
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     service_type = "ZOOKEEPER"
-    if cdh.get_service_type(service_type) is None:
+    if True:#cdh.get_service_type(service_type) is None:
         print "> %s" % service_type
         service_name = "zookeeper"
         print "Create %s service" % service_name
-        cluster.create_service(service_name, service_type)
+        # cluster.create_service(service_name, service_type)
         service = cluster.get_service(service_name)
         
         hosts = management.get_hosts()
@@ -267,11 +267,11 @@ def setup_hdfs(HA):
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     service_type = "HDFS"
-    if cdh.get_service_type(service_type) is None:
+    if True:#cdh.get_service_type(service_type) is None:
         print "> %s" % service_type
         service_name = "hdfs"
         print "Create %s service" % service_name
-        cluster.create_service(service_name, service_type)
+        #cluster.create_service(service_name, service_type)
         service = cluster.get_service(service_name)
         hosts = management.get_hosts()
 
@@ -503,11 +503,11 @@ def setup_spark_on_yarn():
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     service_type = "SPARK_ON_YARN"
-    if cdh.get_service_type(service_type) is None:
+    if True:#cdh.get_service_type(service_type) is None:
         print "> %s" % service_type
         service_name = "spark_on_yarn"
         print "Create %s service" % service_name
-        cluster.create_service(service_name, service_type)
+        #cluster.create_service(service_name, service_type)
         service = cluster.get_service(service_name)
         hosts = management.get_hosts()
 
@@ -548,11 +548,11 @@ def setup_yarn(HA):
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     service_type = "YARN"
-    if cdh.get_service_type(service_type) is None:
+    if True:#cdh.get_service_type(service_type) is None:
         print "> %s" % service_type
         service_name = "yarn"
         print "Create %s service" % service_name
-        cluster.create_service(service_name, service_type)
+        #cluster.create_service(service_name, service_type)
         service = cluster.get_service(service_name)
         hosts = management.get_hosts()
         # Service-Wide
@@ -686,11 +686,11 @@ def setup_hive():
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     service_type = "HIVE"
-    if cdh.get_service_type(service_type) is None:
+    if True:#cdh.get_service_type(service_type) is None:
         print "> %s" % service_type
         service_name = "hive"
         print "Create %s service" % service_name
-        cluster.create_service(service_name, service_type)
+        #cluster.create_service(service_name, service_type)
         service = cluster.get_service(service_name)
         hosts = management.get_hosts()
 
@@ -811,11 +811,11 @@ def setup_impala(HA):
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     service_type = "IMPALA"
-    if cdh.get_service_type(service_type) is None:
+    if True:#cdh.get_service_type(service_type) is None:
         print "> %s" % service_type
         service_name = "impala"
         print "Create %s service" % service_name
-        cluster.create_service(service_name, service_type)
+        #cluster.create_service(service_name, service_type)
         service = cluster.get_service(service_name)
         service_config = {"impala_cmd_args_safety_valve": "-scratch_dirs=%s" % (impala_dir_list) }
         service.update_config(service_config)        
@@ -869,11 +869,11 @@ def setup_oozie():
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     service_type = "OOZIE"
-    if cdh.get_service_type(service_type) is None:
+    if True:#cdh.get_service_type(service_type) is None:
         print "> %s" % service_type
         service_name = "oozie"
         print "Create %s service" % service_name
-        cluster.create_service(service_name, service_type)
+        #cluster.create_service(service_name, service_type)
         service = cluster.get_service(service_name)
         hosts = management.get_hosts()
 
@@ -904,11 +904,11 @@ def setup_hue():
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     service_type = "HUE"
-    if cdh.get_service_type(service_type) is None:
+    if True:#cdh.get_service_type(service_type) is None:
         print "> %s" % service_type
         service_name = "hue"
         print "Create %s service" % service_name
-        cluster.create_service(service_name, service_type)
+        #cluster.create_service(service_name, service_type)
         service = cluster.get_service(service_name)
         hosts = management.get_hosts()
 
