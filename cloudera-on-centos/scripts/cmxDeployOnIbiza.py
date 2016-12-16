@@ -708,8 +708,8 @@ def setup_hive():
         hcat = service.get_role_config_group("{0}-WEBHCAT-BASE".format(service_name))
         hcat.update_config({"hcatalog_log_dir": LOG_DIR+"/hcatalog"})
         hs2 = service.get_role_config_group("{0}-HIVESERVER2-BASE".format(service_name))
-        hs2.update_config({"hive_log_dir": LOG_DIR+"/hive"},
-                          {"spark.executor.cores": "4"})
+        hs2.update_config({"hive_log_dir": LOG_DIR+"/hive"}
+                          )
         hms = service.get_role_config_group("{0}-HIVEMETASTORE-BASE".format(service_name))
         hms.update_config({"hive_log_dir": LOG_DIR+"/hive"})
         
@@ -1103,27 +1103,30 @@ def setup_easy():
     cluster = api.get_cluster(cmx.cluster_name)
     print "> Easy setup for cluster: %s" % cmx.cluster_name
     # Do not install these services
-    do_not_install = ['KEYTRUSTEE', 'KMS', 'KS_INDEXER', 'ISILON', 'FLUME', 'MAPREDUCE', 'ACCUMULO',
-                      'ACCUMULO16', 'SPARK_ON_YARN', 'SPARK', 'SOLR', 'SENTRY']
-    service_types = list(set(cluster.get_service_types()) - set(do_not_install))
+    #do_not_install = ['KEYTRUSTEE', 'KMS', 'KS_INDEXER', 'ISILON', 'FLUME', 'MAPREDUCE', 'ACCUMULO',
+    #                  'ACCUMULO16', 'SPARK_ON_YARN', 'SPARK', 'SOLR', 'SENTRY']
+    install = ['HDFS','ZOOKEEPER', 'YARN', 'SPARK_ON_YARN', 'HUE', 'HIVE', 'OOZIE', 'IMPALA']
+    #service_types = list(set(cluster.get_service_types()) - set(do_not_install))
+    service_types = install
 
     for service in service_types:
         cluster.create_service(name=service.lower(), service_type=service.upper())
 
-    cluster.auto_assign_roles()
+    #cluster.auto_assign_roles()
     cluster.auto_configure()
 
+
     # Hive Metastore DB and dependencies ['YARN', 'ZOOKEEPER']
-    service = cdh.get_service_type('HIVE')
-    service_config = {"hive_metastore_database_host": socket.getfqdn(cmx.cm_server),
-                      "hive_metastore_database_user": "hive",
-                      "hive_metastore_database_name": "metastore",
-                      "hive_metastore_database_password": cmx.hive_password,
-                      "hive_metastore_database_port": "5432",
-                      "hive_metastore_database_type": "postgresql"}
-    service_config.update(cdh.dependencies_for(service))
-    service.update_config(service_config)
-    check.status_for_command("Executing first run command. This might take a while.", cluster.first_run())
+    #service = cdh.get_service_type('HIVE')
+    #service_config = {"hive_metastore_database_host": socket.getfqdn(cmx.cm_server),
+    #                  "hive_metastore_database_user": "hive",
+    #                  "hive_metastore_database_name": "metastore",
+    #                  "hive_metastore_database_password": cmx.hive_password,
+    #                  "hive_metastore_database_port": "5432",
+    #                  "hive_metastore_database_type": "postgresql"}
+    #service_config.update(cdh.dependencies_for(service))
+    #service.update_config(service_config)
+    #check.status_for_command("Executing first run command. This might take a while.", cluster.first_run())
 
 
 
@@ -1957,6 +1960,7 @@ def main():
     # Zookeeper, hdfs, HBase, Solr, Spark, Yarn,
     # Hive, Sqoop, Sqoop Client, Impala, Oozie, Hue
     log("setup_components")
+    setup_easy()
     setup_zookeeper(options.highAvailability)
     setup_hdfs(options.highAvailability)
     setup_yarn(options.highAvailability)
@@ -1986,14 +1990,14 @@ def main():
     # deploy_parcel(parcel_product=cmx.parcel[1]['product'],parcel_version=cmx.parcel[1]['version'])
 
     # Restart Cluster and Deploy Cluster wide client config
-    log("before auto tune, restart_cluster")
+    #log("before auto tune, restart_cluster")
     cdh.restart_cluster()
 
-    log("begin auto tune")
-    autotune()
+    #log("begin auto tune")
+    #autotune()
 
-    log("auto tuned then restart_cluster")
-    cdh.restart_cluster()
+    #log("auto tuned then restart_cluster")
+    #cdh.restart_cluster()
 
     # Other examples of CM API
     # eg: "STOP" Services or "START"
