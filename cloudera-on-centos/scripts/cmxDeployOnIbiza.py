@@ -1875,7 +1875,7 @@ def autotune():
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     cluster.auto_configure()
-    cluster.stop()
+    check.status_for_command("Stop %s" % cmx.cluster_name, cluster.stop())
 
     # Make sure namenode is formatted
     service = cluster.get_service("hdfs")
