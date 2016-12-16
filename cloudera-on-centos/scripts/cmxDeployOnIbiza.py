@@ -1114,7 +1114,7 @@ def setup_easy():
         cluster.create_service(name=service.lower(), service_type=service.upper())
 
     #cluster.auto_assign_roles()
-    cluster.auto_configure()
+    #cluster.auto_configure()
 
 
     # Hive Metastore DB and dependencies ['YARN', 'ZOOKEEPER']
@@ -1875,6 +1875,7 @@ def autotune():
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     cluster.auto_configure()
+    cluster.stop()
 
     # Make sure namenode is formatted
     service = cluster.get_service("hdfs")
@@ -1991,7 +1992,7 @@ def main():
     # deploy_parcel(parcel_product=cmx.parcel[1]['product'],parcel_version=cmx.parcel[1]['version'])
 
     # Restart Cluster and Deploy Cluster wide client config
-    #log("before auto tune, restart_cluster")
+    log("before auto tune, restart_cluster")
     cdh.restart_cluster()
 
     log("begin auto tune")
