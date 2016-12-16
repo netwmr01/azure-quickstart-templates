@@ -1874,7 +1874,7 @@ def postEulaInfo(firstName, lastName, emailAddress, company,jobRole, jobFunction
 def autotune():
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
-    cluster.auto_configure()
+    check.status_for_command("Auto cnfigure %s" % cmx.cluster_name, cluster.auto_configure())
     check.status_for_command("Stop %s" % cmx.cluster_name, cluster.stop())
 
     # Make sure namenode is formatted
