@@ -1871,53 +1871,63 @@ def postEulaInfo(firstName, lastName, emailAddress, company,jobRole, jobFunction
     with open('results.html', 'w') as f:
         log(results.read())
 
-def autotune():
+def autotune(options):
     api = ApiResource(server_host=cmx.cm_server, username=cmx.username, password=cmx.password)
     cluster = api.get_cluster(cmx.cluster_name)
     cluster.auto_configure()
     check.status_for_command("Stop %s" % cmx.cluster_name, cluster.stop())
 
-    # Make sure namenode is formatted
-    service = cluster.get_service("hdfs")
-    nn_role_type = service.get_roles_by_type("NAMENODE")[0]
-    commands = service.format_hdfs(nn_role_type.name)
-    for cmd in commands:
-        check.status_for_command("Format NameNode", cmd)
+    # Setup Again after tune
+    setup_zookeeper(options.highAvailability)
+    setup_hdfs(options.highAvailability)
+    setup_yarn(options.highAvailability)
+    setup_spark_on_yarn()
+    setup_hive()
+    setup_impala(options.highAvailability)
+    setup_oozie()
+    setup_hue()
 
-    service = cluster.get_service("zookeeper")
-    check.status_for_command("Starting ZooKeeper Service", service.start())
-    service = cluster.get_service("hdfs")
-    check.status_for_command("Starting HDFS Service", service.start())
-    check.status_for_command("Creating HDFS /tmp directory", service.create_hdfs_tmp())
-
-    # Make sure yarn is setup
-    service = cluster.get_service("yarn")
-    check.status_for_command("Creating MR2 job history directory", service.create_yarn_job_history_dir())
-    check.status_for_command("Creating NodeManager remote application log directory",
-                             service.create_yarn_node_manager_remote_app_log_dir())
-
-    # Make sure spark_on_yarn is setup
-    service = cluster.get_service("spark_on_yarn")
-    check.status_for_command("Execute command CreateSparkUserDirCommand on service Spark",
-                             service._cmd('CreateSparkUserDirCommand'))
-    check.status_for_command("Execute command CreateSparkHistoryDirCommand on service Spark",
-                             service._cmd('CreateSparkHistoryDirCommand'))
-    check.status_for_command("Execute command SparkUploadJarServiceCommand on service Spark",
-                             service._cmd('SparkUploadJarServiceCommand'))
-
-    # Make sure hive is setup
-    service = cluster.get_service("hive")
-    check.status_for_command("Creating Hive Metastore Database Tables", service.create_hive_metastore_tables())
-    check.status_for_command("Creating Hive user directory", service.create_hive_userdir())
-    check.status_for_command("Creating Hive warehouse directory", service.create_hive_warehouse())
-
-    # Make sure impala is setup
-    service = cluster.get_service("impala")
-    check.status_for_command("Creating Impala user directory", service.create_impala_user_dir())
-
-    # Make sure oozie is setup
-    service = cluster.get_service("oozie")
-    check.status_for_command("Installing Oozie ShareLib in HDFS", service.install_oozie_sharelib())
+    # # Make sure namenode is formatted
+    # service = cluster.get_service("hdfs")
+    # nn_role_type = service.get_roles_by_type("NAMENODE")[0]
+    # commands = service.format_hdfs(nn_role_type.name)
+    # for cmd in commands:
+    #     check.status_for_command("Format NameNode", cmd)
+    #
+    # service = cluster.get_service("zookeeper")
+    # check.status_for_command("Starting ZooKeeper Service", service.start())
+    # service = cluster.get_service("hdfs")
+    # check.status_for_command("Starting HDFS Service", service.start())
+    # check.status_for_command("Creating HDFS /tmp directory", service.create_hdfs_tmp())
+    #
+    # # Make sure yarn is setup
+    # service = cluster.get_service("yarn")
+    # check.status_for_command("Creating MR2 job history directory", service.create_yarn_job_history_dir())
+    # check.status_for_command("Creating NodeManager remote application log directory",
+    #                          service.create_yarn_node_manager_remote_app_log_dir())
+    #
+    # # Make sure spark_on_yarn is setup
+    # service = cluster.get_service("spark_on_yarn")
+    # check.status_for_command("Execute command CreateSparkUserDirCommand on service Spark",
+    #                          service._cmd('CreateSparkUserDirCommand'))
+    # check.status_for_command("Execute command CreateSparkHistoryDirCommand on service Spark",
+    #                          service._cmd('CreateSparkHistoryDirCommand'))
+    # check.status_for_command("Execute command SparkUploadJarServiceCommand on service Spark",
+    #                          service._cmd('SparkUploadJarServiceCommand'))
+    #
+    # # Make sure hive is setup
+    # service = cluster.get_service("hive")
+    # check.status_for_command("Creating Hive Metastore Database Tables", service.create_hive_metastore_tables())
+    # check.status_for_command("Creating Hive user directory", service.create_hive_userdir())
+    # check.status_for_command("Creating Hive warehouse directory", service.create_hive_warehouse())
+    #
+    # # Make sure impala is setup
+    # service = cluster.get_service("impala")
+    # check.status_for_command("Creating Impala user directory", service.create_impala_user_dir())
+    #
+    # # Make sure oozie is setup
+    # service = cluster.get_service("oozie")
+    # check.status_for_command("Installing Oozie ShareLib in HDFS", service.install_oozie_sharelib())
 
 def main():
     # Parse user options
@@ -1997,7 +2007,7 @@ def main():
     cdh.restart_cluster()
 
     log("begin auto tune")
-    autotune()
+    autotune(options)
 
     log("auto tuned then restart_cluster")
     cdh.restart_cluster()
