@@ -1888,6 +1888,7 @@ def autotune():
     check.status_for_command("Starting ZooKeeper Service", service.start())
     service = cluster.get_service("hdfs")
     check.status_for_command("Starting HDFS Service", service.start())
+    check.status_for_command("Creating HDFS /tmp directory", service.create_hdfs_tmp())
 
     # Make sure yarn is setup
     service = cluster.get_service("yarn")
