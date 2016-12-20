@@ -1878,56 +1878,141 @@ def autotune(options):
     check.status_for_command("Stop %s" % cmx.cluster_name, cluster.stop())
 
     # Setup Again after tune
-    setup_zookeeper(options.highAvailability)
-    setup_hdfs(options.highAvailability)
-    setup_yarn(options.highAvailability)
-    setup_spark_on_yarn()
-    setup_hive()
-    setup_impala(options.highAvailability)
-    setup_oozie()
-    setup_hue()
+    # Make sure namenode is formatted
+    service = cluster.get_service("hdfs")
+    nn_role_type = service.get_roles_by_type("NAMENODE")[0]
+    commands = service.format_hdfs(nn_role_type.name)
+    for cmd in commands:
+        check.status_for_command("Format NameNode", cmd)
 
-    # # Make sure namenode is formatted
-    # service = cluster.get_service("hdfs")
-    # nn_role_type = service.get_roles_by_type("NAMENODE")[0]
-    # commands = service.format_hdfs(nn_role_type.name)
-    # for cmd in commands:
-    #     check.status_for_command("Format NameNode", cmd)
-    #
-    # service = cluster.get_service("zookeeper")
-    # check.status_for_command("Starting ZooKeeper Service", service.start())
-    # service = cluster.get_service("hdfs")
-    # check.status_for_command("Starting HDFS Service", service.start())
-    # check.status_for_command("Creating HDFS /tmp directory", service.create_hdfs_tmp())
-    #
-    # # Make sure yarn is setup
-    # service = cluster.get_service("yarn")
-    # check.status_for_command("Creating MR2 job history directory", service.create_yarn_job_history_dir())
-    # check.status_for_command("Creating NodeManager remote application log directory",
-    #                          service.create_yarn_node_manager_remote_app_log_dir())
-    #
-    # # Make sure spark_on_yarn is setup
-    # service = cluster.get_service("spark_on_yarn")
-    # check.status_for_command("Execute command CreateSparkUserDirCommand on service Spark",
-    #                          service._cmd('CreateSparkUserDirCommand'))
-    # check.status_for_command("Execute command CreateSparkHistoryDirCommand on service Spark",
-    #                          service._cmd('CreateSparkHistoryDirCommand'))
-    # check.status_for_command("Execute command SparkUploadJarServiceCommand on service Spark",
-    #                          service._cmd('SparkUploadJarServiceCommand'))
-    #
-    # # Make sure hive is setup
-    # service = cluster.get_service("hive")
-    # check.status_for_command("Creating Hive Metastore Database Tables", service.create_hive_metastore_tables())
-    # check.status_for_command("Creating Hive user directory", service.create_hive_userdir())
-    # check.status_for_command("Creating Hive warehouse directory", service.create_hive_warehouse())
-    #
-    # # Make sure impala is setup
-    # service = cluster.get_service("impala")
-    # check.status_for_command("Creating Impala user directory", service.create_impala_user_dir())
-    #
-    # # Make sure oozie is setup
-    # service = cluster.get_service("oozie")
-    # check.status_for_command("Installing Oozie ShareLib in HDFS", service.install_oozie_sharelib())
+    service = cluster.get_service("zookeeper")
+    # Role Config Group equivalent to Service Default Group
+    for rcg in [x for x in service.get_all_role_config_groups()]:
+        if rcg.roleType == "SERVER":
+            rcg.update_config({"maxClientCnxns": "1024",
+                               "dataLogDir": LOG_DIR + "/zookeeper",
+                               "dataDir": LOG_DIR + "/zookeeper",
+                               "zk_server_log_dir": LOG_DIR + "/zookeeper"})
+    check.status_for_command("Starting ZooKeeper Service", service.start())
+    service = cluster.get_service("hdfs")
+    # Get Disk Information - assume that all disk configuration is heterogeneous throughout the cluster
+
+    default_name_dir_list = ""
+    default_snn_dir_list = ""
+    default_data_dir_list = ""
+
+    dfs_name_dir_list = default_name_dir_list
+    dfs_snn_dir_list = default_snn_dir_list
+    dfs_data_dir_list = default_data_dir_list
+
+    for x in range(int(diskcount)):
+        dfs_data_dir_list += ",/data%d/dfs/dn" % (x)
+
+    dfs_name_dir_list += ",/data/dfs/nn"
+    dfs_snn_dir_list += ",/data/dfs/snn"
+
+    # Role Config Group equivalent to Service Default Group
+    for rcg in [x for x in service.get_all_role_config_groups()]:
+        if rcg.roleType == "NAMENODE":
+            # hdfs-NAMENODE - Default Group
+            rcg.update_config({"dfs_name_dir_list": dfs_name_dir_list,
+                               "dfs_namenode_handler_count": "70",
+                               "dfs_namenode_service_handler_count": "70",
+                               "dfs_namenode_servicerpc_address": "8022",
+                               "namenode_log_dir": LOG_DIR + "/hadoop-hdfs"})
+
+        if rcg.roleType == "SECONDARYNAMENODE":
+            # hdfs-SECONDARYNAMENODE - Default Group
+            rcg.update_config({"fs_checkpoint_dir_list": dfs_snn_dir_list,
+                               "secondarynamenode_log_dir": LOG_DIR + "/hadoop-hdfs"})
+            # chose a server that it's not NN, easier to enable HDFS-HA later
+
+        if rcg.roleType == "DATANODE":
+            # hdfs-DATANODE - Default Group
+            rcg.update_config({
+                "dfs_data_dir_list": dfs_data_dir_list,
+                "dfs_datanode_data_dir_perm": "755",
+                "dfs_datanode_failed_volumes_tolerated": "0",
+                "datanode_log_dir": LOG_DIR + "/hadoop-hdfs"})
+        if rcg.roleType == "FAILOVERCONTROLLER":
+            rcg.update_config({"failover_controller_log_dir": LOG_DIR + "/hadoop-hdfs"})
+        if rcg.roleType == "HTTPFS":
+            rcg.update_config({"httpfs_log_dir": LOG_DIR + "/hadoop-httpfs"})
+    check.status_for_command("Starting HDFS Service", service.start())
+    check.status_for_command("Creating HDFS /tmp directory", service.create_hdfs_tmp())
+
+    # Make sure yarn is setup
+    service = cluster.get_service("yarn")
+    # empty list so it won't use ephemeral drive
+    default_yarn_dir_list = ""
+
+    yarn_dir_list = default_yarn_dir_list
+
+    for x in range(int(diskcount)):
+        yarn_dir_list += ",/data%d/yarn/nm" % (x)
+
+    for rcg in [x for x in service.get_all_role_config_groups()]:
+        if rcg.roleType == "RESOURCEMANAGER":
+            # yarn-RESOURCEMANAGER - Default Group
+            rcg.update_config({
+                "resource_manager_log_dir": LOG_DIR + "/hadoop-yarn"})
+
+        if rcg.roleType == "JOBHISTORY":
+            # yarn-JOBHISTORY - Default Group
+            rcg.update_config({
+                "mr2_jobhistory_log_dir": LOG_DIR + "/hadoop-mapreduce"})
+
+        if rcg.roleType == "NODEMANAGER":
+            # yarn-NODEMANAGER - Default Group
+            rcg.update_config({"yarn_nodemanager_heartbeat_interval_ms": "100",
+                               "yarn_nodemanager_local_dirs": yarn_dir_list,
+                               "node_manager_log_dir": LOG_DIR + "/hadoop-yarn",
+                               "yarn_nodemanager_log_dirs": LOG_DIR + "/hadoop-yarn/container"})
+            #                for host in hosts:
+            #                    cdh.create_service_role(service, rcg.roleType, host)
+        if rcg.roleType == "GATEWAY":
+            # yarn-GATEWAY - Default Group
+            rcg.update_config({"mapred_submit_replication": "3"})
+
+    check.status_for_command("Creating MR2 job history directory", service.create_yarn_job_history_dir())
+    check.status_for_command("Creating NodeManager remote application log directory",
+                             service.create_yarn_node_manager_remote_app_log_dir())
+
+    # Make sure spark_on_yarn is setup
+    service = cluster.get_service("spark_on_yarn")
+    check.status_for_command("Execute command CreateSparkUserDirCommand on service Spark",
+                             service._cmd('CreateSparkUserDirCommand'))
+    check.status_for_command("Execute command CreateSparkHistoryDirCommand on service Spark",
+                             service._cmd('CreateSparkHistoryDirCommand'))
+    check.status_for_command("Execute command SparkUploadJarServiceCommand on service Spark",
+                             service._cmd('SparkUploadJarServiceCommand'))
+
+    # Make sure hive is setup
+    service = cluster.get_service("hive")
+    check.status_for_command("Creating Hive Metastore Database Tables", service.create_hive_metastore_tables())
+    check.status_for_command("Creating Hive user directory", service.create_hive_userdir())
+    check.status_for_command("Creating Hive warehouse directory", service.create_hive_warehouse())
+
+    # Make sure impala is setup
+    service = cluster.get_service("impala")
+    default_impala_dir_list = ""
+
+    impala_dir_list = default_impala_dir_list
+
+    for x in range(int(diskcount)):
+        impala_dir_list += "/data%d/impala/scratch" % (x)
+        max_count = int(diskcount) - 1
+        if x < max_count:
+            impala_dir_list += ","
+            print "x is %d. Adding comma" % (x)
+
+    service_config = {"impala_cmd_args_safety_valve": "-scratch_dirs=%s" % (impala_dir_list)}
+    service.update_config(service_config)
+    check.status_for_command("Creating Impala user directory", service.create_impala_user_dir())
+
+    # Make sure oozie is setup
+    service = cluster.get_service("oozie")
+    check.status_for_command("Installing Oozie ShareLib in HDFS", service.install_oozie_sharelib())
 
 def main():
     # Parse user options
